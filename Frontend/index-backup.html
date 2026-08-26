@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudAsset | Cloud Management</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-brand">
+            <div class="logo">CA</div>
+
+            <div>
+                <h2>CloudAsset</h2>
+                <span>Management Platform</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <button class="nav-item active" data-page="dashboard">
+                <span class="nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </button>
+
+            <button class="nav-item" data-page="assets">
+                <span class="nav-icon">▣</span>
+                <span>Assets</span>
+            </button>
+
+            <button class="nav-item" data-page="costs">
+                <span class="nav-icon">₹</span>
+                <span>Cost Overview</span>
+            </button>
+
+            <button class="nav-item" data-page="analytics">
+                <span class="nav-icon">◉</span>
+                <span>Analytics</span>
+            </button>
+
+            <button class="nav-item" data-page="settings">
+                <span class="nav-icon">⚙</span>
+                <span>Settings</span>
+            </button>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="system-status">
+                <span class="status-dot"></span>
+                <div>
+                    <strong>System Online</strong>
+                    <small>All services operational</small>
+                </div>
+            </div>
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="main-content">
+
+        <!-- TOP NAVBAR -->
+        <header class="topbar">
+
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle">☰</button>
+
+                <div>
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p id="pageSubtitle">Overview of your cloud infrastructure</p>
+                </div>
+            </div>
+
+            <div class="topbar-actions">
+
+                <button class="theme-toggle" id="themeToggle" type="button">
+                    🌙
+                </button>
+
+                <div class="user-profile">
+                    <div class="user-avatar">A</div>
+                    <div class="user-info">
+                        <strong>Anbarasan</strong>
+                        <span>Administrator</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= DASHBOARD PAGE ================= -->
+        <section class="page active-page" id="dashboard">
+
+            <div class="welcome-section">
+                <div>
+                    <p class="eyebrow">CLOUD INFRASTRUCTURE</p>
+                    <h2>Good to see you 👋</h2>
+                    <p>Monitor your cloud assets, infrastructure and spending from one place.</p>
+                </div>
+
+                <button class="btn btn-primary" onclick="navigateToAssets()">
+                    + Add New Asset
+                </button>
+            </div>
+
+
+            <!-- Dashboard Stats -->
+            <div class="dashboard-grid">
+
+                <div class="dashboard-card">
+                    <span class="card-icon">▣</span>
+                    <div>
+                        <p>Total Assets</p>
+                        <h3 id="dashTotalAssets">0</h3>
+                        <small>Across all providers</small>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <span class="card-icon">✓</span>
+                    <div>
+                        <p>Active Assets</p>
+                        <h3 id="dashActiveAssets">0</h3>
+                        <small>Currently operational</small>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <span class="card-icon">$</span>
+                    <div>
+                        <p>Monthly Cost</p>
+                        <h3 id="dashTotalCost">$0.00</h3>
+                        <small>Estimated spending</small>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <span class="card-icon">☁</span>
+                    <div>
+                        <p>Cloud Providers</p>
+                        <h3 id="dashProviders">0</h3>
+                        <small>Providers in use</small>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-content-grid">
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>Recent Assets</h3>
+                            <p>Your recently managed infrastructure</p>
+                        </div>
+
+                        <button class="text-button" onclick="navigateToAssets()">
+                            View All →
+                        </button>
+                    </div>
+
+                    <div id="recentAssets">
+                        <p class="empty-state">No assets available yet.</p>
+                    </div>
+                </div>
+
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>Infrastructure Summary</h3>
+                            <p>Quick overview of your environment</p>
+                        </div>
+                    </div>
+
+                    <div class="summary-list">
+                        <div class="summary-item">
+                            <span>Running</span>
+                            <strong id="runningCount">0</strong>
+                        </div>
+
+                        <div class="summary-item">
+                            <span>Stopped</span>
+                            <strong id="stoppedCount">0</strong>
+                        </div>
+
+                        <div class="summary-item">
+                            <span>Inactive</span>
+                            <strong id="inactiveCount">0</strong>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= ASSETS PAGE ================= -->
+        <section class="page" id="assets">
+
+            <div class="page-intro">
+                <div>
+                    <h2>Asset Management</h2>
+                    <p>Add, monitor, search and manage your cloud infrastructure.</p>
+                </div>
+            </div>
+
+            <!-- KEEP YOUR EXISTING ADD ASSET FORM HERE -->
+            <section class="add-asset-section">
+                <h2>Add New Asset</h2>
+
+                <!-- Your existing form -->
+                <form id="addAssetForm">
+
+                    <!-- KEEP ALL YOUR EXISTING FORM FIELDS HERE -->
+
+                    <div class="form-grid">
+
+                        <!-- Your existing Asset Name, Provider, Service,
+                             Region, Status, Owner and Cost fields go here -->
+
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Add Asset
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <!-- Assets List -->
+            <section class="assets-section">
+
+                <div class="section-header">
+                    <div>
+                        <h2>All Assets</h2>
+                        <p>Manage your cloud infrastructure resources.</p>
+                    </div>
+
+                    <button id="refreshBtn" class="btn btn-secondary">
+                        Refresh
+                    </button>
+                </div>
+
+
+                <!-- KEEP YOUR EXISTING SEARCH AND FILTER SECTION -->
+
+                <div id="loadingMessage" class="loading">
+                    Loading assets...
+                </div>
+
+                <div id="errorMessage" class="error" style="display:none;"></div>
+
+                <div id="successMessage" class="success" style="display:none;"></div>
+
+                <div id="assetsContainer"></div>
+
+            </section>
+
+        </section>
+
+
+        <!-- ================= COST OVERVIEW ================= -->
+        <section class="page" id="costs">
+
+            <div class="page-intro">
+                <div>
+                    <p class="eyebrow">FINANCIAL OVERVIEW</p>
+                    <h2>Cost Overview</h2>
+                    <p>Understand where your cloud budget is being spent.</p>
+                </div>
+            </div>
+
+
+            <!-- Cost Summary -->
+            <div class="cost-summary-grid">
+
+                <div class="cost-card featured">
+                    <p>Total Monthly Cost</p>
+                    <h2 id="costOverviewTotal">$0.00</h2>
+                    <span>Across all cloud assets</span>
+                </div>
+
+                <div class="cost-card">
+                    <p>Average Asset Cost</p>
+                    <h2 id="averageCost">$0.00</h2>
+                    <span>Average monthly spending</span>
+                </div>
+
+                <div class="cost-card">
+                    <p>Highest Cost Asset</p>
+                    <h2 id="highestCost">$0.00</h2>
+                    <span id="highestCostName">No assets</span>
+                </div>
+
+            </div>
+
+
+            <div class="cost-content-grid">
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>Cost by Provider</h3>
+                            <p>Spending distribution across cloud providers</p>
+                        </div>
+                    </div>
+
+                    <div id="costByProvider" class="cost-list">
+                        <p class="empty-state">No cost data available.</p>
+                    </div>
+                </div>
+
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>Cost by Service</h3>
+                            <p>Services consuming your budget</p>
+                        </div>
+                    </div>
+
+                    <div id="costByService" class="cost-list">
+                        <p class="empty-state">No cost data available.</p>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h3>Most Expensive Assets</h3>
+                        <p>Assets with the highest monthly estimated cost</p>
+                    </div>
+                </div>
+
+                <div id="expensiveAssets"></div>
+            </div>
+
+        </section>
+
+
+        <!-- ================= ANALYTICS ================= -->
+        <section class="page" id="analytics">
+
+            <div class="page-intro">
+                <p class="eyebrow">INFRASTRUCTURE INSIGHTS</p>
+                <h2>Analytics</h2>
+                <p>Analyze your cloud infrastructure and asset distribution.</p>
+            </div>
+
+            <div class="analytics-grid">
+
+                <div class="panel">
+                    <h3>Assets by Provider</h3>
+                    <div id="providerAnalytics"></div>
+                </div>
+
+                <div class="panel">
+                    <h3>Assets by Status</h3>
+                    <div id="statusAnalytics"></div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= SETTINGS ================= -->
+        <section class="page" id="settings">
+
+            <div class="page-intro">
+                <p class="eyebrow">APPLICATION SETTINGS</p>
+                <h2>Settings</h2>
+                <p>Manage your CloudAsset preferences.</p>
+            </div>
+
+            <div class="panel settings-panel">
+
+                <div class="setting-item">
+                    <div>
+                        <h3>Appearance</h3>
+                        <p>Switch between light and dark mode.</p>
+                    </div>
+
+                    <button class="btn btn-secondary" id="settingsThemeToggle">
+                        Toggle Theme
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ================= EDIT MODAL ================= -->
+
+<!-- IMPORTANT:
+     Keep your existing Edit Modal here exactly as it is.
+-->
+
+<script src="js/app.js"></script>
+
+</body>
+</html>
