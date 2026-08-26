@@ -3442,4 +3442,69 @@ document.addEventListener(
 //
 // Your backend JWT role protection is the
 // actual security layer.
+// ==========================================
+// PROFILE DROPDOWN
+// ==========================================
+
+const profileButton =
+    document.getElementById("profileButton");
+
+const profileDropdown =
+    document.getElementById("profileDropdown");
+
+const logoutButton =
+    document.getElementById("logoutButton");
+
+
+if (profileButton && profileDropdown) {
+
+    profileButton.addEventListener(
+        "click",
+        (event) => {
+
+            event.stopPropagation();
+
+            profileDropdown.classList.toggle("show");
+
+        }
+    );
+
+}
+
+
+document.addEventListener(
+    "click",
+    (event) => {
+
+        if (
+            profileButton &&
+            profileDropdown &&
+            !profileButton.contains(event.target) &&
+            !profileDropdown.contains(event.target)
+        ) {
+
+            profileDropdown.classList.remove("show");
+
+        }
+
+    }
+);
+
+
+// ==========================================
+// LOGOUT BUTTON
+// ==========================================
+
+if (logoutButton) {
+
+    logoutButton.addEventListener(
+        "click",
+        () => {
+
+            logout();
+
+        }
+    );
+
+}
 // ============================================

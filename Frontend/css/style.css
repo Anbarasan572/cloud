@@ -1153,87 +1153,204 @@ body.dark-mode .success {
     }
 
 }/* ==========================================
-   CLOUDASSET LOGIN PAGE
+   CLOUDASSET PROFESSIONAL LOGIN PAGE
    ========================================== */
+
+
+/* MAIN LOGIN SCREEN */
 
 .login-screen {
     position: fixed;
     inset: 0;
+
+    width: 100%;
     min-height: 100vh;
 
     display: flex;
-    align-items: center;
-    justify-content: center;
 
-    padding: 40px;
+    overflow: hidden;
 
     background:
-        radial-gradient(
-            circle at 85% 20%,
-            rgba(20, 184, 166, 0.25),
-            transparent 30%
-        ),
         linear-gradient(
-            135deg,
-            #0f172a,
-            #13243a 55%,
-            #0f766e
+            110deg,
+            #0f1b2d 0%,
+            #13263a 50%,
+            #0f766e 100%
         );
 
     z-index: 9999;
-
-    overflow: hidden;
 }
 
 
 /* ==========================================
-   LEFT SIDE PROJECT INFORMATION
+   LEFT VISUAL SECTION
    ========================================== */
 
-.login-screen::before {
-    content:
-        "☁\A\A MANAGE. MONITOR. OPTIMIZE.\A\A All your cloud assets, one place.\A\A CloudAsset helps you track, manage and secure your cloud resources efficiently.";
+.login-visual {
+    width: 50%;
 
-    white-space: pre-line;
+    min-height: 100vh;
 
-    position: absolute;
+    position: relative;
 
-    left: 8%;
-    top: 50%;
+    display: flex;
 
-    transform: translateY(-50%);
+    align-items: center;
 
-    width: 42%;
+    padding-left: 9%;
 
-    color: #ffffff;
+    box-sizing: border-box;
 
-    font-size: 16px;
-    line-height: 1.8;
-
-    letter-spacing: 0.3px;
-
-    z-index: 1;
+    color: white;
 }
 
 
-/* Large cloud icon */
+.visual-content {
+    position: relative;
 
-.login-screen::after {
-    content: "☁";
+    max-width: 580px;
 
+    z-index: 2;
+}
+
+
+/* SMALL CLOUD */
+
+.small-cloud {
+    font-size: 45px;
+
+    margin-bottom: 30px;
+
+    color: #45d6e8;
+
+    filter:
+        drop-shadow(
+            0 0 12px
+            rgba(69, 214, 232, 0.4)
+        );
+}
+
+
+/* MAIN TITLE */
+
+.visual-content h2 {
+    margin: 0 0 28px;
+
+    color: #56d4e6;
+
+    font-size: clamp(28px, 2.2vw, 42px);
+
+    font-weight: 700;
+
+    letter-spacing: 3px;
+
+    line-height: 1.3;
+}
+
+
+/* SUBTITLE */
+
+.visual-subtitle {
+    margin: 0 0 18px;
+
+    font-size: 22px;
+
+    color: #e2e8f0;
+
+    font-weight: 500;
+}
+
+
+/* DESCRIPTION */
+
+.visual-description {
+    max-width: 520px;
+
+    margin: 0;
+
+    color: #cbd5e1;
+
+    font-size: 19px;
+
+    line-height: 1.8;
+}
+
+
+/* LARGE CLOUD */
+
+.large-cloud {
+    margin-top: 45px;
+
+    font-size: 200px;
+
+    line-height: 1;
+
+    color:
+        rgba(45, 212, 191, 0.12);
+
+    filter:
+        drop-shadow(
+            0 0 25px
+            rgba(56, 189, 248, 0.25)
+        );
+}
+
+
+/* ==========================================
+   DECORATIVE DOTS
+   ========================================== */
+
+.dot-pattern {
     position: absolute;
 
-    left: 18%;
-    bottom: 8%;
+    width: 130px;
 
-    font-size: 180px;
+    height: 130px;
 
-    color: rgba(56, 189, 248, 0.18);
+    opacity: 0.35;
 
-    text-shadow:
-        0 0 40px rgba(45, 212, 191, 0.35);
+    background-image:
+        radial-gradient(
+            #38bdf8 2px,
+            transparent 2px
+        );
 
-    z-index: 0;
+    background-size: 20px 20px;
+}
+
+
+.dot-top {
+    top: 60px;
+
+    left: 0;
+}
+
+
+.dot-bottom {
+    bottom: 40px;
+
+    left: 0;
+}
+
+
+/* ==========================================
+   RIGHT LOGIN PANEL
+   ========================================== */
+
+.login-panel {
+    width: 50%;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 40px;
+
+    box-sizing: border-box;
 }
 
 
@@ -1242,28 +1359,24 @@ body.dark-mode .success {
    ========================================== */
 
 .login-card {
-    position: relative;
-
     width: 100%;
-    max-width: 420px;
 
-    margin-left: auto;
-    margin-right: 7%;
+    max-width: 600px;
 
-    padding: 45px 40px;
+    padding: 55px 65px;
+
+    box-sizing: border-box;
 
     background:
         rgba(255, 255, 255, 0.97);
 
-    border-radius: 20px;
-
-    box-shadow:
-        0 30px 70px
-        rgba(0, 0, 0, 0.35);
+    border-radius: 28px;
 
     text-align: center;
 
-    z-index: 10;
+    box-shadow:
+        0 30px 80px
+        rgba(0, 0, 0, 0.35);
 }
 
 
@@ -1272,67 +1385,73 @@ body.dark-mode .success {
    ========================================== */
 
 .login-logo {
-    width: 70px;
-    height: 70px;
+    width: 100px;
 
-    margin: 0 auto 22px;
+    height: 100px;
+
+    margin:
+        0 auto
+        28px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
-    border-radius: 20px;
+    border-radius: 25px;
 
     background:
         linear-gradient(
             135deg,
             #2563eb,
-            #14b8a6
+            #0f766e
         );
 
-    color: #ffffff;
+    color: white;
 
-    font-size: 26px;
-    font-weight: 700;
+    font-size: 48px;
 
     box-shadow:
-        0 12px 30px
-        rgba(20, 184, 166, 0.3);
+        0 15px 35px
+        rgba(20, 184, 166, 0.25);
 }
 
 
 /* ==========================================
-   LOGIN TEXT
+   LOGIN HEADINGS
    ========================================== */
 
 .login-card h1 {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
 
     color: #172554;
 
-    font-size: 28px;
+    font-size: 36px;
 
     font-weight: 700;
+
+    letter-spacing: -0.5px;
 }
 
 
-.login-card p {
-    margin: 0 0 32px;
+.login-subtitle {
+    margin:
+        0 0
+        40px;
 
     color: #64748b;
 
-    font-size: 15px;
-
-    line-height: 1.6;
+    font-size: 18px;
 }
 
 
 /* ==========================================
-   INPUT FIELDS
+   FORM FIELD
    ========================================== */
 
 .login-field {
-    margin-bottom: 22px;
+    margin-bottom: 25px;
 
     text-align: left;
 }
@@ -1341,33 +1460,78 @@ body.dark-mode .success {
 .login-field label {
     display: block;
 
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 
-    color: #334155;
+    color: #1e293b;
 
-    font-size: 14px;
+    font-size: 16px;
 
     font-weight: 600;
 }
 
 
+/* ==========================================
+   INPUT WRAPPER
+   ========================================== */
+
+.input-wrapper {
+    position: relative;
+
+    width: 100%;
+}
+
+
+/* ICON */
+
+.input-icon {
+    position: absolute;
+
+    left: 20px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 24px;
+
+    height: 24px;
+
+    color: #64748b;
+
+    pointer-events: none;
+}
+
+
+.input-icon svg {
+    width: 100%;
+
+    height: 100%;
+}
+
+
+/* INPUT */
+
 .login-field input {
     width: 100%;
 
+    height: 64px;
+
     box-sizing: border-box;
 
-    padding: 15px 16px;
+    padding:
+        0
+        60px;
 
     border:
         1px solid #cbd5e1;
 
-    border-radius: 10px;
+    border-radius: 15px;
 
     background: #f8fafc;
 
     color: #0f172a;
 
-    font-size: 15px;
+    font-size: 17px;
 
     outline: none;
 
@@ -1384,13 +1548,75 @@ body.dark-mode .success {
 
 
 .login-field input:focus {
-    background: #ffffff;
+    background: white;
 
-    border-color: #14b8a6;
+    border-color: #2563eb;
 
     box-shadow:
         0 0 0 4px
-        rgba(20, 184, 166, 0.12);
+        rgba(37, 99, 235, 0.12);
+}
+
+
+/* ==========================================
+   PROFESSIONAL PASSWORD EYE
+   ========================================== */
+
+.password-toggle {
+    position: absolute;
+
+    right: 10px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 48px;
+
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: transparent;
+
+    color: #64748b;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.password-toggle:hover {
+    background: #e2e8f0;
+
+    color: #2563eb;
+}
+
+
+.password-toggle svg {
+    width: 25px;
+
+    height: 25px;
+}
+
+
+.password-toggle:focus {
+    outline: none;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.2);
 }
 
 
@@ -1401,13 +1627,13 @@ body.dark-mode .success {
 .login-button {
     width: 100%;
 
-    margin-top: 5px;
+    height: 64px;
 
-    padding: 15px;
+    margin-top: 15px;
 
     border: none;
 
-    border-radius: 10px;
+    border-radius: 15px;
 
     background:
         linear-gradient(
@@ -1416,9 +1642,9 @@ body.dark-mode .success {
             #0f766e
         );
 
-    color: #ffffff;
+    color: white;
 
-    font-size: 16px;
+    font-size: 20px;
 
     font-weight: 600;
 
@@ -1434,8 +1660,8 @@ body.dark-mode .success {
     transform: translateY(-2px);
 
     box-shadow:
-        0 12px 25px
-        rgba(15, 118, 110, 0.3);
+        0 15px 30px
+        rgba(37, 99, 235, 0.25);
 }
 
 
@@ -1445,19 +1671,17 @@ body.dark-mode .success {
 
 
 /* ==========================================
-   ERROR MESSAGE
+   LOGIN ERROR
    ========================================== */
 
 .login-error {
-    margin-bottom: 18px;
+    margin-bottom: 20px;
 
-    padding: 12px 14px;
+    padding: 14px;
+
+    border-radius: 12px;
 
     background: #fee2e2;
-
-    border: 1px solid #fecaca;
-
-    border-radius: 10px;
 
     color: #b91c1c;
 
@@ -1471,14 +1695,10 @@ body.dark-mode .success {
    APPLICATION VISIBILITY
    ========================================== */
 
-/* Hide dashboard before login */
-
 .login-screen ~ .app-layout {
     display: none;
 }
 
-
-/* Show dashboard after successful login */
 
 .login-screen ~ .app-layout.logged-in {
     display: flex;
@@ -1486,55 +1706,255 @@ body.dark-mode .success {
 
 
 /* ==========================================
-   MOBILE RESPONSIVE
+   TABLET
    ========================================== */
 
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
+
+    .login-visual {
+        padding-left: 6%;
+    }
+
+    .login-card {
+        padding: 45px 40px;
+    }
+
+    .visual-content h2 {
+        letter-spacing: 2px;
+    }
+
+}
+
+
+/* ==========================================
+   MOBILE
+   ========================================== */
+
+@media (max-width: 800px) {
 
     .login-screen {
-        padding: 25px;
+        justify-content: center;
     }
 
 
-    /* Hide decorative left section */
-
-    .login-screen::before,
-    .login-screen::after {
+    .login-visual {
         display: none;
     }
 
 
-    .login-card {
-        margin: 0;
+    .login-panel {
+        width: 100%;
 
-        max-width: 420px;
+        padding: 25px;
     }
+
+
+    .login-card {
+        max-width: 500px;
+
+        padding: 40px 30px;
+    }
+
+
+    .login-card h1 {
+        font-size: 28px;
+    }
+
 }
 
 
-@media (max-width: 500px) {
+/* ==========================================
+   SMALL MOBILE
+   ========================================== */
 
-    .login-screen {
+@media (max-width: 480px) {
+
+    .login-panel {
         padding: 15px;
     }
 
 
     .login-card {
-        padding: 35px 25px;
+        padding: 35px 22px;
 
-        border-radius: 16px;
-    }
-
-
-    .login-card h1 {
-        font-size: 23px;
+        border-radius: 20px;
     }
 
 
     .login-logo {
-        width: 60px;
-        height: 60px;
+        width: 75px;
 
-        font-size: 22px;
+        height: 75px;
+
+        font-size: 35px;
     }
+
+
+    .login-field input {
+        height: 58px;
+
+        font-size: 15px;
+    }
+
+
+    .login-button {
+        height: 58px;
+
+        font-size: 17px;
+    }
+
+}/* ==========================================
+   PROFILE DROPDOWN
+   ========================================== */
+
+.user-profile-wrapper {
+    position: relative;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.user-profile:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.user-avatar,
+.dropdown-avatar {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.user-info strong {
+    font-size: 15px;
+}
+
+.user-info span {
+    margin-top: 3px;
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+.profile-arrow {
+    font-size: 18px;
+    opacity: 0.7;
+}
+
+/* DROPDOWN */
+
+.profile-dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+
+    width: 250px;
+    padding: 10px;
+
+    background: #172033;
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+
+    transition: 0.2s ease;
+
+    z-index: 1000;
+}
+
+.profile-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* DROPDOWN HEADER */
+
+.profile-dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+}
+
+.profile-dropdown-header strong,
+.profile-dropdown-header span {
+    display: block;
+}
+
+.profile-dropdown-header span {
+    margin-top: 4px;
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+/* DIVIDER */
+
+.profile-divider {
+    height: 1px;
+    margin: 5px 0;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* LOGOUT BUTTON */
+
+.logout-button {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 13px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: #f87171;
+
+    font-size: 15px;
+
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    background: rgba(239, 68, 68, 0.12);
+}
+
+.logout-button svg {
+    width: 20px;
+    height: 20px;
 }

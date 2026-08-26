@@ -15,61 +15,196 @@
 
 <div class="login-screen" id="loginScreen">
 
-    <div class="login-card">
+    <!-- LEFT SIDE -->
+    <div class="login-visual">
 
-        <div class="login-logo">CA</div>
+        <div class="dot-pattern dot-top"></div>
 
-        <h1>Welcome to CloudAsset</h1>
+        <div class="visual-content">
 
-        <p>Sign in to access the management platform</p>
-
-        <form id="loginForm">
-
-            <div class="login-field">
-                <label for="loginUsername">Username</label>
-
-                <input
-                    type="text"
-                    id="loginUsername"
-                    placeholder="Enter your username"
-                    required
-                >
+            <div class="small-cloud">
+                ☁
             </div>
 
+            <h2>MANAGE. MONITOR. OPTIMIZE.</h2>
 
-            <div class="login-field">
-                <label for="loginPassword">Password</label>
+            <p class="visual-subtitle">
+                All your cloud assets, one place.
+            </p>
 
-                <input
-                    type="password"
-                    id="loginPassword"
-                    placeholder="Enter your password"
-                    required
-                >
+            <p class="visual-description">
+                CloudAsset helps you track, manage and secure
+                your cloud resources efficiently.
+            </p>
+
+            <div class="large-cloud">
+                ☁
             </div>
 
+        </div>
 
-            <div
-                id="loginError"
-                class="login-error"
-                style="display: none;"
-            ></div>
+        <div class="dot-pattern dot-bottom"></div>
+
+    </div>
 
 
-            <button
-                type="submit"
-                class="login-button"
-            >
-                Login
-            </button>
+    <!-- RIGHT SIDE LOGIN -->
+    <div class="login-panel">
 
-        </form>
+        <div class="login-card">
+
+            <!-- LOGO -->
+            <div class="login-logo">
+                ☁
+            </div>
+
+            <h1>Welcome to CloudAsset</h1>
+
+            <p class="login-subtitle">
+                Sign in to access the management platform
+            </p>
+
+
+            <!-- LOGIN FORM -->
+            <form id="loginForm">
+
+                <!-- USERNAME -->
+                <div class="login-field">
+
+                    <label for="loginUsername">
+                        Username
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+
+                            <!-- USER ICON -->
+                            <svg viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2">
+
+                                <path d="M20 21a8 8 0 0 0-16 0"/>
+
+                                <circle
+                                    cx="12"
+                                    cy="7"
+                                    r="4">
+                                </circle>
+
+                            </svg>
+
+                        </span>
+
+                        <input
+                            type="text"
+                            id="loginUsername"
+                            placeholder="Enter your username"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+                <div class="login-field">
+
+                    <label for="loginPassword">
+                        Password
+                    </label>
+
+                    <div class="input-wrapper password-wrapper">
+
+                        <!-- LOCK ICON -->
+                        <span class="input-icon">
+
+                            <svg viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2">
+
+                                <rect
+                                    x="5"
+                                    y="11"
+                                    width="14"
+                                    height="10"
+                                    rx="2">
+                                </rect>
+
+                                <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+
+                            </svg>
+
+                        </span>
+
+
+                        <input
+                            type="password"
+                            id="loginPassword"
+                            placeholder="Enter your password"
+                            required
+                        >
+
+
+                        <!-- PROFESSIONAL EYE BUTTON -->
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="passwordToggle"
+                            aria-label="Show password"
+                        >
+
+                            <svg
+                                id="eyeIcon"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+
+                                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="3">
+                                </circle>
+
+                            </svg>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LOGIN ERROR -->
+                <div
+                    id="loginError"
+                    class="login-error"
+                    style="display: none;"
+                ></div>
+
+
+                <!-- LOGIN BUTTON -->
+                <button
+                    type="submit"
+                    class="login-button"
+                >
+                    Login
+                </button>
+
+            </form>
+
+        </div>
 
     </div>
 
 </div>
-
-<div class="app-layout">
 
     <!-- ================= SIDEBAR ================= -->
     <aside class="sidebar" id="sidebar">
@@ -176,27 +311,82 @@
                     🌙
                 </button>
 
+<div class="user-profile-wrapper">
 
-                <div class="user-profile">
+    <button
+        type="button"
+        class="user-profile"
+        id="profileButton"
+    >
 
-                    <div class="user-avatar">
-                        A
-                    </div>
+        <div class="user-avatar" id="userAvatar">
+            A
+        </div>
 
-                    <div class="user-info">
+        <div class="user-info">
+            <strong id="profileUsername">User</strong>
+            <span id="profileRole">User</span>
+        </div>
 
-                        <strong>Anbarasan</strong>
+        <span class="profile-arrow">⌄</span>
 
-                        <span>Administrator</span>
+    </button>
 
-                    </div>
 
-                </div>
+    <div
+        class="profile-dropdown"
+        id="profileDropdown"
+    >
+
+        <div class="profile-dropdown-header">
+
+            <div class="dropdown-avatar" id="dropdownAvatar">
+                A
+            </div>
+
+            <div>
+
+                <strong id="dropdownUsername">
+                    User
+                </strong>
+
+                <span id="dropdownRole">
+                    User
+                </span>
 
             </div>
 
-        </header>
+        </div>
 
+
+        <div class="profile-divider"></div>
+
+
+        <button
+            type="button"
+            class="logout-button"
+            id="logoutButton"
+        >
+
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+
+            <span>Logout</span>
+
+        </button>
+
+    </div>
+
+</div>
+               
 
 
         <!-- ================= DASHBOARD ================= -->
