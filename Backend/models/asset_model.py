@@ -39,11 +39,6 @@ class Asset(db.Model):
         default=0.0
     )
 
-    due_date = db.Column(
-        db.Date,
-        nullable=True
-    )
-
     created_at = db.Column(
         db.DateTime,
         default=lambda: datetime.now(timezone.utc),

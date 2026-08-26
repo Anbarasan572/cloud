@@ -1,10 +1,10 @@
 // API Base URL
 // Auto-detects environment:
 //  - Local file testing (file://) -> uses localhost:5000
-//  - Hosted (http/https)        -> uses the Nginx API prefix on the same host
+//  - Hosted (http/https)        -> uses same host the page came from
 const API_BASE_URL = window.location.protocol === 'file:'
     ? 'http://127.0.0.1:5000'
-    : `${window.location.origin}/api`;
+    : window.location.origin;
 
 // Cost Estimation Database (Based on typical cloud pricing)
 const COST_ESTIMATES = {

@@ -1,27 +1,10 @@
 from flask import Blueprint, request, jsonify
-from datetime import datetime
 
 from database.db import db
 from models.asset_model import Asset
 
 
 asset_bp = Blueprint("asset", __name__)
-
-
-# Helper function to convert due date
-def parse_due_date(due_date_value):
-    if not due_date_value:
-        return None
-
-    try:
-        return datetime.strptime(
-            due_date_value,
-            "%Y-%m-%d"
-        ).date()
-    except (ValueError, TypeError):
-        raise ValueError(
-            "due_date must be in YYYY-MM-DD format"
-        )
 
 
 # GET all assets
@@ -42,7 +25,6 @@ def get_assets():
             "status": asset.status,
             "owner": asset.owner,
             "cost": asset.cost,
-            "due_date": asset.due_date.isoformat() if asset.due_date else None,
             "created_at": asset.created_at.isoformat() if asset.created_at else None,
             "updated_at": asset.updated_at.isoformat() if asset.updated_at else None
         })
@@ -70,7 +52,6 @@ def get_asset(asset_id):
         "status": asset.status,
         "owner": asset.owner,
         "cost": asset.cost,
-        "due_date": asset.due_date.isoformat() if asset.due_date else None,
         "created_at": asset.created_at.isoformat() if asset.created_at else None,
         "updated_at": asset.updated_at.isoformat() if asset.updated_at else None
     })
@@ -80,6 +61,7 @@ def get_asset(asset_id):
 @asset_bp.route("/assets", methods=["POST"])
 def add_asset():
 
+    # Validate request has JSON data
     if not request.json:
         return jsonify({
             "error": "Request body must be JSON"
@@ -87,77 +69,48 @@ def add_asset():
 
     data = request.json
 
-    # Validate required field
+    # Validate required field: asset_name
     if "asset_name" not in data:
         return jsonify({
             "error": "Missing required field: asset_name"
         }), 400
 
+    # Validate asset_name is not empty
     if not data["asset_name"] or not data["asset_name"].strip():
         return jsonify({
             "error": "asset_name cannot be empty"
         }), 400
 
-    # Validate optional text fields
-    for field in [
-        "provider",
-        "service",
-        "region",
-        "status",
-        "owner"
-    ]:
+    # Validate optional fields are not empty strings if provided
+    for field in ["provider", "service", "region", "status", "owner"]:
         if field in data and data[field] is not None:
             if not str(data[field]).strip():
                 return jsonify({
                     "error": f"{field} cannot be empty string"
                 }), 400
 
-    # Validate cost
+    # Validate cost if provided
     if "cost" in data and data["cost"] is not None:
         try:
             cost_value = float(data["cost"])
-
             if cost_value < 0:
                 return jsonify({
                     "error": "cost cannot be negative"
                 }), 400
-
         except (ValueError, TypeError):
             return jsonify({
                 "error": "cost must be a valid number"
             }), 400
 
-    # Validate due date
     try:
-        due_date = parse_due_date(data.get("due_date"))
-    except ValueError as error:
-        return jsonify({
-            "error": str(error)
-        }), 400
-
-    try:
-
         new_asset = Asset(
             asset_name=data["asset_name"].strip(),
-            provider=data.get("provider", "").strip()
-            if data.get("provider") else None,
-
-            service=data.get("service", "").strip()
-            if data.get("service") else None,
-
-            region=data.get("region", "").strip()
-            if data.get("region") else None,
-
-            status=data.get("status", "").strip()
-            if data.get("status") else None,
-
-            owner=data.get("owner", "").strip()
-            if data.get("owner") else None,
-
-            cost=float(data.get("cost", 0.0))
-            if data.get("cost") else 0.0,
-
-            due_date=due_date
+            provider=data.get("provider", "").strip() if data.get("provider") else None,
+            service=data.get("service", "").strip() if data.get("service") else None,
+            region=data.get("region", "").strip() if data.get("region") else None,
+            status=data.get("status", "").strip() if data.get("status") else None,
+            owner=data.get("owner", "").strip() if data.get("owner") else None,
+            cost=float(data.get("cost", 0.0)) if data.get("cost") else 0.0
         )
 
         db.session.add(new_asset)
@@ -169,9 +122,7 @@ def add_asset():
         }), 201
 
     except Exception as e:
-
         db.session.rollback()
-
         return jsonify({
             "error": "Failed to create asset",
             "details": str(e)
@@ -189,6 +140,7 @@ def update_asset(asset_id):
             "message": "Asset not found"
         }), 404
 
+    # Validate request has JSON data
     if not request.json:
         return jsonify({
             "error": "Request body must be JSON"
@@ -196,117 +148,50 @@ def update_asset(asset_id):
 
     data = request.json
 
-    valid_fields = [
-        "asset_name",
-        "provider",
-        "service",
-        "region",
-        "status",
-        "owner",
-        "cost",
-        "due_date"
-    ]
-
+    # Validate at least one field is provided
+    valid_fields = ["asset_name", "provider", "service", "region", "status", "owner", "cost"]
     if not any(field in data for field in valid_fields):
         return jsonify({
             "error": "At least one field must be provided to update"
         }), 400
 
-    # Validate text fields
-    for field in [
-        "asset_name",
-        "provider",
-        "service",
-        "region",
-        "status",
-        "owner"
-    ]:
-
+    # Validate fields are not empty strings if provided
+    for field in ["asset_name", "provider", "service", "region", "status", "owner"]:
         if field in data:
-
             if data[field] is not None and not str(data[field]).strip():
-
                 return jsonify({
                     "error": f"{field} cannot be empty string"
                 }), 400
 
-    # Validate cost
+    # Validate cost if provided
     if "cost" in data and data["cost"] is not None:
-
         try:
-
             cost_value = float(data["cost"])
-
             if cost_value < 0:
-
                 return jsonify({
                     "error": "cost cannot be negative"
                 }), 400
-
         except (ValueError, TypeError):
-
             return jsonify({
                 "error": "cost must be a valid number"
             }), 400
 
-    # Validate due date
     try:
-        due_date = (
-            parse_due_date(data.get("due_date"))
-            if "due_date" in data
-            else asset.due_date
-        )
-
-    except ValueError as error:
-
-        return jsonify({
-            "error": str(error)
-        }), 400
-
-    try:
-
+        # Update only provided fields
         if "asset_name" in data:
             asset.asset_name = data["asset_name"].strip()
-
         if "provider" in data:
-            asset.provider = (
-                data["provider"].strip()
-                if data["provider"] else None
-            )
-
+            asset.provider = data["provider"].strip() if data["provider"] else None
         if "service" in data:
-            asset.service = (
-                data["service"].strip()
-                if data["service"] else None
-            )
-
+            asset.service = data["service"].strip() if data["service"] else None
         if "region" in data:
-            asset.region = (
-                data["region"].strip()
-                if data["region"] else None
-            )
-
+            asset.region = data["region"].strip() if data["region"] else None
         if "status" in data:
-            asset.status = (
-                data["status"].strip()
-                if data["status"] else None
-            )
-
+            asset.status = data["status"].strip() if data["status"] else None
         if "owner" in data:
-            asset.owner = (
-                data["owner"].strip()
-                if data["owner"] else None
-            )
-
+            asset.owner = data["owner"].strip() if data["owner"] else None
         if "cost" in data:
-            asset.cost = (
-                float(data["cost"])
-                if data["cost"] is not None
-                else 0.0
-            )
-
-        if "due_date" in data:
-            asset.due_date = due_date
+            asset.cost = float(data["cost"]) if data["cost"] is not None else 0.0
 
         db.session.commit()
 
@@ -315,9 +200,7 @@ def update_asset(asset_id):
         }), 200
 
     except Exception as e:
-
         db.session.rollback()
-
         return jsonify({
             "error": "Failed to update asset",
             "details": str(e)
@@ -335,20 +218,9 @@ def delete_asset(asset_id):
             "message": "Asset not found"
         }), 404
 
-    try:
+    db.session.delete(asset)
+    db.session.commit()
 
-        db.session.delete(asset)
-        db.session.commit()
-
-        return jsonify({
-            "message": "Asset deleted successfully"
-        })
-
-    except Exception as e:
-
-        db.session.rollback()
-
-        return jsonify({
-            "error": "Failed to delete asset",
-            "details": str(e)
-        }), 500
+    return jsonify({
+        "message": "Asset deleted successfully"
+    })
