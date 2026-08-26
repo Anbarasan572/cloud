@@ -3,10 +3,7 @@
 // ============================================
 
 // API Configuration
-const API_BASE_URL =
-    window.location.protocol === "file:"
-        ? "http://127.0.0.1:5000"
-         : `${window.location.origin}/api`;
+const API_BASE_URL = "http://34.201.59.22/api";
 
 
 // ============================================
