@@ -1957,4 +1957,175 @@ body.dark-mode .success {
 .logout-button svg {
     width: 20px;
     height: 20px;
+}/* ==========================================
+   PROFILE DROPDOWN + LOGOUT
+========================================== */
+
+.user-profile-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Keep profile in its original top-right position */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    background: transparent;
+    border: none;
+    color: inherit;
+
+    cursor: pointer;
+    padding: 6px 8px;
+}
+
+/* Remove default button styling */
+.user-profile:focus {
+    outline: none;
+}
+
+/* Small dropdown arrow */
+.profile-arrow {
+    font-size: 18px;
+    color: #94a3b8;
+    margin-left: 2px;
+    transition: transform 0.2s ease;
+}
+
+.user-profile-wrapper:has(.profile-dropdown.show) .profile-arrow {
+    transform: rotate(180deg);
+}
+
+
+/* ==========================================
+   DROPDOWN
+========================================== */
+
+.profile-dropdown {
+    display: none;
+
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+
+    width: 230px;
+
+    background: #172033;
+    border: 1px solid #2b3a55;
+
+    border-radius: 12px;
+
+    padding: 12px;
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+
+    z-index: 1000;
+}
+
+.profile-dropdown.show {
+    display: block;
+}
+
+
+/* ==========================================
+   DROPDOWN USER INFO
+========================================== */
+
+.profile-dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 8px;
+}
+
+.dropdown-avatar {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: linear-gradient(
+        135deg,
+        #3b82f6,
+        #7c3aed
+    );
+
+    color: white;
+
+    font-weight: 700;
+    font-size: 17px;
+}
+
+.profile-dropdown-header strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 15px;
+}
+
+.profile-dropdown-header span {
+    display: block;
+
+    color: #94a3b8;
+
+    font-size: 13px;
+
+    margin-top: 3px;
+}
+
+
+/* ==========================================
+   DIVIDER
+========================================== */
+
+.profile-divider {
+    height: 1px;
+
+    background: #2b3a55;
+
+    margin: 10px 0;
+}
+
+
+/* ==========================================
+   LOGOUT BUTTON
+========================================== */
+
+.logout-button {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 11px 12px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: #f87171;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.logout-button:hover {
+    background: rgba(239, 68, 68, 0.12);
+}
+
+.logout-button svg {
+    width: 19px;
+    height: 19px;
 }

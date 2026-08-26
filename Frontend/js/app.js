@@ -3446,65 +3446,86 @@ document.addEventListener(
 // PROFILE DROPDOWN
 // ==========================================
 
-const profileButton =
-    document.getElementById("profileButton");
-
-const profileDropdown =
-    document.getElementById("profileDropdown");
-
-const logoutButton =
-    document.getElementById("logoutButton");
+const profileButton = document.getElementById("profileButton");
+const profileDropdown = document.getElementById("profileDropdown");
+const logoutButton = document.getElementById("logoutButton");
 
 
+// Open / Close profile dropdown
 if (profileButton && profileDropdown) {
 
-    profileButton.addEventListener(
-        "click",
-        (event) => {
+    profileButton.addEventListener("click", (event) => {
 
-            event.stopPropagation();
+        event.stopPropagation();
 
-            profileDropdown.classList.toggle("show");
+        profileDropdown.classList.toggle("show");
 
-        }
-    );
+    });
 
 }
 
 
-document.addEventListener(
-    "click",
-    (event) => {
+// Close dropdown when clicking outside
+document.addEventListener("click", (event) => {
 
-        if (
-            profileButton &&
-            profileDropdown &&
-            !profileButton.contains(event.target) &&
-            !profileDropdown.contains(event.target)
-        ) {
+    if (
+        profileButton &&
+        profileDropdown &&
+        !profileButton.contains(event.target) &&
+        !profileDropdown.contains(event.target)
+    ) {
 
-            profileDropdown.classList.remove("show");
-
-        }
+        profileDropdown.classList.remove("show");
 
     }
-);
+
+});
 
 
-// ==========================================
-// LOGOUT BUTTON
-// ==========================================
-
+// Logout button functionality
 if (logoutButton) {
 
-    logoutButton.addEventListener(
-        "click",
-        () => {
+    logoutButton.addEventListener("click", () => {
 
-            logout();
+        logout();
 
-        }
-    );
+    });
 
 }
-// ============================================
+// ==========================================
+// SHOW / HIDE LOGIN PASSWORD
+// ==========================================
+
+const passwordToggle = document.getElementById("passwordToggle");
+const loginPassword = document.getElementById("loginPassword");
+
+if (passwordToggle && loginPassword) {
+
+    passwordToggle.addEventListener("click", () => {
+
+        if (loginPassword.type === "password") {
+
+            // Show password
+            loginPassword.type = "text";
+
+            passwordToggle.setAttribute(
+                "aria-label",
+                "Hide password"
+            );
+
+        } else {
+
+            // Hide password
+            loginPassword.type = "password";
+
+            passwordToggle.setAttribute(
+                "aria-label",
+                "Show password"
+            );
+
+        }
+
+    });
+
+}
+// ==========================================
