@@ -1153,7 +1153,7 @@ body.dark-mode .success {
     }
 
 }/* ==========================================
-   LOGIN PAGE
+   CLOUDASSET LOGIN PAGE
    ========================================== */
 
 .login-screen {
@@ -1165,81 +1165,174 @@ body.dark-mode .success {
     align-items: center;
     justify-content: center;
 
-    padding: 20px;
+    padding: 40px;
 
-    background: linear-gradient(
-        135deg,
-        #0f172a,
-        #1e293b,
-        #0f766e
-    );
+    background:
+        radial-gradient(
+            circle at 85% 20%,
+            rgba(20, 184, 166, 0.25),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #13243a 55%,
+            #0f766e
+        );
 
     z-index: 9999;
+
+    overflow: hidden;
 }
 
 
+/* ==========================================
+   LEFT SIDE PROJECT INFORMATION
+   ========================================== */
+
+.login-screen::before {
+    content:
+        "☁\A\A MANAGE. MONITOR. OPTIMIZE.\A\A All your cloud assets, one place.\A\A CloudAsset helps you track, manage and secure your cloud resources efficiently.";
+
+    white-space: pre-line;
+
+    position: absolute;
+
+    left: 8%;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 42%;
+
+    color: #ffffff;
+
+    font-size: 16px;
+    line-height: 1.8;
+
+    letter-spacing: 0.3px;
+
+    z-index: 1;
+}
+
+
+/* Large cloud icon */
+
+.login-screen::after {
+    content: "☁";
+
+    position: absolute;
+
+    left: 18%;
+    bottom: 8%;
+
+    font-size: 180px;
+
+    color: rgba(56, 189, 248, 0.18);
+
+    text-shadow:
+        0 0 40px rgba(45, 212, 191, 0.35);
+
+    z-index: 0;
+}
+
+
+/* ==========================================
+   LOGIN CARD
+   ========================================== */
+
 .login-card {
+    position: relative;
+
     width: 100%;
     max-width: 420px;
 
+    margin-left: auto;
+    margin-right: 7%;
+
     padding: 45px 40px;
 
-    background: #ffffff;
+    background:
+        rgba(255, 255, 255, 0.97);
 
-    border-radius: 18px;
+    border-radius: 20px;
 
     box-shadow:
-        0 25px 60px rgba(0, 0, 0, 0.3);
+        0 30px 70px
+        rgba(0, 0, 0, 0.35);
 
     text-align: center;
+
+    z-index: 10;
 }
 
 
-.login-logo {
-    width: 65px;
-    height: 65px;
+/* ==========================================
+   LOGO
+   ========================================== */
 
-    margin: 0 auto 20px;
+.login-logo {
+    width: 70px;
+    height: 70px;
+
+    margin: 0 auto 22px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    border-radius: 16px;
+    border-radius: 20px;
 
-    background: linear-gradient(
-        135deg,
-        #2563eb,
-        #0f766e
-    );
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #14b8a6
+        );
 
-    color: white;
+    color: #ffffff;
 
-    font-size: 24px;
+    font-size: 26px;
+    font-weight: 700;
+
+    box-shadow:
+        0 12px 30px
+        rgba(20, 184, 166, 0.3);
+}
+
+
+/* ==========================================
+   LOGIN TEXT
+   ========================================== */
+
+.login-card h1 {
+    margin: 0 0 10px;
+
+    color: #172554;
+
+    font-size: 28px;
+
     font-weight: 700;
 }
 
 
-.login-card h1 {
-    margin-bottom: 10px;
-
-    color: #0f172a;
-
-    font-size: 26px;
-}
-
-
 .login-card p {
-    margin-bottom: 30px;
+    margin: 0 0 32px;
 
     color: #64748b;
 
-    font-size: 14px;
+    font-size: 15px;
+
+    line-height: 1.6;
 }
 
 
+/* ==========================================
+   INPUT FIELDS
+   ========================================== */
+
 .login-field {
-    margin-bottom: 20px;
+    margin-bottom: 22px;
 
     text-align: left;
 }
@@ -1253,6 +1346,7 @@ body.dark-mode .success {
     color: #334155;
 
     font-size: 14px;
+
     font-weight: 600;
 }
 
@@ -1262,66 +1356,110 @@ body.dark-mode .success {
 
     box-sizing: border-box;
 
-    padding: 13px 14px;
+    padding: 15px 16px;
 
-    border: 1px solid #cbd5e1;
+    border:
+        1px solid #cbd5e1;
 
     border-radius: 10px;
+
+    background: #f8fafc;
+
+    color: #0f172a;
 
     font-size: 15px;
 
     outline: none;
 
-    transition: 0.2s;
+    transition:
+        border 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.login-field input::placeholder {
+    color: #94a3b8;
 }
 
 
 .login-field input:focus {
-    border-color: #2563eb;
+    background: #ffffff;
+
+    border-color: #14b8a6;
 
     box-shadow:
-        0 0 0 3px
-        rgba(37, 99, 235, 0.12);
+        0 0 0 4px
+        rgba(20, 184, 166, 0.12);
 }
 
+
+/* ==========================================
+   LOGIN BUTTON
+   ========================================== */
 
 .login-button {
     width: 100%;
 
-    padding: 14px;
+    margin-top: 5px;
+
+    padding: 15px;
 
     border: none;
 
     border-radius: 10px;
 
-    background: #2563eb;
+    background:
+        linear-gradient(
+            90deg,
+            #2563eb,
+            #0f766e
+        );
 
-    color: white;
+    color: #ffffff;
 
     font-size: 16px;
+
     font-weight: 600;
 
     cursor: pointer;
 
-    transition: 0.2s;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 
 .login-button:hover {
-    background: #1d4ed8;
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 25px
+        rgba(15, 118, 110, 0.3);
 }
 
 
-.login-error {
-    margin-bottom: 15px;
+.login-button:active {
+    transform: translateY(0);
+}
 
-    padding: 10px 12px;
+
+/* ==========================================
+   ERROR MESSAGE
+   ========================================== */
+
+.login-error {
+    margin-bottom: 18px;
+
+    padding: 12px 14px;
 
     background: #fee2e2;
 
-    color: #b91c1c;
+    border: 1px solid #fecaca;
 
-    border-radius: 8px;
+    border-radius: 10px;
+
+    color: #b91c1c;
 
     font-size: 14px;
 
@@ -1329,15 +1467,74 @@ body.dark-mode .success {
 }
 
 
-/* Hide application until login */
+/* ==========================================
+   APPLICATION VISIBILITY
+   ========================================== */
 
-.app-layout {
+/* Hide dashboard before login */
+
+.login-screen ~ .app-layout {
     display: none;
 }
 
 
-/* Show application after successful login */
+/* Show dashboard after successful login */
 
-.app-layout.logged-in {
+.login-screen ~ .app-layout.logged-in {
     display: flex;
+}
+
+
+/* ==========================================
+   MOBILE RESPONSIVE
+   ========================================== */
+
+@media (max-width: 900px) {
+
+    .login-screen {
+        padding: 25px;
+    }
+
+
+    /* Hide decorative left section */
+
+    .login-screen::before,
+    .login-screen::after {
+        display: none;
+    }
+
+
+    .login-card {
+        margin: 0;
+
+        max-width: 420px;
+    }
+}
+
+
+@media (max-width: 500px) {
+
+    .login-screen {
+        padding: 15px;
+    }
+
+
+    .login-card {
+        padding: 35px 25px;
+
+        border-radius: 16px;
+    }
+
+
+    .login-card h1 {
+        font-size: 23px;
+    }
+
+
+    .login-logo {
+        width: 60px;
+        height: 60px;
+
+        font-size: 22px;
+    }
 }
