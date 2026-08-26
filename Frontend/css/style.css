@@ -1152,4 +1152,192 @@ body.dark-mode .success {
         flex-wrap: wrap;
     }
 
+}/* ==========================================
+   LOGIN PAGE
+   ========================================== */
+
+.login-screen {
+    position: fixed;
+    inset: 0;
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: linear-gradient(
+        135deg,
+        #0f172a,
+        #1e293b,
+        #0f766e
+    );
+
+    z-index: 9999;
+}
+
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+
+    padding: 45px 40px;
+
+    background: #ffffff;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.3);
+
+    text-align: center;
+}
+
+
+.login-logo {
+    width: 65px;
+    height: 65px;
+
+    margin: 0 auto 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 16px;
+
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #0f766e
+    );
+
+    color: white;
+
+    font-size: 24px;
+    font-weight: 700;
+}
+
+
+.login-card h1 {
+    margin-bottom: 10px;
+
+    color: #0f172a;
+
+    font-size: 26px;
+}
+
+
+.login-card p {
+    margin-bottom: 30px;
+
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+
+.login-field {
+    margin-bottom: 20px;
+
+    text-align: left;
+}
+
+
+.login-field label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #334155;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+.login-field input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 13px 14px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 10px;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: 0.2s;
+}
+
+
+.login-field input:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.12);
+}
+
+
+.login-button {
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.login-button:hover {
+    background: #1d4ed8;
+}
+
+
+.login-error {
+    margin-bottom: 15px;
+
+    padding: 10px 12px;
+
+    background: #fee2e2;
+
+    color: #b91c1c;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    text-align: left;
+}
+
+
+/* Hide application until login */
+
+.app-layout {
+    display: none;
+}
+
+
+/* Show application after successful login */
+
+.app-layout.logged-in {
+    display: flex;
 }
