@@ -11,6 +11,64 @@
 
 <body>
 
+    <!-- ================= LOGIN SCREEN ================= -->
+
+<div class="login-screen" id="loginScreen">
+
+    <div class="login-card">
+
+        <div class="login-logo">CA</div>
+
+        <h1>Welcome to CloudAsset</h1>
+
+        <p>Sign in to access the management platform</p>
+
+        <form id="loginForm">
+
+            <div class="login-field">
+                <label for="loginUsername">Username</label>
+
+                <input
+                    type="text"
+                    id="loginUsername"
+                    placeholder="Enter your username"
+                    required
+                >
+            </div>
+
+
+            <div class="login-field">
+                <label for="loginPassword">Password</label>
+
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Enter your password"
+                    required
+                >
+            </div>
+
+
+            <div
+                id="loginError"
+                class="login-error"
+                style="display: none;"
+            ></div>
+
+
+            <button
+                type="submit"
+                class="login-button"
+            >
+                Login
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
 <div class="app-layout">
 
     <!-- ================= SIDEBAR ================= -->

@@ -1,9 +1,99 @@
 // ============================================
-// CLOUASSET - FRONTEND APPLICATION
+// CLOUDASSET - FRONTEND APPLICATION
 // ============================================
 
-// API Configuration
+
+// ============================================
+// API CONFIGURATION
+// ============================================
+
 const API_BASE_URL = "http://34.201.59.22/api";
+
+
+// ==========================================
+// AUTHENTICATION
+// ==========================================
+
+let authToken = localStorage.getItem("cloudasset_token");
+
+let currentUser = JSON.parse(
+    localStorage.getItem("cloudasset_user") || "null"
+);
+
+
+// Get headers for protected API requests
+function getAuthHeaders() {
+
+    const headers = {
+        "Content-Type": "application/json"
+    };
+
+    if (authToken) {
+        headers["Authorization"] =
+            `Bearer ${authToken}`;
+    }
+
+    return headers;
+}
+
+
+// Check whether current user is Admin
+function isAdmin() {
+
+    return currentUser &&
+        currentUser.role === "admin";
+}
+
+
+// Logout
+function logout() {
+
+    localStorage.removeItem(
+        "cloudasset_token"
+    );
+
+    localStorage.removeItem(
+        "cloudasset_user"
+    );
+
+    authToken = null;
+    currentUser = null;
+
+    window.location.reload();
+}
+
+
+// Handle expired or invalid login token
+function handleUnauthorized() {
+
+    alert(
+        "Your session has expired. Please login again."
+    );
+
+    logout();
+}
+
+
+// ==========================================
+// ROLE-BASED PERMISSIONS
+// ==========================================
+
+function applyRolePermissions() {
+
+    // Admin-only elements in HTML
+    const adminOnlyElements =
+        document.querySelectorAll(
+            '[data-admin-only="true"]'
+        );
+
+    adminOnlyElements.forEach((element) => {
+
+        element.style.display =
+            isAdmin() ? "" : "none";
+
+    });
+
+}
 
 
 // ============================================
@@ -13,49 +103,152 @@ const API_BASE_URL = "http://34.201.59.22/api";
 const COST_ESTIMATES = {
 
     AWS: {
-        EC2: { running: 50, stopped: 5 },
-        RDS: { running: 80, stopped: 8 },
-        S3: { running: 23, stopped: 23 },
-        Lambda: { running: 15, stopped: 0 },
-        ECS: { running: 45, stopped: 5 },
-        EKS: { running: 75, stopped: 10 },
-        CloudFront: { running: 50, stopped: 50 },
-        Route53: { running: 1, stopped: 1 },
-        VPC: { running: 0, stopped: 0 },
-        "Load Balancer": { running: 25, stopped: 25 },
-        CloudWatch: { running: 10, stopped: 10 }
+
+        EC2: {
+            running: 50,
+            stopped: 5
+        },
+
+        RDS: {
+            running: 80,
+            stopped: 8
+        },
+
+        S3: {
+            running: 23,
+            stopped: 23
+        },
+
+        Lambda: {
+            running: 15,
+            stopped: 0
+        },
+
+        ECS: {
+            running: 45,
+            stopped: 5
+        },
+
+        EKS: {
+            running: 75,
+            stopped: 10
+        },
+
+        CloudFront: {
+            running: 50,
+            stopped: 50
+        },
+
+        Route53: {
+            running: 1,
+            stopped: 1
+        },
+
+        VPC: {
+            running: 0,
+            stopped: 0
+        },
+
+        "Load Balancer": {
+            running: 25,
+            stopped: 25
+        },
+
+        CloudWatch: {
+            running: 10,
+            stopped: 10
+        }
+
     },
+
 
     Azure: {
-        EC2: { running: 55, stopped: 6 },
-        RDS: { running: 85, stopped: 9 },
-        S3: { running: 25, stopped: 25 },
-        Lambda: { running: 18, stopped: 0 },
-        ECS: { running: 50, stopped: 6 },
-        EKS: { running: 80, stopped: 12 }
+
+        EC2: {
+            running: 55,
+            stopped: 6
+        },
+
+        RDS: {
+            running: 85,
+            stopped: 9
+        },
+
+        S3: {
+            running: 25,
+            stopped: 25
+        },
+
+        Lambda: {
+            running: 18,
+            stopped: 0
+        },
+
+        ECS: {
+            running: 50,
+            stopped: 6
+        },
+
+        EKS: {
+            running: 80,
+            stopped: 12
+        }
+
     },
 
+
     GCP: {
-        EC2: { running: 48, stopped: 5 },
-        RDS: { running: 75, stopped: 8 },
-        S3: { running: 20, stopped: 20 },
-        Lambda: { running: 12, stopped: 0 },
-        ECS: { running: 42, stopped: 5 },
-        EKS: { running: 72, stopped: 10 }
+
+        EC2: {
+            running: 48,
+            stopped: 5
+        },
+
+        RDS: {
+            running: 75,
+            stopped: 8
+        },
+
+        S3: {
+            running: 20,
+            stopped: 0
+        },
+
+        Lambda: {
+            running: 12,
+            stopped: 0
+        },
+
+        ECS: {
+            running: 42,
+            stopped: 5
+        },
+
+        EKS: {
+            running: 72,
+            stopped: 10
+        }
+
     }
 
 };
 
 
+// ============================================
+// REGION MULTIPLIERS
+// ============================================
+
 const REGION_MULTIPLIERS = {
 
     "us-east-1": 1.0,
     "us-east-2": 1.0,
+
     "us-west-1": 1.10,
     "us-west-2": 1.05,
 
     "ap-south-1": 1.15,
     "ap-southeast-1": 1.15,
+
     "ap-northeast-1": 1.20,
 
     "eu-west-1": 1.10,
@@ -69,9 +262,11 @@ const REGION_MULTIPLIERS = {
 // ============================================
 
 let allAssets = [];
+
 let filteredAssets = [];
 
 let currentPage = 1;
+
 const assetsPerPage = 6;
 
 
@@ -82,47 +277,277 @@ const assetsPerPage = 6;
 const addAssetForm =
     document.getElementById("addAssetForm");
 
+
 const editAssetForm =
     document.getElementById("editAssetForm");
+
 
 const assetsContainer =
     document.getElementById("assetsContainer");
 
+
 const loadingMessage =
     document.getElementById("loadingMessage");
+
 
 const errorMessage =
     document.getElementById("errorMessage");
 
+
 const successMessage =
     document.getElementById("successMessage");
+
 
 const refreshBtn =
     document.getElementById("refreshBtn");
 
+
 const editModal =
     document.getElementById("editModal");
 
+
 const closeModal =
     document.querySelector(".close");
+
 
 const cancelEditBtn =
     document.getElementById("cancelEdit");
 
 
 // ============================================
+// LOGIN ELEMENTS
+// ============================================
+
+const loginScreen =
+    document.getElementById("loginScreen");
+
+
+const loginForm =
+    document.getElementById("loginForm");
+
+
+const loginError =
+    document.getElementById("loginError");
+
+
+const appLayout =
+    document.querySelector(".app-layout");
+
+
+// ============================================
 // INITIALIZE APPLICATION
 // ============================================
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    setupEventListeners();
+        setupEventListeners();
 
-    loadTheme();
+        loadTheme();
 
-    loadAssets();
+        // User is already logged in
+        if (authToken && currentUser) {
 
-});
+            if (loginScreen) {
+                loginScreen.style.display = "none";
+            }
+
+            if (appLayout) {
+                appLayout.style.display = "flex";
+            }
+
+            applyRolePermissions();
+
+            loadAssets();
+
+        } else {
+
+            // User is not logged in
+            if (loginScreen) {
+                loginScreen.style.display = "flex";
+            }
+
+            if (appLayout) {
+                appLayout.style.display = "none";
+            }
+
+        }
+
+    }
+);
+
+
+// ============================================
+// LOGIN
+// ============================================
+
+async function handleLogin(event) {
+
+    event.preventDefault();
+
+
+    const username =
+        document
+            .getElementById("loginUsername")
+            .value
+            .trim();
+
+
+    const password =
+        document
+            .getElementById("loginPassword")
+            .value;
+
+
+    // Clear previous errors
+    if (loginError) {
+
+        loginError.style.display = "none";
+
+        loginError.textContent = "";
+
+    }
+
+
+    try {
+
+        const response = await fetch(
+
+            `${API_BASE_URL}/auth/login`,
+
+            {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    username: username,
+
+                    password: password
+
+                })
+
+            }
+
+        );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+
+                data.error ||
+
+                data.message ||
+
+                "Login failed"
+
+            );
+
+        }
+
+
+        // Check backend response
+        if (
+            !data.access_token ||
+            !data.user
+        ) {
+
+            throw new Error(
+                "Invalid login response from server"
+            );
+
+        }
+
+
+        // Save authentication data
+        authToken =
+            data.access_token;
+
+
+        currentUser =
+            data.user;
+
+
+        localStorage.setItem(
+
+            "cloudasset_token",
+
+            authToken
+
+        );
+
+
+        localStorage.setItem(
+
+            "cloudasset_user",
+
+            JSON.stringify(currentUser)
+
+        );
+
+
+        // Hide login screen
+        if (loginScreen) {
+
+            loginScreen.style.display =
+                "none";
+
+        }
+
+
+        // Show application
+        if (appLayout) {
+
+            appLayout.style.display =
+                "flex";
+
+        }
+
+
+        // Apply Admin / Employee permissions
+        applyRolePermissions();
+
+
+        // Load assets
+        await loadAssets();
+
+
+    } catch (error) {
+
+        console.error(
+            "Login error:",
+            error
+        );
+
+
+        if (loginError) {
+
+            loginError.textContent =
+
+                error.message ||
+
+                "Unable to login";
+
+
+            loginError.style.display =
+                "block";
+
+        }
+
+    }
+
+}
 
 
 // ============================================
@@ -131,194 +556,110 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function setupEventListeners() {
 
+    // Login
+    if (loginForm) {
+
+        loginForm.addEventListener(
+
+            "submit",
+
+            handleLogin
+
+        );
+
+    }
+
+
+    // Add asset
     if (addAssetForm) {
+
         addAssetForm.addEventListener(
+
             "submit",
+
             handleAddAsset
+
         );
+
     }
 
 
+    // Edit asset
     if (editAssetForm) {
+
         editAssetForm.addEventListener(
+
             "submit",
+
             handleEditAsset
+
         );
+
     }
 
 
+    // Refresh assets
     if (refreshBtn) {
+
         refreshBtn.addEventListener(
+
             "click",
+
             loadAssets
+
         );
+
     }
 
 
+    // Close modal
     if (closeModal) {
+
         closeModal.addEventListener(
+
             "click",
+
             closeEditModal
+
         );
+
     }
 
 
+    // Cancel edit
     if (cancelEditBtn) {
+
         cancelEditBtn.addEventListener(
+
             "click",
+
             closeEditModal
-        );
-    }
 
-
-    // Search
-
-    const searchInput =
-        document.getElementById("searchInput");
-
-    if (searchInput) {
-
-        searchInput.addEventListener(
-            "input",
-            filterAssets
         );
 
     }
 
 
-    // Filters
-
-    const filterProvider =
-        document.getElementById("filterProvider");
-
-    const filterStatus =
-        document.getElementById("filterStatus");
-
-    const filterOwner =
-        document.getElementById("filterOwner");
-
-
-    if (filterProvider) {
-        filterProvider.addEventListener(
-            "change",
-            filterAssets
-        );
-    }
-
-
-    if (filterStatus) {
-        filterStatus.addEventListener(
-            "change",
-            filterAssets
-        );
-    }
-
-
-    if (filterOwner) {
-        filterOwner.addEventListener(
-            "change",
-            filterAssets
-        );
-    }
-
-
-    // Clear filters
-
-    const clearFiltersBtn =
-        document.getElementById("clearFiltersBtn");
-
-    if (clearFiltersBtn) {
-
-        clearFiltersBtn.addEventListener(
-            "click",
-            clearFilters
-        );
-
-    }
-
-
-    // Pagination
-
-    const prevPage =
-        document.getElementById("prevPage");
-
-    const nextPage =
-        document.getElementById("nextPage");
-
-
-    if (prevPage) {
-
-        prevPage.addEventListener(
-            "click",
-            () => {
-
-                if (currentPage > 1) {
-
-                    currentPage--;
-
-                    displayAssets(filteredAssets);
-
-                }
-
-            }
-        );
-
-    }
-
-
-    if (nextPage) {
-
-        nextPage.addEventListener(
-            "click",
-            () => {
-
-                const totalPages =
-                    Math.ceil(
-                        filteredAssets.length /
-                        assetsPerPage
-                    );
-
-                if (currentPage < totalPages) {
-
-                    currentPage++;
-
-                    displayAssets(filteredAssets);
-
-                }
-
-            }
-        );
-
-    }
-
-
-    // Close modal outside click
-
+    // Close modal when clicking outside
     window.addEventListener(
+
         "click",
+
         (event) => {
 
-            if (event.target === editModal) {
+            if (
+                event.target === editModal
+            ) {
 
                 closeEditModal();
 
             }
 
         }
+
     );
 
-
-    // Navigation
-
-    setupNavigation();
-
-
-    // Theme
-
-    setupTheme();
-
 }
-
 
 // ============================================
 // LOAD ASSETS FROM BACKEND
@@ -345,8 +686,20 @@ async function loadAssets() {
 
         const response =
             await fetch(
-                `${API_BASE_URL}/assets`
+                `${API_BASE_URL}/assets`,
+                {
+                    headers: getAuthHeaders()
+                }
             );
+
+
+        if (response.status === 401) {
+
+            handleUnauthorized();
+
+            return;
+
+        }
 
 
         if (!response.ok) {
@@ -481,8 +834,6 @@ function updateDashboard() {
         providers
     );
 
-
-    // Infrastructure summary
 
     setText(
         "runningCount",
@@ -673,7 +1024,6 @@ function displayAssets(assets) {
 
                 <div class="asset-info">
 
-
                     <div class="asset-info-item">
 
                         <span>
@@ -725,7 +1075,6 @@ function displayAssets(assets) {
 
                     </div>
 
-
                 </div>
 
 
@@ -744,25 +1093,29 @@ function displayAssets(assets) {
 
                 <div class="asset-actions">
 
-                    <button
-                        class="btn btn-edit"
-                        onclick="openEditModal(${asset.id})">
+                    ${isAdmin() ? `
+                        <button
+                            class="btn btn-edit edit-btn"
+                            onclick="openEditModal(${asset.id})">
 
-                        Edit
+                            Edit
 
-                    </button>
+                        </button>
 
+                        <button
+                            class="btn btn-danger delete-btn"
+                            onclick="deleteAsset(${asset.id})">
 
-                    <button
-                        class="btn btn-danger"
-                        onclick="deleteAsset(${asset.id})">
+                            Delete
 
-                        Delete
-
-                    </button>
+                        </button>
+                    ` : `
+                        <span class="view-only-label">
+                            View Only
+                        </span>
+                    `}
 
                 </div>
-
 
             </div>
 
@@ -847,7 +1200,6 @@ function updatePagination(totalAssets) {
 
 
             button.textContent = page;
-
 
             button.className =
                 "page-number";
@@ -1062,6 +1414,18 @@ async function handleAddAsset(event) {
     event.preventDefault();
 
 
+    if (!isAdmin()) {
+
+        showMessage(
+            "error",
+            "Admin access required"
+        );
+
+        return;
+
+    }
+
+
     const formData =
         new FormData(
             addAssetForm
@@ -1112,10 +1476,7 @@ async function handleAddAsset(event) {
 
                     method: "POST",
 
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
+                    headers: getAuthHeaders(),
 
                     body:
                         JSON.stringify(
@@ -1173,11 +1534,26 @@ async function handleAddAsset(event) {
 
 async function openEditModal(assetId) {
 
+    if (!isAdmin()) {
+
+        showMessage(
+            "error",
+            "Admin access required"
+        );
+
+        return;
+
+    }
+
+
     try {
 
         const response =
             await fetch(
-                `${API_BASE_URL}/assets/${assetId}`
+                `${API_BASE_URL}/assets/${assetId}`,
+                {
+                    headers: getAuthHeaders()
+                }
             );
 
 
@@ -1283,43 +1659,59 @@ async function handleEditAsset(event) {
     event.preventDefault();
 
 
+    if (!isAdmin()) {
+
+        showMessage(
+            "error",
+            "Admin access required"
+        );
+
+        return;
+
+    }
+
+
     const assetId =
         document.getElementById(
             "editAssetId"
         ).value;
-
-
-    const formData =
-        new FormData(
-            editAssetForm
-        );
-
-
-    const assetData = {
+        const assetData = {
 
         asset_name:
-            formData
-                .get("assetName")
-                .trim(),
+            document.getElementById(
+                "editAssetName"
+            ).value.trim(),
 
         provider:
-            formData.get("provider"),
+            document.getElementById(
+                "editProvider"
+            ).value,
 
         service:
-            formData.get("service"),
+            document.getElementById(
+                "editService"
+            ).value,
 
         region:
-            formData.get("region"),
+            document.getElementById(
+                "editRegion"
+            ).value,
 
         status:
-            formData.get("status"),
+            document.getElementById(
+                "editStatus"
+            ).value,
 
         owner:
-            formData.get("owner"),
+            document.getElementById(
+                "editOwner"
+            ).value,
 
         cost:
             parseFloat(
-                formData.get("cost")
+                document.getElementById(
+                    "editCost"
+                ).value
             ) || 0
 
     };
@@ -1334,10 +1726,8 @@ async function handleEditAsset(event) {
 
                     method: "PUT",
 
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
+                    headers:
+                        getAuthHeaders(),
 
                     body:
                         JSON.stringify(
@@ -1352,6 +1742,15 @@ async function handleEditAsset(event) {
             await response.json();
 
 
+        if (response.status === 401) {
+
+            handleUnauthorized();
+
+            return;
+
+        }
+
+
         if (!response.ok) {
 
             throw new Error(
@@ -1362,13 +1761,13 @@ async function handleEditAsset(event) {
         }
 
 
-        closeEditModal();
-
-
         showMessage(
             "success",
             "Asset updated successfully!"
         );
+
+
+        closeEditModal();
 
 
         await loadAssets();
@@ -1376,9 +1775,16 @@ async function handleEditAsset(event) {
 
     } catch (error) {
 
+        console.error(
+            "Update error:",
+            error
+        );
+
+
         showMessage(
             "error",
-            error.message
+            error.message ||
+            "Unable to update asset"
         );
 
     }
@@ -1392,13 +1798,29 @@ async function handleEditAsset(event) {
 
 async function deleteAsset(assetId) {
 
+    if (!isAdmin()) {
+
+        showMessage(
+            "error",
+            "Admin access required"
+        );
+
+        return;
+
+    }
+
+
     const confirmed =
         confirm(
             "Are you sure you want to delete this asset?"
         );
 
 
-    if (!confirmed) return;
+    if (!confirmed) {
+
+        return;
+
+    }
 
 
     try {
@@ -1408,7 +1830,10 @@ async function deleteAsset(assetId) {
                 `${API_BASE_URL}/assets/${assetId}`,
                 {
 
-                    method: "DELETE"
+                    method: "DELETE",
+
+                    headers:
+                        getAuthHeaders()
 
                 }
             );
@@ -1418,10 +1843,20 @@ async function deleteAsset(assetId) {
             await response.json();
 
 
+        if (response.status === 401) {
+
+            handleUnauthorized();
+
+            return;
+
+        }
+
+
         if (!response.ok) {
 
             throw new Error(
                 result.error ||
+                result.message ||
                 "Failed to delete asset"
             );
 
@@ -1439,12 +1874,162 @@ async function deleteAsset(assetId) {
 
     } catch (error) {
 
+        console.error(
+            "Delete error:",
+            error
+        );
+
+
         showMessage(
             "error",
-            error.message
+            error.message ||
+            "Unable to delete asset"
         );
 
     }
+
+}
+
+
+// ============================================
+// MESSAGE HANDLING
+// ============================================
+
+function showMessage(
+    type,
+    message
+) {
+
+    const target =
+        type === "success"
+            ? successMessage
+            : errorMessage;
+
+
+    if (!target) {
+
+        console.log(
+            `${type}: ${message}`
+        );
+
+        return;
+
+    }
+
+
+    target.textContent =
+        message;
+
+
+    target.style.display =
+        "block";
+
+
+    setTimeout(
+        () => {
+
+            target.style.display =
+                "none";
+
+        },
+        5000
+    );
+
+}
+
+
+// ============================================
+// SET TEXT HELPER
+// ============================================
+
+function setText(
+    elementId,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            elementId
+        );
+
+
+    if (element) {
+
+        element.textContent =
+            value;
+
+    }
+
+}
+
+
+// ============================================
+// SET FORM VALUE HELPER
+// ============================================
+
+function setValue(
+    elementId,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            elementId
+        );
+
+
+    if (element) {
+
+        element.value =
+            value ?? "";
+
+    }
+
+}
+
+
+// ============================================
+// FORMAT COST
+// ============================================
+
+function formatCost(cost) {
+
+    const value =
+        parseFloat(cost) || 0;
+
+
+    return value.toFixed(2);
+
+}
+
+
+// ============================================
+// HTML ESCAPE
+// ============================================
+
+function escapeHTML(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        String(value);
+
+
+    return div.innerHTML;
 
 }
 
@@ -1457,82 +2042,61 @@ function updateCostOverview() {
 
     const totalCost =
         allAssets.reduce(
-            (total, asset) =>
-                total +
-                (parseFloat(asset.cost) || 0),
+            (total, asset) => {
+
+                return (
+                    total +
+                    (
+                        parseFloat(
+                            asset.cost
+                        ) || 0
+                    )
+                );
+
+            },
             0
         );
 
 
-    const averageCost =
-        allAssets.length
-            ? totalCost /
-              allAssets.length
-            : 0;
-
-
-    const highestAsset =
-        [...allAssets]
-            .sort(
-                (a, b) =>
-                    (parseFloat(b.cost) || 0) -
-                    (parseFloat(a.cost) || 0)
-            )[0];
-
-
     setText(
-        "costOverviewTotal",
+        "totalMonthlyCost",
         `$${totalCost.toFixed(2)}`
     );
 
 
     setText(
-        "averageCost",
-        `$${averageCost.toFixed(2)}`
+        "totalAnnualCost",
+        `$${(totalCost * 12).toFixed(2)}`
     );
 
 
-    setText(
-        "highestCost",
-        highestAsset
-            ? `$${formatCost(highestAsset.cost)}`
-            : "$0.00"
-    );
+    updateProviderCosts();
 
-
-    setText(
-        "highestCostName",
-        highestAsset
-            ? highestAsset.asset_name
-            : "No assets"
-    );
-
-
-    updateCostByProvider();
-
-    updateCostByService();
-
-    updateExpensiveAssets();
+    updateServiceCosts();
 
 }
 
 
 // ============================================
-// COST BY PROVIDER
+// PROVIDER COST BREAKDOWN
 // ============================================
 
-function updateCostByProvider() {
+function updateProviderCosts() {
 
     const container =
         document.getElementById(
-            "costByProvider"
+            "providerCosts"
         );
 
 
-    if (!container) return;
+    if (!container) {
+
+        return;
+
+    }
 
 
-    const data = {};
+    const providerData = {};
 
 
     allAssets.forEach(
@@ -1543,24 +2107,35 @@ function updateCostByProvider() {
                 "Unknown";
 
 
-            data[provider] =
-                (data[provider] || 0) +
-                (parseFloat(asset.cost) || 0);
+            if (!providerData[provider]) {
+
+                providerData[provider] = 0;
+
+            }
+
+
+            providerData[provider] +=
+                parseFloat(
+                    asset.cost
+                ) || 0;
 
         }
     );
 
 
     const entries =
-        Object.entries(data);
+        Object.entries(
+            providerData
+        );
 
 
     if (entries.length === 0) {
 
-        container.innerHTML =
-            `<p class="empty-state">
+        container.innerHTML = `
+            <p class="empty-state">
                 No cost data available.
-            </p>`;
+            </p>
+        `;
 
         return;
 
@@ -1571,14 +2146,14 @@ function updateCostByProvider() {
         entries.map(
             ([provider, cost]) => `
 
-            <div class="cost-item">
+            <div class="cost-row">
 
                 <span>
                     ${escapeHTML(provider)}
                 </span>
 
                 <strong>
-                    $${cost.toFixed(2)}
+                    $${formatCost(cost)}
                 </strong>
 
             </div>
@@ -1590,21 +2165,25 @@ function updateCostByProvider() {
 
 
 // ============================================
-// COST BY SERVICE
+// SERVICE COST BREAKDOWN
 // ============================================
 
-function updateCostByService() {
+function updateServiceCosts() {
 
     const container =
         document.getElementById(
-            "costByService"
+            "serviceCosts"
         );
 
 
-    if (!container) return;
+    if (!container) {
+
+        return;
+
+    }
 
 
-    const data = {};
+    const serviceData = {};
 
 
     allAssets.forEach(
@@ -1615,24 +2194,39 @@ function updateCostByService() {
                 "Unknown";
 
 
-            data[service] =
-                (data[service] || 0) +
-                (parseFloat(asset.cost) || 0);
+            if (!serviceData[service]) {
+
+                serviceData[service] = 0;
+
+            }
+
+
+            serviceData[service] +=
+                parseFloat(
+                    asset.cost
+                ) || 0;
 
         }
     );
 
 
     const entries =
-        Object.entries(data);
+        Object.entries(
+            serviceData
+        )
+        .sort(
+            (a, b) =>
+                b[1] - a[1]
+        );
 
 
     if (entries.length === 0) {
 
-        container.innerHTML =
-            `<p class="empty-state">
-                No cost data available.
-            </p>`;
+        container.innerHTML = `
+            <p class="empty-state">
+                No service cost data available.
+            </p>
+        `;
 
         return;
 
@@ -1643,73 +2237,14 @@ function updateCostByService() {
         entries.map(
             ([service, cost]) => `
 
-            <div class="cost-item">
+            <div class="cost-row">
 
                 <span>
                     ${escapeHTML(service)}
                 </span>
 
                 <strong>
-                    $${cost.toFixed(2)}
-                </strong>
-
-            </div>
-
-        `
-        ).join("");
-
-}
-
-
-// ============================================
-// EXPENSIVE ASSETS
-// ============================================
-
-function updateExpensiveAssets() {
-
-    const container =
-        document.getElementById(
-            "expensiveAssets"
-        );
-
-
-    if (!container) return;
-
-
-    const expensiveAssets =
-        [...allAssets]
-            .sort(
-                (a, b) =>
-                    (parseFloat(b.cost) || 0) -
-                    (parseFloat(a.cost) || 0)
-            )
-            .slice(0, 5);
-
-
-    if (expensiveAssets.length === 0) {
-
-        container.innerHTML =
-            `<p class="empty-state">
-                No assets available.
-            </p>`;
-
-        return;
-
-    }
-
-
-    container.innerHTML =
-        expensiveAssets.map(
-            asset => `
-
-            <div class="cost-item">
-
-                <span>
-                    ${escapeHTML(asset.asset_name)}
-                </span>
-
-                <strong>
-                    $${formatCost(asset.cost)}
+                    $${formatCost(cost)}
                 </strong>
 
             </div>
@@ -1726,47 +2261,18 @@ function updateExpensiveAssets() {
 
 function updateAnalytics() {
 
-    updateProviderAnalytics();
-
     updateStatusAnalytics();
 
-}
+    updateProviderAnalytics();
 
-
-function updateProviderAnalytics() {
-
-    const container =
-        document.getElementById(
-            "providerAnalytics"
-        );
-
-
-    if (!container) return;
-
-
-    const data = {};
-
-
-    allAssets.forEach(
-        asset => {
-
-            const provider =
-                asset.provider ||
-                "Unknown";
-
-
-            data[provider] =
-                (data[provider] || 0) + 1;
-
-        }
-    );
-
-
-    container.innerHTML =
-        createAnalyticsHTML(data);
+    updateServiceAnalytics();
 
 }
 
+
+// ============================================
+// STATUS ANALYTICS
+// ============================================
 
 function updateStatusAnalytics() {
 
@@ -1776,10 +2282,14 @@ function updateStatusAnalytics() {
         );
 
 
-    if (!container) return;
+    if (!container) {
+
+        return;
+
+    }
 
 
-    const data = {};
+    const statusData = {};
 
 
     allAssets.forEach(
@@ -1790,232 +2300,271 @@ function updateStatusAnalytics() {
                 "Unknown";
 
 
-            data[status] =
-                (data[status] || 0) + 1;
+            if (!statusData[status]) {
+
+                statusData[status] = 0;
+
+            }
+
+
+            statusData[status]++;
 
         }
     );
 
 
-    container.innerHTML =
-        createAnalyticsHTML(data);
-
-}
-
-
-function createAnalyticsHTML(data) {
-
     const entries =
-        Object.entries(data);
+        Object.entries(
+            statusData
+        );
 
 
-    if (entries.length === 0) {
+    const total =
+        allAssets.length;
 
-        return `
+
+    if (total === 0) {
+
+        container.innerHTML = `
             <p class="empty-state">
-                No analytics data available.
+                No analytics available.
             </p>
         `;
+
+        return;
 
     }
 
 
-    const max =
-        Math.max(
-            ...entries.map(
-                ([, value]) => value
-            )
-        );
+    container.innerHTML =
+        entries.map(
+            ([status, count]) => {
+
+                const percentage =
+                    (
+                        count /
+                        total *
+                        100
+                    ).toFixed(1);
 
 
-    return entries.map(
-        ([label, value]) => {
+                return `
 
-            const percentage =
-                max
-                    ? (value / max) * 100
-                    : 0;
-
-
-            return `
-
-                <div class="analytics-item">
+                <div class="analytics-row">
 
                     <div class="analytics-label">
 
                         <span>
-                            ${escapeHTML(label)}
+                            ${escapeHTML(status)}
                         </span>
 
                         <strong>
-                            ${value}
+                            ${count}
                         </strong>
 
                     </div>
 
-
-                    <div class="analytics-bar">
+                    <div class="progress-bar">
 
                         <div
-                            class="analytics-progress"
-                            style="width:${percentage}%">
-                        </div>
+                            class="progress-fill"
+                            style="width: ${percentage}%"
+                        ></div>
 
                     </div>
 
+                    <small>
+                        ${percentage}%
+                    </small>
+
                 </div>
 
-            `;
+                `;
 
-        }
-    ).join("");
+            }
+        ).join("");
 
 }
-
-
-// ============================================
-// COST ESTIMATION
+    // ============================================
+// PROVIDER ANALYTICS
 // ============================================
 
-function estimateCost() {
+function updateProviderAnalytics() {
 
-    const provider =
+    const container =
         document.getElementById(
-            "provider"
-        ).value;
-
-
-    const service =
-        document.getElementById(
-            "service"
-        ).value;
-
-
-    const region =
-        document.getElementById(
-            "region"
-        ).value;
-
-
-    const status =
-        document.getElementById(
-            "status"
-        ).value;
-
-
-    const cost =
-        calculateCost(
-            provider,
-            service,
-            region,
-            status
+            "providerAnalytics"
         );
 
-
-    document.getElementById(
-        "cost"
-    ).value =
-        cost.toFixed(2);
+    if (!container) return;
 
 
-    showMessage(
-        "success",
-        `Estimated monthly cost: $${cost.toFixed(2)}`
+    const providerData = {};
+
+
+    allAssets.forEach(
+        asset => {
+
+            const provider =
+                asset.provider ||
+                "Unknown";
+
+
+            providerData[provider] =
+                (providerData[provider] || 0) + 1;
+
+        }
     );
 
-}
 
-
-function estimateEditCost() {
-
-    const provider =
-        document.getElementById(
-            "editProvider"
-        ).value;
-
-
-    const service =
-        document.getElementById(
-            "editService"
-        ).value;
-
-
-    const region =
-        document.getElementById(
-            "editRegion"
-        ).value;
-
-
-    const status =
-        document.getElementById(
-            "editStatus"
-        ).value;
-
-
-    const cost =
-        calculateCost(
-            provider,
-            service,
-            region,
-            status
+    const entries =
+        Object.entries(
+            providerData
         );
 
 
-    document.getElementById(
-        "editCost"
-    ).value =
-        cost.toFixed(2);
+    if (entries.length === 0) {
 
-}
+        container.innerHTML = `
+            <p class="empty-state">
+                No provider data available.
+            </p>
+        `;
 
-
-function calculateCost(
-    provider,
-    service,
-    region,
-    status
-) {
-
-    let baseCost = 30;
-
-
-    if (
-        COST_ESTIMATES[provider] &&
-        COST_ESTIMATES[provider][service]
-    ) {
-
-        const serviceCost =
-            COST_ESTIMATES[provider][service];
-
-
-        if (
-            status === "Stopped" ||
-            status === "Inactive" ||
-            status === "Terminated"
-        ) {
-
-            baseCost =
-                serviceCost.stopped;
-
-        } else {
-
-            baseCost =
-                serviceCost.running;
-
-        }
+        return;
 
     }
 
 
-    const multiplier =
-        REGION_MULTIPLIERS[region] ||
-        1;
+    const total =
+        allAssets.length;
 
 
-    return (
-        baseCost *
-        multiplier
+    container.innerHTML =
+        entries.map(
+            ([provider, count]) => {
+
+                const percentage =
+                    (
+                        count /
+                        total *
+                        100
+                    ).toFixed(1);
+
+
+                return `
+
+                <div class="analytics-row">
+
+                    <div class="analytics-label">
+
+                        <span>
+                            ${escapeHTML(provider)}
+                        </span>
+
+                        <strong>
+                            ${count}
+                        </strong>
+
+                    </div>
+
+                    <div class="progress-bar">
+
+                        <div
+                            class="progress-fill"
+                            style="width: ${percentage}%"
+                        ></div>
+
+                    </div>
+
+                    <small>
+                        ${percentage}%
+                    </small>
+
+                </div>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+// ============================================
+// SERVICE ANALYTICS
+// ============================================
+
+function updateServiceAnalytics() {
+
+    const container =
+        document.getElementById(
+            "serviceAnalytics"
+        );
+
+
+    if (!container) return;
+
+
+    const serviceData = {};
+
+
+    allAssets.forEach(
+        asset => {
+
+            const service =
+                asset.service ||
+                "Unknown";
+
+
+            serviceData[service] =
+                (serviceData[service] || 0) + 1;
+
+        }
     );
+
+
+    const entries =
+        Object.entries(
+            serviceData
+        );
+
+
+    if (entries.length === 0) {
+
+        container.innerHTML = `
+            <p class="empty-state">
+                No service data available.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        entries.map(
+            ([service, count]) => `
+
+            <div class="analytics-row">
+
+                <div class="analytics-label">
+
+                    <span>
+                        ${escapeHTML(service)}
+                    </span>
+
+                    <strong>
+                        ${count}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        `
+        ).join("");
 
 }
 
@@ -2024,193 +2573,177 @@ function calculateCost(
 // NAVIGATION
 // ============================================
 
-function setupNavigation() {
-
-    const navItems =
-        document.querySelectorAll(
-            ".nav-item"
-        );
-
-
-    const pages =
-        document.querySelectorAll(
-            ".page"
-        );
-
-
-    const pageTitles = {
-
-        dashboard: {
-            title: "Dashboard",
-            subtitle:
-                "Overview of your cloud infrastructure"
-        },
-
-        assets: {
-            title: "Assets",
-            subtitle:
-                "Manage your cloud infrastructure"
-        },
-
-        costs: {
-            title: "Cost Overview",
-            subtitle:
-                "Monitor your cloud spending"
-        },
-
-        analytics: {
-            title: "Analytics",
-            subtitle:
-                "Infrastructure insights and statistics"
-        },
-
-        settings: {
-            title: "Settings",
-            subtitle:
-                "Manage your application preferences"
-        }
-
-    };
-
-
-    navItems.forEach(
-        item => {
-
-            item.addEventListener(
-                "click",
-                () => {
-
-                    const pageName =
-                        item.dataset.page;
-
-
-                    navItems.forEach(
-                        nav =>
-                            nav.classList.remove(
-                                "active"
-                            )
-                    );
-
-
-                    item.classList.add(
-                        "active"
-                    );
-
-
-                    pages.forEach(
-                        page =>
-                            page.classList.remove(
-                                "active-page"
-                            )
-                    );
-
-
-                    const selectedPage =
-                        document.getElementById(
-                            pageName
-                        );
-
-
-                    if (selectedPage) {
-
-                        selectedPage.classList.add(
-                            "active-page"
-                        );
-
-                    }
-
-
-                    const titleData =
-                        pageTitles[pageName];
-
-
-                    if (titleData) {
-
-                        setText(
-                            "pageTitle",
-                            titleData.title
-                        );
-
-                        setText(
-                            "pageSubtitle",
-                            titleData.subtitle
-                        );
-
-                    }
-
-
-                    const sidebar =
-                        document.getElementById(
-                            "sidebar"
-                        );
-
-
-                    if (sidebar) {
-
-                        sidebar.classList.remove(
-                            "mobile-open"
-                        );
-
-                    }
-
-
-                    window.scrollTo({
-                        top: 0,
-                        behavior: "smooth"
-                    });
-
-                }
-            );
-
-        }
+const navItems =
+    document.querySelectorAll(
+        ".nav-item"
     );
 
 
-    const menuToggle =
-        document.getElementById(
-            "menuToggle"
-        );
+const pages =
+    document.querySelectorAll(
+        ".page"
+    );
 
 
-    const sidebar =
-        document.getElementById(
-            "sidebar"
-        );
+navItems.forEach(
+    item => {
 
-
-    if (menuToggle && sidebar) {
-
-        menuToggle.addEventListener(
+        item.addEventListener(
             "click",
             () => {
 
-                sidebar.classList.toggle(
-                    "mobile-open"
+                const pageName =
+                    item.dataset.page;
+
+
+                navItems.forEach(
+                    nav => {
+
+                        nav.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                item.classList.add(
+                    "active"
+                );
+
+
+                pages.forEach(
+                    page => {
+
+                        page.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                const selectedPage =
+                    document.getElementById(
+                        `${pageName}Page`
+                    );
+
+
+                if (selectedPage) {
+
+                    selectedPage.classList.add(
+                        "active"
+                    );
+
+                }
+
+
+                updatePageHeader(
+                    pageName
                 );
 
             }
         );
 
     }
-
-}
+);
 
 
 // ============================================
-// NAVIGATE TO ASSETS
+// UPDATE PAGE HEADER
 // ============================================
 
-function navigateToAssets() {
+function updatePageHeader(pageName) {
 
-    const assetsButton =
-        document.querySelector(
-            '[data-page="assets"]'
+    const pageTitle =
+        document.getElementById(
+            "pageTitle"
         );
 
 
-    if (assetsButton) {
+    const pageSubtitle =
+        document.getElementById(
+            "pageSubtitle"
+        );
 
-        assetsButton.click();
+
+    if (
+        !pageTitle ||
+        !pageSubtitle
+    ) return;
+
+
+    const pageData = {
+
+        dashboard: {
+
+            title:
+                "Dashboard",
+
+            subtitle:
+                "Overview of your cloud infrastructure"
+
+        },
+
+
+        assets: {
+
+            title:
+                "Assets",
+
+            subtitle:
+                "Manage your cloud resources"
+
+        },
+
+
+        costs: {
+
+            title:
+                "Cost Overview",
+
+            subtitle:
+                "Monitor your cloud spending"
+
+        },
+
+
+        analytics: {
+
+            title:
+                "Analytics",
+
+            subtitle:
+                "Analyze your cloud infrastructure"
+
+        },
+
+
+        settings: {
+
+            title:
+                "Settings",
+
+            subtitle:
+                "Manage application preferences"
+
+        }
+
+    };
+
+
+    const current =
+        pageData[pageName];
+
+
+    if (current) {
+
+        pageTitle.textContent =
+            current.title;
+
+
+        pageSubtitle.textContent =
+            current.subtitle;
 
     }
 
@@ -2218,14 +2751,52 @@ function navigateToAssets() {
 
 
 // ============================================
-// LIGHT / DARK MODE
+// SIDEBAR TOGGLE
 // ============================================
+
+const menuToggle =
+    document.getElementById(
+        "menuToggle"
+    );
+
+
+const sidebar =
+    document.getElementById(
+        "sidebar"
+    );
+
+
+if (menuToggle && sidebar) {
+
+    menuToggle.addEventListener(
+        "click",
+        () => {
+
+            sidebar.classList.toggle(
+                "collapsed"
+            );
+
+        }
+    );
+
+}
+
+
+// ============================================
+// THEME
+// ============================================
+
+const themeToggle =
+    document.getElementById(
+        "themeToggle"
+    );
+
 
 function loadTheme() {
 
     const savedTheme =
         localStorage.getItem(
-            "cloudasset-theme"
+            "cloudasset_theme"
         );
 
 
@@ -2235,204 +2806,640 @@ function loadTheme() {
             "dark-mode"
         );
 
-        updateThemeIcon(true);
+
+        if (themeToggle) {
+
+            themeToggle.textContent =
+                "☀️";
+
+        }
 
     }
 
 }
 
 
-function setupTheme() {
+if (themeToggle) {
 
-    const themeToggle =
-        document.getElementById(
-            "themeToggle"
-        );
+    themeToggle.addEventListener(
+        "click",
+        () => {
 
-
-    const settingsThemeToggle =
-        document.getElementById(
-            "settingsThemeToggle"
-        );
+            document.body.classList.toggle(
+                "dark-mode"
+            );
 
 
-    if (themeToggle) {
-
-        themeToggle.addEventListener(
-            "click",
-            toggleTheme
-        );
-
-    }
+            const isDark =
+                document.body.classList.contains(
+                    "dark-mode"
+                );
 
 
-    if (settingsThemeToggle) {
+            localStorage.setItem(
 
-        settingsThemeToggle.addEventListener(
-            "click",
-            toggleTheme
-        );
+                "cloudasset_theme",
 
-    }
+                isDark
+                    ? "dark"
+                    : "light"
 
-}
-
-
-function toggleTheme() {
-
-    document.body.classList.toggle(
-        "dark-mode"
-    );
+            );
 
 
-    const isDark =
-        document.body.classList.contains(
-            "dark-mode"
-        );
+            themeToggle.textContent =
+                isDark
+                    ? "☀️"
+                    : "🌙";
 
-
-    localStorage.setItem(
-        "cloudasset-theme",
-        isDark
-            ? "dark"
-            : "light"
-    );
-
-
-    updateThemeIcon(isDark);
-
-}
-
-
-function updateThemeIcon(isDark) {
-
-    const themeToggle =
-        document.getElementById(
-            "themeToggle"
-        );
-
-
-    if (themeToggle) {
-
-        themeToggle.textContent =
-            isDark
-                ? "☀️"
-                : "🌙";
-
-    }
-
-}
-
-
-// ============================================
-// MESSAGE SYSTEM
-// ============================================
-
-function showMessage(type, message) {
-
-    hideMessages();
-
-
-    const element =
-        type === "error"
-            ? errorMessage
-            : successMessage;
-
-
-    if (!element) return;
-
-
-    element.textContent =
-        message;
-
-
-    element.style.display =
-        "block";
-
-
-    setTimeout(
-        hideMessages,
-        5000
+        }
     );
 
 }
 
 
-function hideMessages() {
-
-    if (errorMessage) {
-
-        errorMessage.style.display =
-            "none";
-
-    }
-
-
-    if (successMessage) {
-
-        successMessage.style.display =
-            "none";
-
-    }
-
-}
-
-
 // ============================================
-// HELPER FUNCTIONS
+// COST ESTIMATION
 // ============================================
 
-function setText(id, value) {
+function calculateEstimatedCost(
+    provider,
+    service,
+    status,
+    region
+) {
 
-    const element =
-        document.getElementById(id);
+    if (
+        !provider ||
+        !service
+    ) {
 
-
-    if (element) {
-
-        element.textContent =
-            value;
-
-    }
-
-}
-
-
-function setValue(id, value) {
-
-    const element =
-        document.getElementById(id);
-
-
-    if (element) {
-
-        element.value =
-            value || "";
+        return 0;
 
     }
 
-}
+
+    const providerData =
+        COST_ESTIMATES[
+            provider
+        ];
 
 
-function formatCost(value) {
+    if (!providerData) {
+
+        return 0;
+
+    }
+
+
+    const serviceData =
+        providerData[
+            service
+        ];
+
+
+    if (!serviceData) {
+
+        return 0;
+
+    }
+
+
+    const normalizedStatus =
+        String(status || "")
+            .toLowerCase();
+
+
+    let baseCost =
+        serviceData[
+            normalizedStatus
+        ];
+
+
+    if (
+        baseCost === undefined
+    ) {
+
+        baseCost =
+            serviceData.running || 0;
+
+    }
+
+
+    const multiplier =
+        REGION_MULTIPLIERS[
+            region
+        ] || 1;
+
 
     return (
-        parseFloat(value) || 0
+        baseCost *
+        multiplier
     ).toFixed(2);
 
 }
 
 
-function escapeHTML(value) {
+// ============================================
+// AUTO COST ESTIMATION
+// ============================================
 
-    const div =
-        document.createElement("div");
+function setupCostEstimator() {
+
+    const providerInput =
+        document.getElementById(
+            "provider"
+        );
 
 
-    div.textContent =
-        value || "";
+    const serviceInput =
+        document.getElementById(
+            "service"
+        );
 
 
-    return div.innerHTML;
+    const statusInput =
+        document.getElementById(
+            "status"
+        );
+
+
+    const regionInput =
+        document.getElementById(
+            "region"
+        );
+
+
+    const costInput =
+        document.getElementById(
+            "cost"
+        );
+
+
+    if (
+        !providerInput ||
+        !serviceInput ||
+        !statusInput ||
+        !regionInput ||
+        !costInput
+    ) {
+
+        return;
+
+    }
+
+
+    const updateEstimatedCost =
+        () => {
+
+            const estimatedCost =
+                calculateEstimatedCost(
+
+                    providerInput.value,
+
+                    serviceInput.value,
+
+                    statusInput.value,
+
+                    regionInput.value
+
+                );
+
+
+            if (
+                estimatedCost > 0
+            ) {
+
+                costInput.value =
+                    estimatedCost;
+
+            }
+
+        };
+
+
+    providerInput.addEventListener(
+        "change",
+        updateEstimatedCost
+    );
+
+
+    serviceInput.addEventListener(
+        "change",
+        updateEstimatedCost
+    );
+
+
+    statusInput.addEventListener(
+        "change",
+        updateEstimatedCost
+    );
+
+
+    regionInput.addEventListener(
+        "change",
+        updateEstimatedCost
+    );
 
 }
+
+
+// ============================================
+// EDIT FORM COST ESTIMATION
+// ============================================
+
+function setupEditCostEstimator() {
+
+    const providerInput =
+        document.getElementById(
+            "editProvider"
+        );
+
+
+    const serviceInput =
+        document.getElementById(
+            "editService"
+        );
+
+
+    const statusInput =
+        document.getElementById(
+            "editStatus"
+        );
+
+
+    const regionInput =
+        document.getElementById(
+            "editRegion"
+        );
+
+
+    const costInput =
+        document.getElementById(
+            "editCost"
+        );
+
+
+    if (
+        !providerInput ||
+        !serviceInput ||
+        !statusInput ||
+        !regionInput ||
+        !costInput
+    ) {
+
+        return;
+
+    }
+
+
+    const updateEstimatedCost =
+        () => {
+
+            const estimatedCost =
+                calculateEstimatedCost(
+
+                    providerInput.value,
+
+                    serviceInput.value,
+
+                    statusInput.value,
+
+                    regionInput.value
+
+                );
+
+
+            if (
+                estimatedCost > 0
+            ) {
+
+                costInput.value =
+                    estimatedCost;
+
+            }
+
+        };
+
+
+    providerInput.addEventListener(
+        "change",
+        updateEstimatedCost
+    );
+
+
+    serviceInput.addEventListener(
+        "change",
+        updateEstimatedCost
+    );
+
+
+    statusInput.addEventListener(
+        "change",
+        updateEstimatedCost
+    );
+
+
+    regionInput.addEventListener(
+        "change",
+        updateEstimatedCost
+    );
+
+}
+
+
+// ============================================
+// INITIALIZE COST ESTIMATORS
+// ============================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        setupCostEstimator();
+
+        setupEditCostEstimator();
+
+    }
+);
+// ============================================
+// SEARCH INPUT LISTENER
+// ============================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const searchInput =
+            document.getElementById(
+                "searchInput"
+            );
+
+
+        if (searchInput) {
+
+            searchInput.addEventListener(
+                "input",
+                filterAssets
+            );
+
+        }
+
+
+        const providerFilter =
+            document.getElementById(
+                "filterProvider"
+            );
+
+
+        if (providerFilter) {
+
+            providerFilter.addEventListener(
+                "change",
+                filterAssets
+            );
+
+        }
+
+
+        const statusFilter =
+            document.getElementById(
+                "filterStatus"
+            );
+
+
+        if (statusFilter) {
+
+            statusFilter.addEventListener(
+                "change",
+                filterAssets
+            );
+
+        }
+
+
+        const ownerFilter =
+            document.getElementById(
+                "filterOwner"
+            );
+
+
+        if (ownerFilter) {
+
+            ownerFilter.addEventListener(
+                "change",
+                filterAssets
+            );
+
+        }
+
+    }
+);
+
+
+// ============================================
+// PREVIOUS / NEXT PAGE
+// ============================================
+
+function previousPage() {
+
+    if (currentPage > 1) {
+
+        currentPage--;
+
+        displayAssets(
+            filteredAssets
+        );
+
+    }
+
+}
+
+
+function nextPage() {
+
+    const totalPages =
+        Math.ceil(
+            filteredAssets.length /
+            assetsPerPage
+        );
+
+
+    if (currentPage < totalPages) {
+
+        currentPage++;
+
+        displayAssets(
+            filteredAssets
+        );
+
+    }
+
+}
+
+
+// ============================================
+// WINDOW FUNCTIONS
+// Required for HTML onclick events
+// ============================================
+
+window.openEditModal =
+    openEditModal;
+
+
+window.deleteAsset =
+    deleteAsset;
+
+
+window.logout =
+    logout;
+
+
+window.filterAssets =
+    filterAssets;
+
+
+window.clearFilters =
+    clearFilters;
+
+
+window.previousPage =
+    previousPage;
+
+
+window.nextPage =
+    nextPage;
+
+
+// ============================================
+// REFRESH BUTTON
+// ============================================
+
+function refreshAssets() {
+
+    loadAssets();
+
+}
+
+
+// ============================================
+// UPDATE USER INTERFACE
+// ============================================
+
+function updateUserInterface() {
+
+    if (!currentUser) {
+
+        return;
+
+    }
+
+
+    // User name
+    const userNameElements =
+        document.querySelectorAll(
+            "[data-user-name]"
+        );
+
+
+    userNameElements.forEach(
+        element => {
+
+            element.textContent =
+                currentUser.username ||
+                currentUser.name ||
+                "User";
+
+        }
+    );
+
+
+    // User role
+    const userRoleElements =
+        document.querySelectorAll(
+            "[data-user-role]"
+        );
+
+
+    userRoleElements.forEach(
+        element => {
+
+            element.textContent =
+                currentUser.role === "admin"
+                    ? "Administrator"
+                    : "Employee";
+
+        }
+    );
+
+
+    applyRolePermissions();
+
+}
+
+
+// ============================================
+// FINAL APPLICATION STARTUP
+// ============================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        updateUserInterface();
+
+
+        // Set pagination button listeners
+        const prevPage =
+            document.getElementById(
+                "prevPage"
+            );
+
+
+        const nextPageButton =
+            document.getElementById(
+                "nextPage"
+            );
+
+
+        if (prevPage) {
+
+            prevPage.addEventListener(
+                "click",
+                previousPage
+            );
+
+        }
+
+
+        if (nextPageButton) {
+
+            nextPageButton.addEventListener(
+                "click",
+                nextPage
+            );
+
+        }
+
+    }
+);
+
+
+// ============================================
+// SECURITY NOTE
+// ============================================
+// Frontend role checks only control the UI.
+// Your Flask backend must enforce permissions too.
+//
+// Admin:
+//   GET assets
+//   POST assets
+//   PUT assets
+//   DELETE assets
+//
+// Employee:
+//   GET assets only
+//
+// Your backend JWT role protection is the
+// actual security layer.
+// ============================================

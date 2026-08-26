@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt
 
 from database.db import db
 from models.asset_model import Asset
@@ -7,8 +8,28 @@ from models.asset_model import Asset
 asset_bp = Blueprint("asset", __name__)
 
 
-# GET all assets
+# ==========================================
+# CHECK ADMIN ROLE
+# ==========================================
+
+def admin_required():
+    claims = get_jwt()
+
+    if claims.get("role") != "admin":
+        return jsonify({
+            "error": "Admin access required"
+        }), 403
+
+    return None
+
+
+# ==========================================
+# GET ALL ASSETS
+# ADMIN + EMPLOYEE
+# ==========================================
+
 @asset_bp.route("/assets", methods=["GET"])
+@jwt_required()
 def get_assets():
 
     assets = Asset.query.all()
@@ -32,11 +53,16 @@ def get_assets():
     return jsonify(result)
 
 
-# GET single asset
+# ==========================================
+# GET SINGLE ASSET
+# ADMIN + EMPLOYEE
+# ==========================================
+
 @asset_bp.route("/assets/<int:asset_id>", methods=["GET"])
+@jwt_required()
 def get_asset(asset_id):
 
-    asset = Asset.query.get(asset_id)
+    asset = db.session.get(Asset, asset_id)
 
     if not asset:
         return jsonify({
@@ -57,9 +83,19 @@ def get_asset(asset_id):
     })
 
 
-# POST - Add new asset
+# ==========================================
+# ADD NEW ASSET
+# ADMIN ONLY
+# ==========================================
+
 @asset_bp.route("/assets", methods=["POST"])
+@jwt_required()
 def add_asset():
+
+    permission_error = admin_required()
+
+    if permission_error:
+        return permission_error
 
     # Validate request has JSON data
     if not request.json:
@@ -69,19 +105,19 @@ def add_asset():
 
     data = request.json
 
-    # Validate required field: asset_name
+    # Validate required field
     if "asset_name" not in data:
         return jsonify({
             "error": "Missing required field: asset_name"
         }), 400
 
-    # Validate asset_name is not empty
+    # Validate asset name
     if not data["asset_name"] or not data["asset_name"].strip():
         return jsonify({
             "error": "asset_name cannot be empty"
         }), 400
 
-    # Validate optional fields are not empty strings if provided
+    # Validate optional fields
     for field in ["provider", "service", "region", "status", "owner"]:
         if field in data and data[field] is not None:
             if not str(data[field]).strip():
@@ -89,28 +125,42 @@ def add_asset():
                     "error": f"{field} cannot be empty string"
                 }), 400
 
-    # Validate cost if provided
+    # Validate cost
     if "cost" in data and data["cost"] is not None:
         try:
             cost_value = float(data["cost"])
+
             if cost_value < 0:
                 return jsonify({
                     "error": "cost cannot be negative"
                 }), 400
+
         except (ValueError, TypeError):
             return jsonify({
                 "error": "cost must be a valid number"
             }), 400
 
     try:
+
         new_asset = Asset(
             asset_name=data["asset_name"].strip(),
-            provider=data.get("provider", "").strip() if data.get("provider") else None,
-            service=data.get("service", "").strip() if data.get("service") else None,
-            region=data.get("region", "").strip() if data.get("region") else None,
-            status=data.get("status", "").strip() if data.get("status") else None,
-            owner=data.get("owner", "").strip() if data.get("owner") else None,
-            cost=float(data.get("cost", 0.0)) if data.get("cost") else 0.0
+            provider=data.get("provider", "").strip()
+            if data.get("provider") else None,
+
+            service=data.get("service", "").strip()
+            if data.get("service") else None,
+
+            region=data.get("region", "").strip()
+            if data.get("region") else None,
+
+            status=data.get("status", "").strip()
+            if data.get("status") else None,
+
+            owner=data.get("owner", "").strip()
+            if data.get("owner") else None,
+
+            cost=float(data.get("cost", 0.0))
+            if data.get("cost") else 0.0
         )
 
         db.session.add(new_asset)
@@ -122,18 +172,30 @@ def add_asset():
         }), 201
 
     except Exception as e:
+
         db.session.rollback()
+
         return jsonify({
             "error": "Failed to create asset",
             "details": str(e)
         }), 500
 
 
-# PUT - Update asset
+# ==========================================
+# UPDATE ASSET
+# ADMIN ONLY
+# ==========================================
+
 @asset_bp.route("/assets/<int:asset_id>", methods=["PUT"])
+@jwt_required()
 def update_asset(asset_id):
 
-    asset = Asset.query.get(asset_id)
+    permission_error = admin_required()
+
+    if permission_error:
+        return permission_error
+
+    asset = db.session.get(Asset, asset_id)
 
     if not asset:
         return jsonify({
@@ -148,50 +210,94 @@ def update_asset(asset_id):
 
     data = request.json
 
-    # Validate at least one field is provided
-    valid_fields = ["asset_name", "provider", "service", "region", "status", "owner", "cost"]
+    valid_fields = [
+        "asset_name",
+        "provider",
+        "service",
+        "region",
+        "status",
+        "owner",
+        "cost"
+    ]
+
+    # Validate at least one field
     if not any(field in data for field in valid_fields):
         return jsonify({
             "error": "At least one field must be provided to update"
         }), 400
 
-    # Validate fields are not empty strings if provided
-    for field in ["asset_name", "provider", "service", "region", "status", "owner"]:
+    # Validate text fields
+    for field in [
+        "asset_name",
+        "provider",
+        "service",
+        "region",
+        "status",
+        "owner"
+    ]:
+
         if field in data:
             if data[field] is not None and not str(data[field]).strip():
                 return jsonify({
                     "error": f"{field} cannot be empty string"
                 }), 400
 
-    # Validate cost if provided
+    # Validate cost
     if "cost" in data and data["cost"] is not None:
         try:
             cost_value = float(data["cost"])
+
             if cost_value < 0:
                 return jsonify({
                     "error": "cost cannot be negative"
                 }), 400
+
         except (ValueError, TypeError):
             return jsonify({
                 "error": "cost must be a valid number"
             }), 400
 
     try:
-        # Update only provided fields
+
         if "asset_name" in data:
             asset.asset_name = data["asset_name"].strip()
+
         if "provider" in data:
-            asset.provider = data["provider"].strip() if data["provider"] else None
+            asset.provider = (
+                data["provider"].strip()
+                if data["provider"] else None
+            )
+
         if "service" in data:
-            asset.service = data["service"].strip() if data["service"] else None
+            asset.service = (
+                data["service"].strip()
+                if data["service"] else None
+            )
+
         if "region" in data:
-            asset.region = data["region"].strip() if data["region"] else None
+            asset.region = (
+                data["region"].strip()
+                if data["region"] else None
+            )
+
         if "status" in data:
-            asset.status = data["status"].strip() if data["status"] else None
+            asset.status = (
+                data["status"].strip()
+                if data["status"] else None
+            )
+
         if "owner" in data:
-            asset.owner = data["owner"].strip() if data["owner"] else None
+            asset.owner = (
+                data["owner"].strip()
+                if data["owner"] else None
+            )
+
         if "cost" in data:
-            asset.cost = float(data["cost"]) if data["cost"] is not None else 0.0
+            asset.cost = (
+                float(data["cost"])
+                if data["cost"] is not None
+                else 0.0
+            )
 
         db.session.commit()
 
@@ -200,27 +306,50 @@ def update_asset(asset_id):
         }), 200
 
     except Exception as e:
+
         db.session.rollback()
+
         return jsonify({
             "error": "Failed to update asset",
             "details": str(e)
         }), 500
 
 
-# DELETE - Delete asset
+# ==========================================
+# DELETE ASSET
+# ADMIN ONLY
+# ==========================================
+
 @asset_bp.route("/assets/<int:asset_id>", methods=["DELETE"])
+@jwt_required()
 def delete_asset(asset_id):
 
-    asset = Asset.query.get(asset_id)
+    permission_error = admin_required()
+
+    if permission_error:
+        return permission_error
+
+    asset = db.session.get(Asset, asset_id)
 
     if not asset:
         return jsonify({
             "message": "Asset not found"
         }), 404
 
-    db.session.delete(asset)
-    db.session.commit()
+    try:
 
-    return jsonify({
-        "message": "Asset deleted successfully"
-    })
+        db.session.delete(asset)
+        db.session.commit()
+
+        return jsonify({
+            "message": "Asset deleted successfully"
+        }), 200
+
+    except Exception as e:
+
+        db.session.rollback()
+
+        return jsonify({
+            "error": "Failed to delete asset",
+            "details": str(e)
+        }), 500
