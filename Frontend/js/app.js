@@ -548,8 +548,6 @@ async function handleLogin(event) {
     }
 
 }
-
-
 // ============================================
 // EVENT LISTENERS
 // ============================================
@@ -560,11 +558,8 @@ function setupEventListeners() {
     if (loginForm) {
 
         loginForm.addEventListener(
-
             "submit",
-
             handleLogin
-
         );
 
     }
@@ -574,11 +569,8 @@ function setupEventListeners() {
     if (addAssetForm) {
 
         addAssetForm.addEventListener(
-
             "submit",
-
             handleAddAsset
-
         );
 
     }
@@ -588,11 +580,8 @@ function setupEventListeners() {
     if (editAssetForm) {
 
         editAssetForm.addEventListener(
-
             "submit",
-
             handleEditAsset
-
         );
 
     }
@@ -602,11 +591,8 @@ function setupEventListeners() {
     if (refreshBtn) {
 
         refreshBtn.addEventListener(
-
             "click",
-
             loadAssets
-
         );
 
     }
@@ -616,11 +602,8 @@ function setupEventListeners() {
     if (closeModal) {
 
         closeModal.addEventListener(
-
             "click",
-
             closeEditModal
-
         );
 
     }
@@ -630,11 +613,8 @@ function setupEventListeners() {
     if (cancelEditBtn) {
 
         cancelEditBtn.addEventListener(
-
             "click",
-
             closeEditModal
-
         );
 
     }
@@ -647,9 +627,7 @@ function setupEventListeners() {
 
         (event) => {
 
-            if (
-                event.target === editModal
-            ) {
+            if (event.target === editModal) {
 
                 closeEditModal();
 
@@ -658,6 +636,31 @@ function setupEventListeners() {
         }
 
     );
+
+
+    // ============================================
+    // DASHBOARD - ADD NEW ASSET BUTTON
+    // ============================================
+
+    const dashboardAddAssetBtn =
+        document.getElementById("dashboardAddAssetBtn");
+
+
+    if (dashboardAddAssetBtn) {
+
+        dashboardAddAssetBtn.addEventListener(
+
+            "click",
+
+            () => {
+
+                navigateToAssets();
+
+            }
+
+        );
+
+    }
 
 }
 
