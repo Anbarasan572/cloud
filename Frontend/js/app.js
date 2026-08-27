@@ -3220,11 +3220,14 @@ function setupEditCostEstimator() {
 // ============================================
 // INITIALIZE COST ESTIMATORS
 // ============================================
-
 document.addEventListener(
     "DOMContentLoaded",
     () => {
 
+        // Password show/hide
+        setupPasswordToggle();
+
+        // Cost estimators
         setupCostEstimator();
 
         setupEditCostEstimator();
@@ -3544,5 +3547,46 @@ function setupProfileDropdown() {
         });
 
     }
+
+}
+// ============================================
+// PASSWORD SHOW / HIDE TOGGLE
+// ============================================
+
+function setupPasswordToggle() {
+
+    const passwordInput =
+        document.getElementById("loginPassword");
+
+    const passwordToggle =
+        document.getElementById("passwordToggle");
+
+    if (!passwordInput || !passwordToggle) {
+        return;
+    }
+
+    passwordToggle.addEventListener("click", () => {
+
+        if (passwordInput.type === "password") {
+
+            passwordInput.type = "text";
+
+            passwordToggle.setAttribute(
+                "aria-label",
+                "Hide password"
+            );
+
+        } else {
+
+            passwordInput.type = "password";
+
+            passwordToggle.setAttribute(
+                "aria-label",
+                "Show password"
+            );
+
+        }
+
+    });
 
 }
