@@ -333,7 +333,6 @@ const loginError =
 const appLayout =
     document.querySelector(".app-layout");
 
-
 // ============================================
 // INITIALIZE APPLICATION
 // ============================================
@@ -342,37 +341,21 @@ document.addEventListener(
     "DOMContentLoaded",
     () => {
 
+        // Main event listeners
         setupEventListeners();
 
-        loadTheme();
+        // Password show/hide
+        setupPasswordToggle();
 
-        // User is already logged in
-        if (authToken && currentUser) {
+        // Navigation
+        setupNavigation();
 
-            if (loginScreen) {
-                loginScreen.style.display = "none";
-            }
+        // Cost Estimators
+        setupCostEstimator();
+        setupEditCostEstimator();
 
-            if (appLayout) {
-                appLayout.style.display = "flex";
-            }
-
-            applyRolePermissions();
-
-            loadAssets();
-
-        } else {
-
-            // User is not logged in
-            if (loginScreen) {
-                loginScreen.style.display = "flex";
-            }
-
-            if (appLayout) {
-                appLayout.style.display = "none";
-            }
-
-        }
+        // Profile Dropdown + Logout
+        setupProfileDropdown();
 
     }
 );
@@ -3593,3 +3576,31 @@ function setupPasswordToggle() {
     });
 
 }
+// ============================================
+// NAVIGATE TO ASSETS
+// ============================================
+
+function navigateToAssets() {
+
+    const assetsButton =
+        document.querySelector(
+            '[data-page="assets"]'
+        );
+
+    if (assetsButton) {
+
+        assetsButton.click();
+
+    } else {
+
+        console.error(
+            "Assets navigation button not found"
+        );
+
+    }
+
+}
+
+
+// Make function available globally
+window.navigateToAssets = navigateToAssets;
