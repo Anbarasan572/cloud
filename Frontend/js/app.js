@@ -447,33 +447,6 @@ async function handleLogin(event) {
         }
 
 
-        // Save authentication data
-        authToken =
-            data.access_token;
-
-
-        currentUser =
-            data.user;
-
-
-        localStorage.setItem(
-
-            "cloudasset_token",
-
-            authToken
-
-        );
-
-
-        localStorage.setItem(
-
-            "cloudasset_user",
-
-            JSON.stringify(currentUser)
-
-        );
-
-
         // Hide login screen
         if (loginScreen) {
 
@@ -666,7 +639,7 @@ function setupEventListeners() {
         cancelEditBtn.addEventListener(
             "click",
             closeEditModal
-        );
+        )
 
     }
 
@@ -3774,65 +3747,7 @@ document.addEventListener(
 // Your backend JWT role protection is the
 // actual security layer.
 // ==========================================
-// ============================================
-// PROFILE DROPDOWN + LOGOUT
-// ============================================
 
-function setupProfileDropdown() {
-
-    const profileButton =
-        document.getElementById("profileButton");
-
-    const profileDropdown =
-        document.getElementById("profileDropdown");
-
-    const logoutButton =
-        document.getElementById("logoutButton");
-
-
-    // Open / Close Profile Dropdown
-    if (profileButton && profileDropdown) {
-
-        profileButton.addEventListener("click", (event) => {
-
-            event.stopPropagation();
-
-            profileDropdown.classList.toggle("show");
-
-        });
-
-    }
-
-
-    // Close dropdown when clicking outside
-    document.addEventListener("click", (event) => {
-
-        if (
-            profileButton &&
-            profileDropdown &&
-            !profileButton.contains(event.target) &&
-            !profileDropdown.contains(event.target)
-        ) {
-
-            profileDropdown.classList.remove("show");
-
-        }
-
-    });
-
-
-    // Logout
-    if (logoutButton) {
-
-        logoutButton.addEventListener("click", () => {
-
-            logout();
-
-        });
-
-    }
-
-}
 // ============================================
 // PASSWORD SHOW / HIDE TOGGLE
 // ============================================
@@ -3899,6 +3814,160 @@ function navigateToAssets() {
 
 }
 
+// ============================================
+// PROFILE DROPDOWN + LOGOUT
+// ============================================
 
-// Make function available globally
-window.navigateToAssets = navigateToAssets;
+function setupProfileDropdown() {
+
+    const profileButton =
+        document.getElementById("profileButton");
+
+    const profileDropdown =
+        document.getElementById("profileDropdown");
+
+    const logoutButton =
+        document.getElementById("logoutButton");
+
+
+    if (!profileButton || !profileDropdown) {
+
+        console.error(
+            "Profile button or dropdown not found"
+        );
+
+        return;
+
+    }
+
+
+    // Open / Close dropdown
+    profileButton.addEventListener(
+        "click",
+        (event) => {
+
+            event.stopPropagation();
+
+            profileDropdown.classList.toggle("show");
+
+            profileButton.classList.toggle("active");
+
+        }
+    );
+
+
+    // Logout
+    if (logoutButton) {
+
+        logoutButton.addEventListener(
+            "click",
+            (event) => {
+
+                event.stopPropagation();
+
+                logout();
+
+            }
+        );
+
+    }
+
+
+    // Close dropdown when clicking outside
+    document.addEventListener(
+        "click",
+        (event) => {
+
+            if (
+                !profileButton.contains(event.target) &&
+                !profileDropdown.contains(event.target)
+            ) {
+
+                profileDropdown.classList.remove("show");
+
+                profileButton.classList.remove("active");
+
+            }
+
+        }
+    );
+
+}
+// ============================================
+// PROFILE DROPDOWN + LOGOUT
+// ============================================
+
+function setupProfileDropdown() {
+
+    const profileButton =
+        document.getElementById("profileButton");
+
+    const profileDropdown =
+        document.getElementById("profileDropdown");
+
+    const logoutButton =
+        document.getElementById("logoutButton");
+
+
+    if (!profileButton || !profileDropdown) {
+
+        console.error(
+            "Profile button or dropdown not found"
+        );
+
+        return;
+
+    }
+
+
+    // Open / Close dropdown
+    profileButton.addEventListener(
+        "click",
+        (event) => {
+
+            event.stopPropagation();
+
+            profileDropdown.classList.toggle("show");
+
+            profileButton.classList.toggle("active");
+
+        }
+    );
+
+
+    // Logout
+    if (logoutButton) {
+
+        logoutButton.addEventListener(
+            "click",
+            (event) => {
+
+                event.stopPropagation();
+
+                logout();
+
+            }
+        );
+
+    }
+
+
+    // Close dropdown when clicking outside
+    document.addEventListener(
+        "click",
+        (event) => {
+
+            if (
+                !profileButton.contains(event.target) &&
+                !profileDropdown.contains(event.target)
+            ) {
+
+                profileDropdown.classList.remove("show");
+
+                profileButton.classList.remove("active");
+
+            }
+
+        }
+    );
+}
