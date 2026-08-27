@@ -332,7 +332,6 @@ const loginError =
 
 const appLayout =
     document.querySelector(".app-layout");
-
 // ============================================
 // INITIALIZE APPLICATION
 // ============================================
@@ -344,7 +343,7 @@ document.addEventListener(
         // Main event listeners
         setupEventListeners();
 
-        // Password show/hide
+        // Password show / hide
         setupPasswordToggle();
 
         // Navigation
@@ -359,8 +358,6 @@ document.addEventListener(
 
     }
 );
-
-
 // ============================================
 // LOGIN
 // ============================================
