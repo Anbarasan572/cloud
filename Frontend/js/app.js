@@ -2567,17 +2567,21 @@ function updateServiceAnalytics() {
         ).join("");
 
 }
-
 // ============================================
-// PAGE NAVIGATION - FINAL FIX
+// PAGE NAVIGATION
 // ============================================
 
 function setupNavigation() {
 
-    const navItems = document.querySelectorAll(".nav-item");
-    const pages = document.querySelectorAll(".page");
+    const navItems =
+        document.querySelectorAll(".nav-item");
+
+    const pages =
+        document.querySelectorAll(".page");
+
 
     const pageTitles = {
+
         dashboard: {
             title: "Dashboard",
             subtitle: "Overview of your cloud infrastructure"
@@ -2602,104 +2606,25 @@ function setupNavigation() {
             title: "Settings",
             subtitle: "Manage your application preferences"
         }
+
     };
 
 
-    navItems.forEach((navItem) => {
-
-        navItem.addEventListener("click", () => {
-
-            const pageName = navItem.dataset.page;
-
-
-            // Remove active class from sidebar buttons
-            navItems.forEach((item) => {
-                item.classList.remove("active");
-            });
-
-
-            // Add active class to clicked button
-            navItem.classList.add("active");
-
-
-            // Hide ALL pages
-            pages.forEach((page) => {
-                page.classList.remove("active-page");
-            });
-
-
-            // Show ONLY selected page
-            const selectedPage =
-                document.getElementById(pageName);
-
-
-            if (selectedPage) {
-
-                selectedPage.classList.add("active-page");
-
-            } else {
-
-                console.error(
-                    "Page not found:",
-                    pageName
-                );
-
-            }
-
-
-            // Update topbar title
-            const pageTitle =
-                document.getElementById("pageTitle");
-
-            const pageSubtitle =
-                document.getElementById("pageSubtitle");
-
-
-            if (pageTitles[pageName]) {
-
-                if (pageTitle) {
-
-                    pageTitle.textContent =
-                        pageTitles[pageName].title;
-
-                }
-
-
-                if (pageSubtitle) {
-
-                    pageSubtitle.textContent =
-                        pageTitles[pageName].subtitle;
-
-                }
-
-            }
-
-        });
-
-    });
-
-}
-
-
-
-    // ============================================
-    // SHOW SELECTED PAGE
-    // ============================================
-
     function showPage(pageName) {
 
-        // Hide ALL pages
+        // Hide all pages
         pages.forEach((page) => {
+
             page.classList.remove("active-page");
+
         });
 
 
-        // Find selected page
+        // Show selected page
         const selectedPage =
             document.getElementById(pageName);
 
 
-        // Show selected page
         if (!selectedPage) {
 
             console.error(
@@ -2712,12 +2637,10 @@ function setupNavigation() {
         }
 
 
-        selectedPage.classList.add(
-            "active-page"
-        );
+        selectedPage.classList.add("active-page");
 
 
-        // Update active sidebar button
+        // Update sidebar
         navItems.forEach((item) => {
 
             item.classList.remove("active");
@@ -2738,23 +2661,19 @@ function setupNavigation() {
         }
 
 
-        // Update page title
+        // Update page heading
+        const pageTitle =
+            document.getElementById("pageTitle");
+
+        const pageSubtitle =
+            document.getElementById("pageSubtitle");
+
+
         const pageData =
             pageTitles[pageName];
 
 
         if (pageData) {
-
-            const pageTitle =
-                document.getElementById(
-                    "pageTitle"
-                );
-
-            const pageSubtitle =
-                document.getElementById(
-                    "pageSubtitle"
-                );
-
 
             if (pageTitle) {
 
@@ -2773,22 +2692,10 @@ function setupNavigation() {
 
         }
 
-
-        // Scroll to top
-        window.scrollTo({
-
-            top: 0,
-            behavior: "smooth"
-
-        });
-
     }
 
 
-    // ============================================
-    // SIDEBAR CLICK EVENTS
-    // ============================================
-
+    // Navigation button clicks
     navItems.forEach((item) => {
 
         item.addEventListener(
@@ -2798,7 +2705,6 @@ function setupNavigation() {
                 const pageName =
                     item.dataset.page;
 
-
                 showPage(pageName);
 
             }
@@ -2807,23 +2713,8 @@ function setupNavigation() {
     });
 
 
-    // ============================================
-    // START WITH DASHBOARD
-    // ============================================
-
-    const currentActive =
-        document.querySelector(
-            ".nav-item.active"
-        );
-
-
-    if (currentActive) {
-
-        showPage(
-            currentActive.dataset.page
-        );
-
-    }
+    // Start on Dashboard
+    showPage("dashboard");
 
 }
 
@@ -3596,7 +3487,6 @@ document.addEventListener(
 // Your backend JWT role protection is the
 // actual security layer.
 // ==========================================
-
 // ============================================
 // PROFILE DROPDOWN + LOGOUT
 // ============================================
@@ -3649,12 +3539,7 @@ function setupProfileDropdown() {
 
         logoutButton.addEventListener("click", () => {
 
-            // Remove login information
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("user");
-
-            // Return to login page
-            window.location.reload();
+            logout();
 
         });
 
