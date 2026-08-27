@@ -534,6 +534,43 @@ async function handleLogin(event) {
 
 function setupEventListeners() {
 
+    // Dashboard - Add New Asset
+    const dashboardAddAssetBtn =
+        document.getElementById("dashboardAddAssetBtn");
+
+    if (dashboardAddAssetBtn) {
+
+        dashboardAddAssetBtn.addEventListener(
+            "click",
+            () => {
+
+                navigateToAssets();
+
+            }
+        );
+
+    }
+
+
+    // Dashboard - View All Assets
+    const viewAllAssetsBtn =
+        document.getElementById("viewAllAssetsBtn");
+
+    if (viewAllAssetsBtn) {
+
+        viewAllAssetsBtn.addEventListener(
+            "click",
+            () => {
+
+                navigateToAssets();
+
+            }
+        );
+
+    }
+
+
+    // KEEP ALL YOUR OTHER EXISTING LISTENERS BELOW
     // Login
     if (loginForm) {
 
@@ -616,32 +653,6 @@ function setupEventListeners() {
         }
 
     );
-
-
-    // ============================================
-    // DASHBOARD - ADD NEW ASSET BUTTON
-    // ============================================
-
-    const dashboardAddAssetBtn =
-        document.getElementById("dashboardAddAssetBtn");
-
-
-    if (dashboardAddAssetBtn) {
-
-        dashboardAddAssetBtn.addEventListener(
-
-            "click",
-
-            () => {
-
-                navigateToAssets();
-
-            }
-
-        );
-
-    }
-
 }
 
 // ============================================
