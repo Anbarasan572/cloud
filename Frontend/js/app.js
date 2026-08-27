@@ -2554,6 +2554,257 @@ function updateServiceAnalytics() {
 
 }
 // ============================================
+// UPDATE COST OVERVIEW
+// ============================================
+
+function updateCostOverview() {
+
+    const totalElement =
+        document.getElementById("costOverviewTotal");
+
+    const averageElement =
+        document.getElementById("averageCost");
+
+    const highestElement =
+        document.getElementById("highestCost");
+
+    const highestNameElement =
+        document.getElementById("highestCostName");
+
+    const providerContainer =
+        document.getElementById("costByProvider");
+
+    const serviceContainer =
+        document.getElementById("costByService");
+
+    const expensiveContainer =
+        document.getElementById("expensiveAssets");
+
+
+    // Safety check
+    if (
+        !totalElement ||
+        !averageElement ||
+        !highestElement ||
+        !highestNameElement ||
+        !providerContainer ||
+        !serviceContainer ||
+        !expensiveContainer
+    ) {
+
+        return;
+
+    }
+
+
+    const assets =
+        Array.isArray(allAssets)
+            ? allAssets
+            : [];
+
+
+    // No assets available
+    if (assets.length === 0) {
+
+        totalElement.textContent = "$0.00";
+        averageElement.textContent = "$0.00";
+        highestElement.textContent = "$0.00";
+        highestNameElement.textContent = "No assets";
+
+        providerContainer.innerHTML =
+            "No cost data available.";
+
+        serviceContainer.innerHTML =
+            "No cost data available.";
+
+        expensiveContainer.innerHTML =
+            "<p class='empty-state'>No assets available.</p>";
+
+        return;
+
+    }
+
+
+    // Calculate totals
+    let totalCost = 0;
+
+    let highestAsset = null;
+
+    const providerCosts = {};
+
+    const serviceCosts = {};
+
+
+    assets.forEach((asset) => {
+
+        const cost =
+            Number(asset.cost) || 0;
+
+
+        totalCost += cost;
+
+
+        // Highest cost asset
+        if (
+            !highestAsset ||
+            cost > (Number(highestAsset.cost) || 0)
+        ) {
+
+            highestAsset = asset;
+
+        }
+
+
+        // Cost by provider
+        const provider =
+            asset.provider || "Unknown";
+
+        providerCosts[provider] =
+            (providerCosts[provider] || 0) +
+            cost;
+
+
+        // Cost by service
+        const service =
+            asset.service || "Unknown";
+
+        serviceCosts[service] =
+            (serviceCosts[service] || 0) +
+            cost;
+
+    });
+
+
+    // Update summary cards
+    totalElement.textContent =
+        `$${totalCost.toFixed(2)}`;
+
+
+    averageElement.textContent =
+        `$${(totalCost / assets.length).toFixed(2)}`;
+
+
+    highestElement.textContent =
+        highestAsset
+            ? `$${(Number(highestAsset.cost) || 0).toFixed(2)}`
+            : "$0.00";
+
+
+    highestNameElement.textContent =
+        highestAsset
+            ? (
+                highestAsset.name ||
+                highestAsset.asset_name ||
+                "Unnamed Asset"
+            )
+            : "No assets";
+
+
+    // Display cost by provider
+    providerContainer.innerHTML =
+        Object.entries(providerCosts)
+            .sort((a, b) => b[1] - a[1])
+            .map(
+                ([provider, cost]) => `
+
+                    <div class="analytics-row">
+
+                        <div class="analytics-label">
+
+                            <span>
+                                ${escapeHTML(provider)}
+                            </span>
+
+                            <strong>
+                                $${cost.toFixed(2)}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                `
+            )
+            .join("");
+
+
+    // Display cost by service
+    serviceContainer.innerHTML =
+        Object.entries(serviceCosts)
+            .sort((a, b) => b[1] - a[1])
+            .map(
+                ([service, cost]) => `
+
+                    <div class="analytics-row">
+
+                        <div class="analytics-label">
+
+                            <span>
+                                ${escapeHTML(service)}
+                            </span>
+
+                            <strong>
+                                $${cost.toFixed(2)}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                `
+            )
+            .join("");
+
+
+    // Most expensive assets
+    const sortedAssets =
+        [...assets]
+            .sort(
+                (a, b) =>
+                    (Number(b.cost) || 0) -
+                    (Number(a.cost) || 0)
+            )
+            .slice(0, 5);
+
+
+    expensiveContainer.innerHTML =
+        sortedAssets.map(
+            (asset) => {
+
+                const cost =
+                    Number(asset.cost) || 0;
+
+                const name =
+                    asset.name ||
+                    asset.asset_name ||
+                    "Unnamed Asset";
+
+
+                return `
+
+                    <div class="analytics-row">
+
+                        <div class="analytics-label">
+
+                            <span>
+                                ${escapeHTML(name)}
+                            </span>
+
+                            <strong>
+                                $${cost.toFixed(2)}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        ).join("");
+
+}
+// ============================================
 // PAGE NAVIGATION
 // ============================================
 
@@ -2606,7 +2857,7 @@ function setupNavigation() {
         });
 
 
-        // Show selected page
+        // Find selected page
         const selectedPage =
             document.getElementById(pageName);
 
@@ -2623,8 +2874,14 @@ function setupNavigation() {
         }
 
 
+        // Show selected page
         selectedPage.classList.add("active-page");
+        if (pageName === "costs") {
 
+    updateCostOverview();
+
+}
+   
 
         // Update sidebar
         navItems.forEach((item) => {
@@ -2703,7 +2960,6 @@ function setupNavigation() {
     showPage("dashboard");
 
 }
-
 // ============================================
 // UPDATE PAGE HEADER
 // ============================================
