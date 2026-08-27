@@ -401,8 +401,7 @@ async function handleLogin(event) {
                 method: "POST",
 
                 headers: {
-                    "Content-Type":
-                        "application/json"
+                    "Content-Type": "application/json"
                 },
 
                 body: JSON.stringify({
@@ -427,9 +426,7 @@ async function handleLogin(event) {
             throw new Error(
 
                 data.error ||
-
                 data.message ||
-
                 "Login failed"
 
             );
@@ -437,7 +434,7 @@ async function handleLogin(event) {
         }
 
 
-        // Check backend response
+        // Validate backend response
         if (
             !data.access_token ||
             !data.user
@@ -499,6 +496,10 @@ async function handleLogin(event) {
         applyRolePermissions();
 
 
+        // Update top-right profile
+        updateUserProfile();
+
+
         // Load assets
         await loadAssets();
 
@@ -514,9 +515,7 @@ async function handleLogin(event) {
         if (loginError) {
 
             loginError.textContent =
-
                 error.message ||
-
                 "Unable to login";
 
 
@@ -528,6 +527,41 @@ async function handleLogin(event) {
     }
 
 }
+
+// ============================================
+// UPDATE USER PROFILE UI
+// ============================================
+
+function updateUserProfile() {
+
+    if (!currentUser) return;
+
+    const username =
+        currentUser.username ||
+        currentUser.name ||
+        "User";
+
+    const role =
+        currentUser.role ||
+        "User";
+
+    const avatarLetter =
+        username.charAt(0).toUpperCase();
+
+
+    // Top-right profile
+    setText("profileUsername", username);
+    setText("profileRole", role);
+    setText("userAvatar", avatarLetter);
+
+
+    // Dropdown profile
+    setText("dropdownUsername", username);
+    setText("dropdownRole", role);
+    setText("dropdownAvatar", avatarLetter);
+
+}
+
 // ============================================
 // EVENT LISTENERS
 // ============================================
