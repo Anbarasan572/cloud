@@ -2568,25 +2568,228 @@ function updateServiceAnalytics() {
 
 }
 
-
 // ============================================
-// NAVIGATION
+// PAGE NAVIGATION - FINAL FIX
 // ============================================
 
-const navItems =
-    document.querySelectorAll(
-        ".nav-item"
-    );
+function setupNavigation() {
+
+    const navItems = document.querySelectorAll(".nav-item");
+    const pages = document.querySelectorAll(".page");
+
+    const pageTitles = {
+        dashboard: {
+            title: "Dashboard",
+            subtitle: "Overview of your cloud infrastructure"
+        },
+
+        assets: {
+            title: "Assets",
+            subtitle: "Manage your cloud infrastructure"
+        },
+
+        costs: {
+            title: "Cost Overview",
+            subtitle: "Monitor your cloud spending"
+        },
+
+        analytics: {
+            title: "Analytics",
+            subtitle: "Infrastructure insights and statistics"
+        },
+
+        settings: {
+            title: "Settings",
+            subtitle: "Manage your application preferences"
+        }
+    };
 
 
-const pages =
-    document.querySelectorAll(
-        ".page"
-    );
+    navItems.forEach((navItem) => {
+
+        navItem.addEventListener("click", () => {
+
+            const pageName = navItem.dataset.page;
 
 
-navItems.forEach(
-    item => {
+            // Remove active class from sidebar buttons
+            navItems.forEach((item) => {
+                item.classList.remove("active");
+            });
+
+
+            // Add active class to clicked button
+            navItem.classList.add("active");
+
+
+            // Hide ALL pages
+            pages.forEach((page) => {
+                page.classList.remove("active-page");
+            });
+
+
+            // Show ONLY selected page
+            const selectedPage =
+                document.getElementById(pageName);
+
+
+            if (selectedPage) {
+
+                selectedPage.classList.add("active-page");
+
+            } else {
+
+                console.error(
+                    "Page not found:",
+                    pageName
+                );
+
+            }
+
+
+            // Update topbar title
+            const pageTitle =
+                document.getElementById("pageTitle");
+
+            const pageSubtitle =
+                document.getElementById("pageSubtitle");
+
+
+            if (pageTitles[pageName]) {
+
+                if (pageTitle) {
+
+                    pageTitle.textContent =
+                        pageTitles[pageName].title;
+
+                }
+
+
+                if (pageSubtitle) {
+
+                    pageSubtitle.textContent =
+                        pageTitles[pageName].subtitle;
+
+                }
+
+            }
+
+        });
+
+    });
+
+}
+
+
+
+    // ============================================
+    // SHOW SELECTED PAGE
+    // ============================================
+
+    function showPage(pageName) {
+
+        // Hide ALL pages
+        pages.forEach((page) => {
+            page.classList.remove("active-page");
+        });
+
+
+        // Find selected page
+        const selectedPage =
+            document.getElementById(pageName);
+
+
+        // Show selected page
+        if (!selectedPage) {
+
+            console.error(
+                "Page not found:",
+                pageName
+            );
+
+            return;
+
+        }
+
+
+        selectedPage.classList.add(
+            "active-page"
+        );
+
+
+        // Update active sidebar button
+        navItems.forEach((item) => {
+
+            item.classList.remove("active");
+
+        });
+
+
+        const activeButton =
+            document.querySelector(
+                `.nav-item[data-page="${pageName}"]`
+            );
+
+
+        if (activeButton) {
+
+            activeButton.classList.add("active");
+
+        }
+
+
+        // Update page title
+        const pageData =
+            pageTitles[pageName];
+
+
+        if (pageData) {
+
+            const pageTitle =
+                document.getElementById(
+                    "pageTitle"
+                );
+
+            const pageSubtitle =
+                document.getElementById(
+                    "pageSubtitle"
+                );
+
+
+            if (pageTitle) {
+
+                pageTitle.textContent =
+                    pageData.title;
+
+            }
+
+
+            if (pageSubtitle) {
+
+                pageSubtitle.textContent =
+                    pageData.subtitle;
+
+            }
+
+        }
+
+
+        // Scroll to top
+        window.scrollTo({
+
+            top: 0,
+            behavior: "smooth"
+
+        });
+
+    }
+
+
+    // ============================================
+    // SIDEBAR CLICK EVENTS
+    // ============================================
+
+    navItems.forEach((item) => {
 
         item.addEventListener(
             "click",
@@ -2596,58 +2799,33 @@ navItems.forEach(
                     item.dataset.page;
 
 
-                navItems.forEach(
-                    nav => {
-
-                        nav.classList.remove(
-                            "active"
-                        );
-
-                    }
-                );
-
-
-                item.classList.add(
-                    "active"
-                );
-
-
-                pages.forEach(
-                    page => {
-
-                        page.classList.remove(
-                            "active"
-                        );
-
-                    }
-                );
-
-
-                const selectedPage =
-                    document.getElementById(
-                        `${pageName}Page`
-                    );
-
-
-                if (selectedPage) {
-
-                    selectedPage.classList.add(
-                        "active"
-                    );
-
-                }
-
-
-                updatePageHeader(
-                    pageName
-                );
+                showPage(pageName);
 
             }
         );
 
-    }
-);
+    });
 
+
+    // ============================================
+    // START WITH DASHBOARD
+    // ============================================
+
+    const currentActive =
+        document.querySelector(
+            ".nav-item.active"
+        );
+
+
+    if (currentActive) {
+
+        showPage(
+            currentActive.dataset.page
+        );
+
+    }
+
+}
 
 // ============================================
 // UPDATE PAGE HEADER
@@ -3379,47 +3557,22 @@ function updateUserInterface() {
 
 
 // ============================================
-// FINAL APPLICATION STARTUP
+// INITIALIZE APPLICATION
 // ============================================
 
 document.addEventListener(
     "DOMContentLoaded",
     () => {
 
-        updateUserInterface();
+        // Navigation
+        setupNavigation();
 
+        // Cost Estimators
+        setupCostEstimator();
+        setupEditCostEstimator();
 
-        // Set pagination button listeners
-        const prevPage =
-            document.getElementById(
-                "prevPage"
-            );
-
-
-        const nextPageButton =
-            document.getElementById(
-                "nextPage"
-            );
-
-
-        if (prevPage) {
-
-            prevPage.addEventListener(
-                "click",
-                previousPage
-            );
-
-        }
-
-
-        if (nextPageButton) {
-
-            nextPageButton.addEventListener(
-                "click",
-                nextPage
-            );
-
-        }
+        // Profile Dropdown + Logout
+        setupProfileDropdown();
 
     }
 );
@@ -3443,89 +3596,68 @@ document.addEventListener(
 // Your backend JWT role protection is the
 // actual security layer.
 // ==========================================
-// PROFILE DROPDOWN
-// ==========================================
 
-const profileButton = document.getElementById("profileButton");
-const profileDropdown = document.getElementById("profileDropdown");
-const logoutButton = document.getElementById("logoutButton");
+// ============================================
+// PROFILE DROPDOWN + LOGOUT
+// ============================================
 
+function setupProfileDropdown() {
 
-// Open / Close profile dropdown
-if (profileButton && profileDropdown) {
+    const profileButton =
+        document.getElementById("profileButton");
 
-    profileButton.addEventListener("click", (event) => {
+    const profileDropdown =
+        document.getElementById("profileDropdown");
 
-        event.stopPropagation();
-
-        profileDropdown.classList.toggle("show");
-
-    });
-
-}
+    const logoutButton =
+        document.getElementById("logoutButton");
 
 
-// Close dropdown when clicking outside
-document.addEventListener("click", (event) => {
+    // Open / Close Profile Dropdown
+    if (profileButton && profileDropdown) {
 
-    if (
-        profileButton &&
-        profileDropdown &&
-        !profileButton.contains(event.target) &&
-        !profileDropdown.contains(event.target)
-    ) {
+        profileButton.addEventListener("click", (event) => {
 
-        profileDropdown.classList.remove("show");
+            event.stopPropagation();
+
+            profileDropdown.classList.toggle("show");
+
+        });
 
     }
 
-});
 
+    // Close dropdown when clicking outside
+    document.addEventListener("click", (event) => {
 
-// Logout button functionality
-if (logoutButton) {
+        if (
+            profileButton &&
+            profileDropdown &&
+            !profileButton.contains(event.target) &&
+            !profileDropdown.contains(event.target)
+        ) {
 
-    logoutButton.addEventListener("click", () => {
-
-        logout();
-
-    });
-
-}
-// ==========================================
-// SHOW / HIDE LOGIN PASSWORD
-// ==========================================
-
-const passwordToggle = document.getElementById("passwordToggle");
-const loginPassword = document.getElementById("loginPassword");
-
-if (passwordToggle && loginPassword) {
-
-    passwordToggle.addEventListener("click", () => {
-
-        if (loginPassword.type === "password") {
-
-            // Show password
-            loginPassword.type = "text";
-
-            passwordToggle.setAttribute(
-                "aria-label",
-                "Hide password"
-            );
-
-        } else {
-
-            // Hide password
-            loginPassword.type = "password";
-
-            passwordToggle.setAttribute(
-                "aria-label",
-                "Show password"
-            );
+            profileDropdown.classList.remove("show");
 
         }
 
     });
 
+
+    // Logout
+    if (logoutButton) {
+
+        logoutButton.addEventListener("click", () => {
+
+            // Remove login information
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("user");
+
+            // Return to login page
+            window.location.reload();
+
+        });
+
+    }
+
 }
-// ==========================================

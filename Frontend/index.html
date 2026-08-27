@@ -276,116 +276,128 @@
 
         <!-- ================= TOPBAR ================= -->
 
-        <header class="topbar">
+       <header class="topbar">
 
-            <div class="topbar-left">
+    <div class="topbar-title">
 
-                <button class="menu-toggle"
-                        id="menuToggle"
-                        type="button">
-                    ☰
-                </button>
+        <h1 id="pageTitle">Dashboard</h1>
 
-
-                <div>
-
-                    <h1 id="pageTitle">
-                        Dashboard
-                    </h1>
-
-                    <p id="pageSubtitle">
-                        Overview of your cloud infrastructure
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="topbar-actions">
-
-                <button class="theme-toggle"
-                        id="themeToggle"
-                        type="button"
-                        title="Toggle Dark Mode">
-                    🌙
-                </button>
-
-<div class="user-profile-wrapper">
-
-    <button
-        type="button"
-        class="user-profile"
-        id="profileButton"
-    >
-
-        <div class="user-avatar" id="userAvatar">
-            A
-        </div>
-
-        <div class="user-info">
-            <strong id="profileUsername">User</strong>
-            <span id="profileRole">User</span>
-        </div>
-
-        <span class="profile-arrow">⌄</span>
-
-    </button>
-
-
-    <div
-        class="profile-dropdown"
-        id="profileDropdown"
-    >
-
-        <div class="profile-dropdown-header">
-
-            <div class="dropdown-avatar" id="dropdownAvatar">
-                A
-            </div>
-
-            <div>
-
-                <strong id="dropdownUsername">
-                    User
-                </strong>
-
-                <span id="dropdownRole">
-                    User
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <div class="profile-divider"></div>
-
-
-        <button
-            type="button"
-            class="logout-button"
-            id="logoutButton"
-        >
-
-            <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-            >
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                <polyline points="16 17 21 12 16 7"/>
-                <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
-
-            <span>Logout</span>
-
-        </button>
+        <p id="pageSubtitle">
+            Overview of your cloud infrastructure
+        </p>
 
     </div>
 
-</div>
+
+    <div class="topbar-actions">
+
+        <!-- THEME BUTTON -->
+        <button
+            class="theme-toggle"
+            id="themeToggle"
+            type="button"
+            title="Toggle Dark Mode"
+        >
+            🌙
+        </button>
+
+
+        <!-- PROFILE -->
+        <div class="user-profile-wrapper">
+
+            <button
+                type="button"
+                class="user-profile"
+                id="profileButton"
+            >
+
+                <div class="user-avatar" id="userAvatar">
+                    A
+                </div>
+
+
+                <div class="user-info">
+
+                    <strong id="profileUsername">
+                        User
+                    </strong>
+
+                    <span id="profileRole">
+                        User
+                    </span>
+
+                </div>
+
+
+                <span class="profile-arrow">
+                    ⌄
+                </span>
+
+            </button>
+
+
+            <!-- DROPDOWN -->
+            <div
+                class="profile-dropdown"
+                id="profileDropdown"
+            >
+
+                <div class="profile-dropdown-header">
+
+                    <div
+                        class="dropdown-avatar"
+                        id="dropdownAvatar"
+                    >
+                        A
+                    </div>
+
+
+                    <div>
+
+                        <strong id="dropdownUsername">
+                            User
+                        </strong>
+
+                        <span id="dropdownRole">
+                            User
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-divider"></div>
+
+
+                <button
+                    type="button"
+                    class="logout-button"
+                    id="logoutButton"
+                >
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+
+                    <span>Logout</span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
                
 
 
