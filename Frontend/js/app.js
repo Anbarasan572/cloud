@@ -445,6 +445,21 @@ async function handleLogin(event) {
             );
 
         }
+        // Save authentication token
+authToken = data.access_token;
+
+localStorage.setItem(
+    "cloudasset_token",
+    authToken
+);
+
+// Save logged-in user
+currentUser = data.user;
+
+localStorage.setItem(
+    "cloudasset_user",
+    JSON.stringify(currentUser)
+);
 
 
         // Hide login screen
@@ -470,6 +485,7 @@ async function handleLogin(event) {
 
 
         // Update top-right profile
+        
         updateUserProfile();
 
 
@@ -683,6 +699,19 @@ async function loadAssets() {
             assetsContainer.innerHTML = "";
 
         }
+
+         // DEBUG: Check token before API request
+        console.log("TOKEN BEFORE ASSETS:", authToken);
+
+        console.log(
+            "STORED TOKEN:",
+            localStorage.getItem("cloudasset_token")
+        );
+
+        console.log(
+            "HEADERS SENT:",
+            getAuthHeaders()
+        );
 
 
         const response =
@@ -1512,6 +1541,9 @@ async function handleAddAsset(event) {
 
 
         await loadAssets();
+        console.log("LOGIN TOKEN:", authToken);
+console.log("STORED TOKEN:", localStorage.getItem("cloudasset_token"));
+console.log("AUTH HEADERS:", getAuthHeaders());
 
 
     } catch (error) {
