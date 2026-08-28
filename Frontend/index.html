@@ -399,265 +399,334 @@
 
 </header>
                
+<!-- ================= DASHBOARD ================= -->
+
+<section class="page active-page" id="dashboard">
+
+    <!-- WELCOME SECTION -->
+
+    <div class="welcome-section">
+
+        <div>
+
+            <p class="eyebrow">
+                CLOUD INFRASTRUCTURE
+            </p>
+
+            <h2>
+                Welcome to CloudAsset 👋
+            </h2>
+
+            <p>
+                Monitor your cloud assets,
+                infrastructure and spending
+                from one centralized platform.
+            </p>
+
+        </div>
 
 
-        <!-- ================= DASHBOARD ================= -->
+        <button
+            class="btn btn-primary"
+            id="dashboardAddAssetBtn"
+            type="button"
+        >
+            + Add New Asset
+        </button>
 
-        <section class="page active-page"
-                 id="dashboard">
+    </div>
 
 
-            <div class="welcome-section">
+    <!-- DASHBOARD STATISTICS -->
+
+    <div class="dashboard-grid">
+
+
+        <!-- TOTAL ASSETS -->
+
+        <div class="dashboard-card">
+
+            <div class="dashboard-icon">
+                ▣
+            </div>
+
+            <div>
+
+                <p>Total Assets</p>
+
+                <h3 id="dashTotalAssets">
+                    0
+                </h3>
+
+                <small>
+                    Across all providers
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACTIVE ASSETS -->
+
+        <div class="dashboard-card">
+
+            <div class="dashboard-icon">
+                ●
+            </div>
+
+            <div>
+
+                <p>Active Assets</p>
+
+                <h3 id="dashActiveAssets">
+                    0
+                </h3>
+
+                <small>
+                    Currently operational
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- MONTHLY COST -->
+
+        <div class="dashboard-card">
+
+            <div class="dashboard-icon">
+                $
+            </div>
+
+            <div>
+
+                <p>Monthly Cost</p>
+
+                <h3 id="dashTotalCost">
+                    $0.00
+                </h3>
+
+                <small>
+                    Estimated spending
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- CLOUD PROVIDERS -->
+
+        <div class="dashboard-card">
+
+            <div class="dashboard-icon">
+                ☁
+            </div>
+
+            <div>
+
+                <p>Cloud Providers</p>
+
+                <h3 id="dashProviders">
+                    0
+                </h3>
+
+                <small>
+                    Providers in use
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DASHBOARD CONTENT -->
+
+    <div class="dashboard-content-grid">
+
+
+        <!-- RECENT ASSETS -->
+
+        <div class="panel recent-assets-panel">
+
+            <div class="panel-header">
 
                 <div>
 
-                    <p class="eyebrow">
-                        CLOUD INFRASTRUCTURE
-                    </p>
-
-                    <h2>
-                        Welcome to CloudAsset 👋
-                    </h2>
+                    <h3>
+                        Recent Assets
+                    </h3>
 
                     <p>
-                        Monitor your cloud assets,
-                        infrastructure and spending
-                        from one centralized platform.
+                        Recently managed infrastructure
                     </p>
 
                 </div>
 
 
-              <button
-    class="btn btn-primary"
-    id="dashboardAddAssetBtn"
-    type="button"
->
-    + Add New Asset
-</button>
+                <button
+                    class="text-button"
+                    id="viewAllAssetsBtn"
+                    type="button"
+                >
+                    View All →
+                </button>
 
             </div>
 
 
+            <div id="recentAssets">
 
-            <!-- DASHBOARD STATS -->
+                <p class="empty-state">
+                    No assets available yet.
+                </p>
 
-            <div class="dashboard-grid">
+            </div>
 
-
-                <div class="dashboard-card">
-
-                    <span class="card-icon">▣</span>
-
-                    <div>
-
-                        <p>Total Assets</p>
-
-                        <h3 id="dashTotalAssets">
-                            0
-                        </h3>
-
-                        <small>
-                            Across all providers
-                        </small>
-
-                    </div>
-
-                </div>
+        </div>
 
 
+        <!-- INFRASTRUCTURE SUMMARY -->
 
-                <div class="dashboard-card">
+        <div class="panel infrastructure-panel">
 
-                    <span class="card-icon">●</span>
+            <div class="panel-header">
 
-                    <div>
+                <div>
 
-                        <p>Active Assets</p>
+                    <h3>
+                        Infrastructure Summary
+                    </h3>
 
-                        <h3 id="dashActiveAssets">
-                            0
-                        </h3>
-
-                        <small>
-                            Currently operational
-                        </small>
-
-                    </div>
+                    <p>
+                        Quick overview of your environment
+                    </p>
 
                 </div>
-
-
-
-                <div class="dashboard-card">
-
-                    <span class="card-icon">$</span>
-
-                    <div>
-
-                        <p>Monthly Cost</p>
-
-                        <h3 id="dashTotalCost">
-                            $0.00
-                        </h3>
-
-                        <small>
-                            Estimated spending
-                        </small>
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="dashboard-card">
-
-                    <span class="card-icon">☁</span>
-
-                    <div>
-
-                        <p>Cloud Providers</p>
-
-                        <h3 id="dashProviders">
-                            0
-                        </h3>
-
-                        <small>
-                            Providers in use
-                        </small>
-
-                    </div>
-
-                </div>
-
 
             </div>
 
 
-
-            <!-- DASHBOARD CONTENT -->
-
-            <div class="dashboard-content-grid">
+            <div class="summary-list">
 
 
-                <!-- RECENT ASSETS -->
+                <div class="summary-item">
 
-                <div class="panel">
+                    <div class="summary-label">
 
-                    <div class="panel-header">
+                        <span class="summary-dot running-dot"></span>
 
-                        <div>
-
-                            <h3>
-                                Recent Assets
-                            </h3>
-
-                            <p>
-                                Recently managed infrastructure
-                            </p>
-
-                        </div>
-
-
-                       <button
-    class="text-button"
-    id="viewAllAssetsBtn"
-    type="button"
->
-    View All →
-</button> 
+                        <span>
+                            Running
+                        </span>
 
                     </div>
 
 
-                    <div id="recentAssets">
-
-                        <p class="empty-state">
-                            No assets available yet.
-                        </p>
-
-                    </div>
+                    <strong id="runningCount">
+                        0
+                    </strong>
 
                 </div>
 
 
+                <div class="summary-item">
 
-                <!-- INFRASTRUCTURE SUMMARY -->
+                    <div class="summary-label">
 
-                <div class="panel">
+                        <span class="summary-dot stopped-dot"></span>
 
-                    <div class="panel-header">
-
-                        <div>
-
-                            <h3>
-                                Infrastructure Summary
-                            </h3>
-
-                            <p>
-                                Quick overview of your environment
-                            </p>
-
-                        </div>
+                        <span>
+                            Stopped
+                        </span>
 
                     </div>
 
 
-                    <div class="summary-list">
+                    <strong id="stoppedCount">
+                        0
+                    </strong>
+
+                </div>
 
 
-                        <div class="summary-item">
+                <div class="summary-item">
 
-                            <span>Running</span>
+                    <div class="summary-label">
 
-                            <strong id="runningCount">
-                                0
-                            </strong>
+                        <span class="summary-dot inactive-dot"></span>
 
-                        </div>
-
-
-                        <div class="summary-item">
-
-                            <span>Stopped</span>
-
-                            <strong id="stoppedCount">
-                                0
-                            </strong>
-
-                        </div>
-
-
-                        <div class="summary-item">
-
-                            <span>Inactive</span>
-
-                            <strong id="inactiveCount">
-                                0
-                            </strong>
-
-                        </div>
-                        
-                        <div class="summary-item">
-
-                        <span>Overdue</span>
-
-                         <strong id="overdueCount">
-                            0
-                        </strong>
-                    </div>
+                        <span>
+                            Inactive
+                        </span>
 
                     </div>
+
+
+                    <strong id="inactiveCount">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <!-- OVERDUE -->
+
+                <div class="summary-item overdue-item">
+
+                    <div class="summary-label">
+
+                        <span class="summary-dot overdue-dot"></span>
+
+                        <span>
+                            Overdue
+                        </span>
+
+                    </div>
+
+
+                    <strong id="overdueCount">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <!-- TERMINATED -->
+
+                <div class="summary-item">
+
+                    <div class="summary-label">
+
+                        <span class="summary-dot terminated-dot"></span>
+
+                        <span>
+                            Terminated
+                        </span>
+
+                    </div>
+
+
+                    <strong id="terminatedCount">
+                        0
+                    </strong>
 
                 </div>
 
 
             </div>
 
+        </div>
 
-        </section>
 
+    </div>
+
+
+</section>
 
 
         <!-- ================= ASSETS PAGE ================= -->
