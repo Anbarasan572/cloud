@@ -24,6 +24,52 @@ def admin_required():
     return None
 
 # ==========================================
+# DASHBOARD STATISTICS
+# ADMIN + EMPLOYEE
+# ==========================================
+
+@asset_bp.route("/assets/dashboard", methods=["GET"])
+@jwt_required()
+def dashboard_stats():
+
+    try:
+        assets = Asset.query.all()
+
+        today = datetime.now().date()
+
+        running_count = 0
+        terminated_count = 0
+        overdue_count = 0
+
+        for asset in assets:
+
+            # Count running assets
+            if asset.status and asset.status.lower() == "running":
+                running_count += 1
+
+            # Count terminated assets
+            if asset.status and asset.status.lower() == "terminated":
+                terminated_count += 1
+
+            # Count overdue assets
+            if asset.due_date and asset.due_date < today:
+                overdue_count += 1
+
+        return jsonify({
+            "running": running_count,
+            "terminated": terminated_count,
+            "overdue": overdue_count,
+            "total": len(assets)
+        }), 200
+
+    except Exception as e:
+
+        return jsonify({
+            "error": "Failed to load dashboard statistics",
+            "details": str(e)
+        }), 500
+
+# ==========================================
 # GET ALL ASSETS
 # ADMIN + EMPLOYEE
 # ==========================================
