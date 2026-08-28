@@ -790,6 +790,49 @@ async function loadAssets() {
 
 }
 
+// ============================================
+// LOAD DASHBOARD STATISTICS
+// ============================================
+
+async function loadDashboardStats() {
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE_URL}/assets/dashboard`,
+            {
+                headers: getAuthHeaders()
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to load dashboard statistics");
+        }
+
+        const data = await response.json();
+
+        console.log("Dashboard Stats:", data);
+
+        document.getElementById("runningCount").textContent =
+            data.running;
+
+        document.getElementById("terminatedCount").textContent =
+            data.terminated;
+
+        document.getElementById("overdueCount").textContent =
+            data.overdue;
+
+    } catch (error) {
+
+        console.error(
+            "Dashboard error:",
+            error
+        );
+
+    }
+
+}
+
 
 // ============================================
 // UPDATE ALL DASHBOARDS
