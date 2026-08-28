@@ -1120,6 +1120,20 @@ function displayAssets(assets) {
 
                 </div>
 
+                <div class="asset-info-item">
+
+    <span>
+        Due Date
+    </span>
+
+    <strong>
+        ${asset.due_date
+            ? escapeHTML(asset.due_date)
+            : "No Due Date"}
+    </strong>
+
+</div>
+
 
                 <div class="asset-actions">
 
@@ -1464,41 +1478,35 @@ async function handleAddAsset(event) {
 
     const assetData = {
 
-        asset_name:
-            formData
-                .get("assetName")
-                .trim(),
+    asset_name:
+        formData
+            .get("assetName")
+            .trim(),
 
-        provider:
-            formData
-                .get("provider"),
+    provider:
+        formData.get("provider"),
 
-        service:
-            formData
-                .get("service"),
+    service:
+        formData.get("service"),
 
-        region:
-            formData
-                .get("region"),
+    region:
+        formData.get("region"),
 
-        status:
-            formData
-                .get("status"),
+    status:
+        formData.get("status"),
 
-        owner:
-            formData
-                .get("owner"),
+    owner:
+        formData.get("owner"),
 
-         cost:
-    parseFloat(
-        formData.get("cost")
-    ) || 0,
+    cost:
+        parseFloat(
+            formData.get("cost")
+        ) || 0,
 
-due_date:
-    formData.get("due_date") || null
+    due_date:
+        formData.get("due_date") || null
 
-    };
-
+};
 
     try {
 
