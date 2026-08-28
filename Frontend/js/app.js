@@ -492,6 +492,8 @@ localStorage.setItem(
         // Load assets
         await loadAssets();
 
+        loadDashboardStats();
+
 
     } catch (error) {
 
@@ -630,13 +632,14 @@ function setupEventListeners() {
     // Refresh assets
     if (refreshBtn) {
 
-        refreshBtn.addEventListener(
-            "click",
-            loadAssets
-        );
-
+      refreshBtn.addEventListener(
+    "click",
+    () => {
+        loadAssets();
+        loadDashboardStats();
     }
-
+);
+    }
 
     // Close modal
     if (closeModal) {
@@ -1595,6 +1598,7 @@ async function handleAddAsset(event) {
 
 
         await loadAssets();
+        await loadDashboardStats();
         console.log("LOGIN TOKEN:", authToken);
 console.log("STORED TOKEN:", localStorage.getItem("cloudasset_token"));
 console.log("AUTH HEADERS:", getAuthHeaders());
@@ -1763,45 +1767,22 @@ async function handleEditAsset(event) {
             "editAssetId"
         ).value;
         const assetData = {
+    asset_name: formData.get("assetName").trim(),
 
-        asset_name:
-            document.getElementById(
-                "editAssetName"
-            ).value.trim(),
+    provider: formData.get("provider"),
 
-        provider:
-            document.getElementById(
-                "editProvider"
-            ).value,
+    service: formData.get("service"),
 
-        service:
-            document.getElementById(
-                "editService"
-            ).value,
+    region: formData.get("region"),
 
-        region:
-            document.getElementById(
-                "editRegion"
-            ).value,
+    status: formData.get("status"),
 
-        status:
-            document.getElementById(
-                "editStatus"
-            ).value,
+    owner: formData.get("owner"),
 
-        owner:
-            document.getElementById(
-                "editOwner"
-            ).value,
+    cost: parseFloat(formData.get("cost")) || 0,
 
-        cost:
-            parseFloat(
-                document.getElementById(
-                    "editCost"
-                ).value
-            ) || 0
-
-    };
+    due_date: formData.get("due_date") || null
+};
 
 
     try {
