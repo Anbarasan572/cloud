@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from datetime import datetime
 from flask_jwt_extended import jwt_required, get_jwt
 
 from database.db import db
@@ -21,7 +22,6 @@ def admin_required():
         }), 403
 
     return None
-
 
 # ==========================================
 # GET ALL ASSETS
@@ -46,12 +46,12 @@ def get_assets():
             "status": asset.status,
             "owner": asset.owner,
             "cost": asset.cost,
+            "due_date": asset.due_date.isoformat() if asset.due_date else None,
             "created_at": asset.created_at.isoformat() if asset.created_at else None,
             "updated_at": asset.updated_at.isoformat() if asset.updated_at else None
         })
 
     return jsonify(result)
-
 
 # ==========================================
 # GET SINGLE ASSET
@@ -78,6 +78,7 @@ def get_asset(asset_id):
         "status": asset.status,
         "owner": asset.owner,
         "cost": asset.cost,
+        "due_date": asset.due_date.isoformat() if asset.due_date else None,
         "created_at": asset.created_at.isoformat() if asset.created_at else None,
         "updated_at": asset.updated_at.isoformat() if asset.updated_at else None
     })
@@ -139,7 +140,20 @@ def add_asset():
             return jsonify({
                 "error": "cost must be a valid number"
             }), 400
+            # Validate due date
+    due_date_value = None
 
+    if data.get("due_date"):
+        try:
+            due_date_value = datetime.strptime(
+                data["due_date"],
+                "%Y-%m-%d"
+            ).date()
+
+        except ValueError:
+            return jsonify({
+                "error": "due_date must be in YYYY-MM-DD format"
+            }), 400
     try:
 
         new_asset = Asset(
@@ -160,7 +174,9 @@ def add_asset():
             if data.get("owner") else None,
 
             cost=float(data.get("cost", 0.0))
-            if data.get("cost") else 0.0
+            if data.get("cost") else 0.0,
+
+            due_date=due_date_value
         )
 
         db.session.add(new_asset)
@@ -179,8 +195,6 @@ def add_asset():
             "error": "Failed to create asset",
             "details": str(e)
         }), 500
-
-
 # ==========================================
 # UPDATE ASSET
 # ADMIN ONLY
@@ -203,12 +217,12 @@ def update_asset(asset_id):
         }), 404
 
     # Validate request has JSON data
-    if not request.json:
+    if not request.is_json:
         return jsonify({
             "error": "Request body must be JSON"
         }), 400
 
-    data = request.json
+    data = request.get_json()
 
     valid_fields = [
         "asset_name",
@@ -217,7 +231,8 @@ def update_asset(asset_id):
         "region",
         "status",
         "owner",
-        "cost"
+        "cost",
+        "due_date"
     ]
 
     # Validate at least one field
@@ -259,39 +274,46 @@ def update_asset(asset_id):
 
     try:
 
+        # Update asset name
         if "asset_name" in data:
             asset.asset_name = data["asset_name"].strip()
 
+        # Update provider
         if "provider" in data:
             asset.provider = (
                 data["provider"].strip()
                 if data["provider"] else None
             )
 
+        # Update service
         if "service" in data:
             asset.service = (
                 data["service"].strip()
                 if data["service"] else None
             )
 
+        # Update region
         if "region" in data:
             asset.region = (
                 data["region"].strip()
                 if data["region"] else None
             )
 
+        # Update status
         if "status" in data:
             asset.status = (
                 data["status"].strip()
                 if data["status"] else None
             )
 
+        # Update owner
         if "owner" in data:
             asset.owner = (
                 data["owner"].strip()
                 if data["owner"] else None
             )
 
+        # Update cost
         if "cost" in data:
             asset.cost = (
                 float(data["cost"])
@@ -299,6 +321,25 @@ def update_asset(asset_id):
                 else 0.0
             )
 
+        # Update due date
+        if "due_date" in data:
+
+            if data["due_date"]:
+                try:
+                    asset.due_date = datetime.strptime(
+                        data["due_date"],
+                        "%Y-%m-%d"
+                    ).date()
+
+                except ValueError:
+                    return jsonify({
+                        "error": "due_date must be in YYYY-MM-DD format"
+                    }), 400
+
+            else:
+                asset.due_date = None
+
+        # Save all changes
         db.session.commit()
 
         return jsonify({
@@ -313,8 +354,6 @@ def update_asset(asset_id):
             "error": "Failed to update asset",
             "details": str(e)
         }), 500
-
-
 # ==========================================
 # DELETE ASSET
 # ADMIN ONLY
