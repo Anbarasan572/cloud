@@ -826,18 +826,37 @@ async function loadDashboardStats() {
         );
 
 
-        // Update ONLY overdue count
+        // UPDATE RUNNING
 
-        const overdueCount =
-            document.getElementById("overdueCount");
+        setText(
+            "runningCount",
+            data.running || 0
+        );
 
 
-        if (overdueCount) {
+        // UPDATE TERMINATED
 
-            overdueCount.textContent =
-                data.overdue || 0;
+        setText(
+            "terminatedCount",
+            data.terminated || 0
+        );
 
-        }
+
+        // UPDATE OVERDUE
+
+        setText(
+            "overdueCount",
+            data.overdue || 0
+        );
+
+
+        // UPDATE TOTAL
+
+        setText(
+            "totalCount",
+            data.total || 0
+        );
+
 
     } catch (error) {
 
@@ -849,6 +868,7 @@ async function loadDashboardStats() {
     }
 
 }
+
 
 // ============================================
 // UPDATE ALL DASHBOARDS
@@ -1564,7 +1584,7 @@ async function handleAddAsset(event) {
         ) || 0,
 
     due_date:
-        formData.get("due_date") || null
+        formData.get("due_date") 
 
 };
 console.log("DATE:", assetData.due_date);
@@ -1613,7 +1633,7 @@ console.log("DATE:", assetData.due_date);
 
 
         await loadAssets();
-        await loadDashboardStats();
+
         console.log("LOGIN TOKEN:", authToken);
 console.log("STORED TOKEN:", localStorage.getItem("cloudasset_token"));
 console.log("AUTH HEADERS:", getAuthHeaders());

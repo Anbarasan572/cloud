@@ -33,40 +33,73 @@ def admin_required():
 def dashboard_stats():
 
     try:
+
         assets = Asset.query.all()
 
         today = datetime.now().date()
 
         running_count = 0
+        stopped_count = 0
+        inactive_count = 0
         terminated_count = 0
         overdue_count = 0
 
+
         for asset in assets:
 
-            # Count running assets
-            if asset.status and asset.status.lower() == "running":
-                running_count += 1
+            if asset.status:
 
-            # Count terminated assets
-            if asset.status and asset.status.lower() == "terminated":
-                terminated_count += 1
+                status = asset.status.lower()
 
-            # Count overdue assets
-            if asset.due_date and asset.due_date < today:
+                if status == "running":
+                    running_count += 1
+
+                elif status == "stopped":
+                    stopped_count += 1
+
+                elif status == "inactive":
+                    inactive_count += 1
+
+                elif status == "terminated":
+                    terminated_count += 1
+
+
+            # Overdue calculation
+
+            if (
+                asset.due_date
+                and asset.due_date < today
+            ):
                 overdue_count += 1
 
+
         return jsonify({
+
             "running": running_count,
+
+            "stopped": stopped_count,
+
+            "inactive": inactive_count,
+
             "terminated": terminated_count,
+
             "overdue": overdue_count,
+
             "total": len(assets)
+
         }), 200
+
 
     except Exception as e:
 
         return jsonify({
-            "error": "Failed to load dashboard statistics",
-            "details": str(e)
+
+            "error":
+                "Failed to load dashboard statistics",
+
+            "details":
+                str(e)
+
         }), 500
 
 # ==========================================
