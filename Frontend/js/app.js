@@ -1553,6 +1553,7 @@ async function handleAddAsset(event) {
         formData.get("due_date") || null
 
 };
+console.log("DATE:", assetData.due_date);
 
     try {
 
