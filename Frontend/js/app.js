@@ -1489,10 +1489,13 @@ async function handleAddAsset(event) {
             formData
                 .get("owner"),
 
-        cost:
-            parseFloat(
-                formData.get("cost")
-            ) || 0
+         cost:
+    parseFloat(
+        formData.get("cost")
+    ) || 0,
+
+due_date:
+    formData.get("due_date") || null
 
     };
 
