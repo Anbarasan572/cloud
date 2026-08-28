@@ -763,9 +763,11 @@ async function loadAssets() {
         }
 
 
-        updateAllPages();
+         updateAllPages();
 
-        displayAssets(filteredAssets);
+         await loadDashboardStats();
+
+          displayAssets(filteredAssets);
 
 
     } catch (error) {
@@ -809,21 +811,33 @@ async function loadDashboardStats() {
         );
 
         if (!response.ok) {
-            throw new Error("Failed to load dashboard statistics");
+
+            throw new Error(
+                "Failed to load dashboard statistics"
+            );
+
         }
 
         const data = await response.json();
 
-        console.log("Dashboard Stats:", data);
+        console.log(
+            "Dashboard Stats:",
+            data
+        );
 
-        document.getElementById("runningCount").textContent =
-            data.running;
 
-        document.getElementById("terminatedCount").textContent =
-            data.terminated;
+        // Update ONLY overdue count
 
-        document.getElementById("overdueCount").textContent =
-            data.overdue;
+        const overdueCount =
+            document.getElementById("overdueCount");
+
+
+        if (overdueCount) {
+
+            overdueCount.textContent =
+                data.overdue || 0;
+
+        }
 
     } catch (error) {
 
@@ -835,7 +849,6 @@ async function loadDashboardStats() {
     }
 
 }
-
 
 // ============================================
 // UPDATE ALL DASHBOARDS
@@ -912,12 +925,13 @@ function updateDashboard() {
 
 
     setText(
-        "runningCount",
-        allAssets.filter(
-            a => a.status === "Running"
-        ).length
-    );
-
+    "runningCount",
+    allAssets.filter(
+        a =>
+            a.status &&
+            a.status.toLowerCase() === "running"
+    ).length
+);
 
     setText(
         "stoppedCount",
