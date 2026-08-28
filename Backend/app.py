@@ -1,5 +1,5 @@
 import os
-
+from datetime import timedelta
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -33,22 +33,29 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///cloudasset.db"
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-
 # ==========================================
 # JWT CONFIGURATION
 # ==========================================
 
 app.config["JWT_SECRET_KEY"] = os.environ.get(
     "JWT_SECRET_KEY",
-    "change-this-secret-key-before-production"
+    "cloudasset-development-secret-key-2026"
 )
 
+# Session remains valid for 8 hours
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=8)
 
-# Initialize database
+# ==========================================
+# INITIALIZE DATABASE
+# ==========================================
+
 db.init_app(app)
 
 
-# Initialize JWT
+# ==========================================
+# INITIALIZE JWT
+# ==========================================
+
 jwt = JWTManager(app)
 
 
@@ -58,7 +65,6 @@ jwt = JWTManager(app)
 
 app.register_blueprint(asset_bp)
 app.register_blueprint(auth_bp)
-
 
 # ==========================================
 # HOME ROUTE
