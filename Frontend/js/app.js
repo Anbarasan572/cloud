@@ -681,6 +681,7 @@ function filterAssets() {
     const provider = document.getElementById("filterProvider")?.value || "";
     const status = document.getElementById("filterStatus")?.value || "";
     const owner = document.getElementById("filterOwner")?.value || "";
+    const today = new Date().toISOString().split("T")[0];
 
     filteredAssets = allAssets.filter(asset => {
         const matchesSearch = !searchTerm || (
@@ -689,7 +690,14 @@ function filterAssets() {
         );
 
         const matchesProvider = !provider || asset.provider === provider;
-        const matchesStatus = !status || asset.status === status;
+
+        let matchesStatus = true;
+        if (status === "Overdue") {
+            matchesStatus = Boolean(asset.due_date && asset.due_date < today);
+        } else if (status) {
+            matchesStatus = asset.status === status;
+        }
+
         const matchesOwner = !owner || asset.owner === owner;
 
         return matchesSearch && matchesProvider && matchesStatus && matchesOwner;
