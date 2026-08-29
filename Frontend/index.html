@@ -3,1888 +3,932 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>CloudAsset | Cloud Management Platform</title>
-
+    <title>CloudAsset | AI-Powered Cloud Operations Center</title>
+    <meta name="description" content="Next-Generation Enterprise Multi-Cloud Asset Telemetry, Governance, and Cost Operations Center.">
     <link rel="stylesheet" href="css/style.css">
 </head>
-
-<body>
+<body class="dark-mode">
 
     <!-- ================= LOGIN SCREEN ================= -->
+    <div class="login-screen" id="loginScreen">
 
-<div class="login-screen" id="loginScreen">
-
-    <!-- LEFT SIDE -->
-    <div class="login-visual">
-
-        <div class="dot-pattern dot-top"></div>
-
-        <div class="visual-content">
-
-            <div class="small-cloud">
-                ☁
-            </div>
-
-            <h2>MANAGE. MONITOR. OPTIMIZE.</h2>
-
-            <p class="visual-subtitle">
-                All your cloud assets, one place.
-            </p>
-
-            <p class="visual-description">
-                CloudAsset helps you track, manage and secure
-                your cloud resources efficiently.
-            </p>
-
-            <div class="large-cloud">
-                ☁
-            </div>
-
-        </div>
-
-        <div class="dot-pattern dot-bottom"></div>
-
-    </div>
-
-
-    <!-- RIGHT SIDE LOGIN -->
-    <div class="login-panel">
-
-        <div class="login-card">
-
-            <!-- LOGO -->
-            <div class="login-logo">
-                ☁
-            </div>
-
-            <h1>Welcome to CloudAsset</h1>
-
-            <p class="login-subtitle">
-                Sign in to access the management platform
-            </p>
-
-
-            <!-- LOGIN FORM -->
-            <form id="loginForm">
-
-                <!-- USERNAME -->
-                <div class="login-field">
-
-                    <label for="loginUsername">
-                        Username
-                    </label>
-
-                    <div class="input-wrapper">
-
-                        <span class="input-icon">
-
-                            <!-- USER ICON -->
-                            <svg viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2">
-
-                                <path d="M20 21a8 8 0 0 0-16 0"/>
-
-                                <circle
-                                    cx="12"
-                                    cy="7"
-                                    r="4">
-                                </circle>
-
-                            </svg>
-
-                        </span>
-
-                        <input
-                            type="text"
-                            id="loginUsername"
-                            placeholder="Enter your username"
-                            required
-                        >
-
-                    </div>
-
+        <!-- LEFT SIDE HERO VISUAL -->
+        <div class="login-visual">
+            <div class="visual-content">
+                <div class="visual-badge">
+                    <span class="pulse-beacon"></span>
+                    <span>AI Operations Center v2.4</span>
                 </div>
 
+                <h1 class="visual-title">AUTONOMOUS MULTI-CLOUD GOVERNANCE</h1>
 
-                <!-- PASSWORD -->
-                <div class="login-field">
-
-                    <label for="loginPassword">
-                        Password
-                    </label>
-
-                    <div class="input-wrapper password-wrapper">
-
-                        <!-- LOCK ICON -->
-                        <span class="input-icon">
-
-                            <svg viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2">
-
-                                <rect
-                                    x="5"
-                                    y="11"
-                                    width="14"
-                                    height="10"
-                                    rx="2">
-                                </rect>
-
-                                <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
-
-                            </svg>
-
-                        </span>
-
-
-                        <input
-                            type="password"
-                            id="loginPassword"
-                            placeholder="Enter your password"
-                            required
-                        >
-
-
-                        <!-- PROFESSIONAL EYE BUTTON -->
-                        <button
-                            type="button"
-                            class="password-toggle"
-                            id="passwordToggle"
-                            aria-label="Show password"
-                        >
-
-                            <svg
-                                id="eyeIcon"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                            >
-
-                                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
-
-                                <circle
-                                    cx="12"
-                                    cy="12"
-                                    r="3">
-                                </circle>
-
-                            </svg>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- LOGIN ERROR -->
-                <div
-                    id="loginError"
-                    class="login-error"
-                    style="display: none;"
-                ></div>
-
-
-                <!-- LOGIN BUTTON -->
-                <button
-                    type="submit"
-                    class="login-button"
-                >
-                    Login
-                </button>
-
-            </form>
-
-        </div>
-
-    </div>
-
-</div>
-
-    <!-- ================= SIDEBAR ================= -->
-    <aside class="sidebar" id="sidebar">
-
-        <div class="sidebar-brand">
-
-            <div class="logo">CA</div>
-
-            <div>
-                <h2>CloudAsset</h2>
-                <span>Management Platform</span>
-            </div>
-
-        </div>
-
-
-        <nav class="sidebar-nav">
-
-            <button class="nav-item active" data-page="dashboard">
-                <span class="nav-icon">⌂</span>
-                <span>Dashboard</span>
-            </button>
-
-            <button class="nav-item" data-page="assets">
-                <span class="nav-icon">▣</span>
-                <span>Assets</span>
-            </button>
-
-            <button class="nav-item" data-page="costs">
-                <span class="nav-icon">$</span>
-                <span>Cost Overview</span>
-            </button>
-
-            <button class="nav-item" data-page="analytics">
-                <span class="nav-icon">◈</span>
-                <span>Analytics</span>
-            </button>
-
-            <button class="nav-item" data-page="settings">
-                <span class="nav-icon">⚙</span>
-                <span>Settings</span>
-            </button>
-
-        </nav>
-
-
-        <div class="sidebar-footer">
-
-            <div class="system-status">
-
-                <span class="status-dot"></span>
-
-                <div>
-                    <strong>System Online</strong>
-                    <small>All services operational</small>
-                </div>
-
-            </div>
-
-        </div>
-
-    </aside>
-
-
-    <!-- ================= MAIN CONTENT ================= -->
-
-    <main class="main-content">
-
-
-        <!-- ================= TOPBAR ================= -->
-
-       <header class="topbar">
-
-    <div class="topbar-title">
-
-        <h1 id="pageTitle">Dashboard</h1>
-
-        <p id="pageSubtitle">
-            Overview of your cloud infrastructure
-        </p>
-
-    </div>
-
-
-    <div class="topbar-actions">
-
-        <!-- THEME BUTTON -->
-        <button
-            class="theme-toggle"
-            id="themeToggle"
-            type="button"
-            title="Toggle Dark Mode"
-        >
-            🌙
-        </button>
-
-
-        <!-- PROFILE -->
-        <div class="user-profile-wrapper">
-
-            <button
-                type="button"
-                class="user-profile"
-                id="profileButton"
-            >
-
-                <div class="user-avatar" id="userAvatar">
-                    A
-                </div>
-
-
-                <div class="user-info">
-
-                    <strong id="profileUsername">
-                        User
-                    </strong>
-
-                    <span id="profileRole">
-                        User
-                    </span>
-
-                </div>
-
-
-                <span class="profile-arrow">
-                    ⌄
-                </span>
-
-            </button>
-
-
-            <!-- DROPDOWN -->
-            <div
-                class="profile-dropdown"
-                id="profileDropdown"
-            >
-
-                <div class="profile-dropdown-header">
-
-                    <div
-                        class="dropdown-avatar"
-                        id="dropdownAvatar"
-                    >
-                        A
-                    </div>
-
-
-                    <div>
-
-                        <strong id="dropdownUsername">
-                            User
-                        </strong>
-
-                        <span id="dropdownRole">
-                            User
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="profile-divider"></div>
-
-
-                <button
-                    type="button"
-                    class="logout-button"
-                    id="logoutButton"
-                >
-
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                    >
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                        <polyline points="16 17 21 12 16 7"/>
-                        <line x1="21" y1="12" x2="9" y2="12"/>
-                    </svg>
-
-                    <span>Logout</span>
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</header>
-               
-<!-- ================= DASHBOARD ================= -->
-
-<section class="page active-page" id="dashboard">
-
-    <!-- WELCOME SECTION -->
-
-    <div class="welcome-section">
-
-        <div>
-
-            <p class="eyebrow">
-                CLOUD INFRASTRUCTURE
-            </p>
-
-            <h2>
-                Welcome to CloudAsset 👋
-            </h2>
-
-            <p>
-                Monitor your cloud assets,
-                infrastructure and spending
-                from one centralized platform.
-            </p>
-
-        </div>
-
-
-        <button
-            class="btn btn-primary"
-            id="dashboardAddAssetBtn"
-            type="button"
-        >
-            + Add New Asset
-        </button>
-
-    </div>
-
-
-    <!-- DASHBOARD STATISTICS -->
-
-    <div class="dashboard-grid">
-
-
-        <!-- TOTAL ASSETS -->
-
-        <div class="dashboard-card">
-
-            <div class="dashboard-icon">
-                ▣
-            </div>
-
-            <div>
-
-                <p>Total Assets</p>
-
-                <h3 id="dashTotalAssets">
-                    0
-                </h3>
-
-                <small>
-                    Across all providers
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <!-- ACTIVE ASSETS -->
-
-        <div class="dashboard-card">
-
-            <div class="dashboard-icon">
-                ●
-            </div>
-
-            <div>
-
-                <p>Active Assets</p>
-
-                <h3 id="dashActiveAssets">
-                    0
-                </h3>
-
-                <small>
-                    Currently operational
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <!-- MONTHLY COST -->
-
-        <div class="dashboard-card">
-
-            <div class="dashboard-icon">
-                $
-            </div>
-
-            <div>
-
-                <p>Monthly Cost</p>
-
-                <h3 id="dashTotalCost">
-                    $0.00
-                </h3>
-
-                <small>
-                    Estimated spending
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <!-- CLOUD PROVIDERS -->
-
-        <div class="dashboard-card">
-
-            <div class="dashboard-icon">
-                ☁
-            </div>
-
-            <div>
-
-                <p>Cloud Providers</p>
-
-                <h3 id="dashProviders">
-                    0
-                </h3>
-
-                <small>
-                    Providers in use
-                </small>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- DASHBOARD CONTENT -->
-
-    <div class="dashboard-content-grid">
-
-
-        <!-- RECENT ASSETS -->
-
-        <div class="panel recent-assets-panel">
-
-            <div class="panel-header">
-
-                <div>
-
-                    <h3>
-                        Recent Assets
-                    </h3>
-
-                    <p>
-                        Recently managed infrastructure
-                    </p>
-
-                </div>
-
-
-                <button
-                    class="text-button"
-                    id="viewAllAssetsBtn"
-                    type="button"
-                >
-                    View All →
-                </button>
-
-            </div>
-
-
-            <div id="recentAssets">
-
-                <p class="empty-state">
-                    No assets available yet.
+                <p class="visual-subtitle">
+                    Manage. Monitor. Optimize.
                 </p>
 
-            </div>
+                <p class="visual-description">
+                    Unified multi-cloud asset telemetry, real-time cost intelligence, and infrastructure health monitoring across AWS, Azure, GCP, Oracle, and enterprise clouds.
+                </p>
 
+                <!-- Futuristic Feature Highlights -->
+                <div class="visual-features-grid">
+                    <div class="visual-feat-card">
+                        <span class="feat-icon">⚡</span>
+                        <strong>Live Telemetry</strong>
+                        <span>Sub-second health monitoring</span>
+                    </div>
+                    <div class="visual-feat-card">
+                        <span class="feat-icon">🛡️</span>
+                        <strong>Policy & Due Dates</strong>
+                        <span>Automated lifecycle tracking</span>
+                    </div>
+                    <div class="visual-feat-card">
+                        <span class="feat-icon">📊</span>
+                        <strong>Cost Analytics</strong>
+                        <span>Predictive expenditure meters</span>
+                    </div>
+                    <div class="visual-feat-card">
+                        <span class="feat-icon">🌐</span>
+                        <strong>Multi-Cloud Mesh</strong>
+                        <span>Unified cross-region topology</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-
-        <!-- INFRASTRUCTURE SUMMARY -->
-
-        <div class="panel infrastructure-panel">
-
-            <div class="panel-header">
-
-                <div>
-
-                    <h3>
-                        Infrastructure Summary
-                    </h3>
-
-                    <p>
-                        Quick overview of your environment
-                    </p>
-
+        <!-- RIGHT SIDE LOGIN FORM -->
+        <div class="login-panel">
+            <div class="login-card">
+                <div class="login-header">
+                    <div class="login-logo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                            <path d="m12 12 2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <h1>CloudAsset Command</h1>
+                    <p class="login-subtitle">Authenticate to access operations platform</p>
                 </div>
 
+                <!-- LOGIN FORM -->
+                <form id="loginForm">
+                    <!-- USERNAME -->
+                    <div class="login-field">
+                        <label for="loginUsername">Username</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                            </span>
+                            <input
+                                type="text"
+                                id="loginUsername"
+                                placeholder="Enter operational username"
+                                required
+                                autocomplete="username"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="login-field">
+                        <label for="loginPassword">Access Key / Password</label>
+                        <div class="input-wrapper password-wrapper">
+                            <span class="input-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                </svg>
+                            </span>
+                            <input
+                                type="password"
+                                id="loginPassword"
+                                placeholder="Enter security passphrase"
+                                required
+                                autocomplete="current-password"
+                            >
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                id="passwordToggle"
+                                aria-label="Toggle password visibility"
+                            >
+                                <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- LOGIN ERROR -->
+                    <div id="loginError" class="login-error" style="display: none;"></div>
+
+                    <!-- LOGIN BUTTON -->
+                    <button type="submit" class="login-button">
+                        <span>Access Operations Center</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </form>
             </div>
-
-
-            <div class="summary-list">
-
-
-                <div class="summary-item">
-
-                    <div class="summary-label">
-
-                        <span class="summary-dot running-dot"></span>
-
-                        <span>
-                            Running
-                        </span>
-
-                    </div>
-
-
-                    <strong id="runningCount">
-                        0
-                    </strong>
-
-                </div>
-
-
-                <div class="summary-item">
-
-                    <div class="summary-label">
-
-                        <span class="summary-dot stopped-dot"></span>
-
-                        <span>
-                            Stopped
-                        </span>
-
-                    </div>
-
-
-                    <strong id="stoppedCount">
-                        0
-                    </strong>
-
-                </div>
-
-
-                <div class="summary-item">
-
-                    <div class="summary-label">
-
-                        <span class="summary-dot inactive-dot"></span>
-
-                        <span>
-                            Inactive
-                        </span>
-
-                    </div>
-
-
-                    <strong id="inactiveCount">
-                        0
-                    </strong>
-
-                </div>
-
-
-                <!-- OVERDUE -->
-
-                <div class="summary-item overdue-item">
-
-                    <div class="summary-label">
-
-                        <span class="summary-dot overdue-dot"></span>
-
-                        <span>
-                            Overdue
-                        </span>
-
-                    </div>
-
-
-                    <strong id="overdueCount">
-                        0
-                    </strong>
-
-                </div>
-
-
-                <!-- TERMINATED -->
-
-                <div class="summary-item">
-
-                    <div class="summary-label">
-
-                        <span class="summary-dot terminated-dot"></span>
-
-                        <span>
-                            Terminated
-                        </span>
-
-                    </div>
-
-
-                    <strong id="terminatedCount">
-                        0
-                    </strong>
-
-                </div>
-
-
-            </div>
-
         </div>
-
-
     </div>
 
+    <!-- ================= MAIN APP LAYOUT ================= -->
+    <div class="app-layout" id="appLayout">
 
-</section>
-
-
-        <!-- ================= ASSETS PAGE ================= -->
-
-        <section class="page"
-                 id="assets">
-
-
-            <div class="page-intro">
-
-                <div>
-
-                    <p class="eyebrow">
-                        CLOUD RESOURCE MANAGEMENT
-                    </p>
-
-                    <h2>
-                        Asset Management
-                    </h2>
-
-                    <p>
-                        Add, monitor, search and manage
-                        your cloud infrastructure.
-                    </p>
-
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="logo">CA</div>
+                <div class="sidebar-brand-text">
+                    <h2>CloudAsset</h2>
+                    <span>Operations Center</span>
                 </div>
-
             </div>
 
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-page="dashboard" type="button">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </span>
+                    <span>Dashboard</span>
+                </button>
 
+                <button class="nav-item" data-page="assets" type="button">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                        </svg>
+                    </span>
+                    <span>Cloud Resources</span>
+                </button>
 
-            <!-- ================= ADD ASSET ================= -->
+                <button class="nav-item" data-page="costs" type="button">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </span>
+                    <span>Cost Overview</span>
+                </button>
 
-            <section class="add-asset-section">
+                <button class="nav-item" data-page="analytics" type="button">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                    </span>
+                    <span>Analytics</span>
+                </button>
 
+                <button class="nav-item" data-page="settings" type="button">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </span>
+                    <span>Settings</span>
+                </button>
+            </nav>
 
-                <div class="section-title">
-
+            <div class="sidebar-footer">
+                <div class="system-status">
+                    <span class="status-dot"></span>
                     <div>
-
-                        <h2>
-                            Add New Asset
-                        </h2>
-
-                        <p>
-                            Register a cloud resource
-                            in your infrastructure.
-                        </p>
-
+                        <strong>System Online</strong>
+                        <small>All telemetry streams operational</small>
                     </div>
+                </div>
+            </div>
+        </aside>
 
+        <!-- ================= MAIN CONTENT ================= -->
+        <main class="main-content">
+
+            <!-- ================= TOPBAR ================= -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" id="menuToggle" type="button" aria-label="Toggle Navigation Menu">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                    <div class="topbar-title">
+                        <h1 id="pageTitle">Dashboard</h1>
+                        <p id="pageSubtitle">Overview of your cloud infrastructure</p>
+                    </div>
                 </div>
 
+                <div class="topbar-actions">
+                    <!-- THEME TOGGLE -->
+                    <button class="theme-toggle" id="themeToggle" type="button" title="Toggle Theme">
+                        ☀️
+                    </button>
 
+                    <!-- USER PROFILE -->
+                    <div class="user-profile-wrapper">
+                        <button type="button" class="user-profile" id="profileButton" aria-haspopup="true">
+                            <div class="user-avatar" id="userAvatar">A</div>
+                            <div class="user-info">
+                                <strong id="profileUsername">User</strong>
+                                <span id="profileRole">User</span>
+                            </div>
+                            <span class="profile-arrow">▾</span>
+                        </button>
 
-                <form id="addAssetForm">
+                        <!-- DROPDOWN -->
+                        <div class="profile-dropdown" id="profileDropdown">
+                            <div class="profile-dropdown-header">
+                                <div class="dropdown-avatar" id="dropdownAvatar">A</div>
+                                <div>
+                                    <strong id="dropdownUsername">User</strong>
+                                    <span id="dropdownRole">User</span>
+                                </div>
+                            </div>
+                            <div class="profile-divider"></div>
+                            <button type="button" class="logout-button" id="logoutButton">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                    <polyline points="16 17 21 12 16 7"/>
+                                    <line x1="21" y1="12" x2="9" y2="12"/>
+                                </svg>
+                                <span>Logout Session</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
 
+            <!-- ================= DASHBOARD ================= -->
+            <section class="page active-page" id="dashboard">
+                <!-- WELCOME SECTION -->
+                <div class="welcome-section">
+                    <div>
+                        <p class="eyebrow">CLOUD TELEMETRY & OPERATIONS</p>
+                        <h2>Welcome to CloudAsset 👋</h2>
+                        <p>
+                            Unified multi-cloud infrastructure monitoring, resource lifecycle tracking, and real-time cost governance.
+                        </p>
+                    </div>
+                    <button class="btn btn-primary" id="dashboardAddAssetBtn" type="button">
+                        <span>+ Add New Asset</span>
+                    </button>
+                </div>
 
-                    <div class="form-grid">
+                <!-- DASHBOARD STATISTICS -->
+                <div class="dashboard-grid">
+                    <!-- TOTAL ASSETS -->
+                    <div class="dashboard-card">
+                        <div class="dashboard-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                                <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                                <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <p>Total Assets</p>
+                            <h3 id="dashTotalAssets">0</h3>
+                            <small>Across all cloud providers</small>
+                        </div>
+                    </div>
 
+                    <!-- ACTIVE ASSETS -->
+                    <div class="dashboard-card">
+                        <div class="dashboard-icon" style="color: var(--status-running); background: var(--status-running-bg); border-color: var(--status-running-border);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                            </svg>
+                        </div>
+                        <div>
+                            <p>Active Assets</p>
+                            <h3 id="dashActiveAssets">0</h3>
+                            <small>Currently operational</small>
+                        </div>
+                    </div>
 
-                        <!-- ASSET NAME -->
+                    <!-- MONTHLY COST -->
+                    <div class="dashboard-card">
+                        <div class="dashboard-icon" style="color: var(--cyan); background: var(--cyan-subtle); border-color: var(--cyan-glow);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p>Monthly Cost</p>
+                            <h3 id="dashTotalCost">$0.00</h3>
+                            <small>Estimated monthly expenditure</small>
+                        </div>
+                    </div>
 
-                        <div class="form-group">
+                    <!-- CLOUD PROVIDERS -->
+                    <div class="dashboard-card">
+                        <div class="dashboard-icon" style="color: var(--accent-purple); background: rgba(168, 85, 247, 0.12); border-color: rgba(168, 85, 247, 0.35);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p>Cloud Providers</p>
+                            <h3 id="dashProviders">0</h3>
+                            <small>Providers actively connected</small>
+                        </div>
+                    </div>
+                </div>
 
-                            <label for="assetName">
-                                Asset Name *
-                            </label>
+                <!-- DASHBOARD CONTENT GRID -->
+                <div class="dashboard-content-grid">
+                    <!-- RECENT ASSETS -->
+                    <div class="panel recent-assets-panel">
+                        <div class="panel-header">
+                            <div>
+                                <h3>Recent Assets</h3>
+                                <p>Recently registered and managed cloud resources</p>
+                            </div>
+                            <button class="text-button" id="viewAllAssetsBtn" type="button">
+                                View All Resources →
+                            </button>
+                        </div>
+                        <div id="recentAssets">
+                            <p class="empty-state">No assets available yet.</p>
+                        </div>
+                    </div>
 
-                            <input type="text"
-                                   id="assetName"
-                                   name="assetName"
-                                   placeholder="Example: Production EC2 Server"
-                                   required>
-
+                    <!-- INFRASTRUCTURE SUMMARY -->
+                    <div class="panel infrastructure-panel">
+                        <div class="panel-header">
+                            <div>
+                                <h3>Infrastructure Summary</h3>
+                                <p>Resource status telemetry distribution</p>
+                            </div>
                         </div>
 
-
-
-                        <!-- PROVIDER -->
-
-                        <div class="form-group">
-
-                            <label for="provider">
-                                Cloud Provider
-                            </label>
-
-                            <select id="provider"
-                                    name="provider">
-
-                                <option value="AWS">
-                                    AWS
-                                </option>
-
-                                <option value="Azure">
-                                    Microsoft Azure
-                                </option>
-
-                                <option value="GCP">
-                                    Google Cloud Platform
-                                </option>
-
-                                <option value="Oracle Cloud">
-                                    Oracle Cloud
-                                </option>
-
-                                <option value="IBM Cloud">
-                                    IBM Cloud
-                                </option>
-
-                                <option value="Alibaba Cloud">
-                                    Alibaba Cloud
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-
-                        <!-- SERVICE -->
-
-                        <div class="form-group">
-
-                            <label for="service">
-                                Cloud Service
-                            </label>
-
-                            <select id="service"
-                                    name="service">
-
-                                <option value="EC2">
-                                    EC2 / Virtual Machine
-                                </option>
-
-                                <option value="S3">
-                                    S3 / Storage
-                                </option>
-
-                                <option value="RDS">
-                                    RDS / Database
-                                </option>
-
-                                <option value="Lambda">
-                                    Lambda / Serverless
-                                </option>
-
-                                <option value="ECS">
-                                    ECS / Containers
-                                </option>
-
-                                <option value="EKS">
-                                    EKS / Kubernetes
-                                </option>
-
-                                <option value="CloudFront">
-                                    CloudFront / CDN
-                                </option>
-
-                                <option value="Route53">
-                                    Route53 / DNS
-                                </option>
-
-                                <option value="VPC">
-                                    VPC / Networking
-                                </option>
-
-                                <option value="Load Balancer">
-                                    Load Balancer
-                                </option>
-
-                                <option value="CloudWatch">
-                                    CloudWatch / Monitoring
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-
-                        <!-- REGION -->
-
-                        <div class="form-group">
-
-                            <label for="region">
-                                Region
-                            </label>
-
-                            <select id="region"
-                                    name="region">
-
-                                <option value="us-east-1">
-                                    US East (N. Virginia)
-                                </option>
-
-                                <option value="us-east-2">
-                                    US East (Ohio)
-                                </option>
-
-                                <option value="us-west-1">
-                                    US West (N. California)
-                                </option>
-
-                                <option value="us-west-2">
-                                    US West (Oregon)
-                                </option>
-
-                                <option value="ap-south-1">
-                                    Asia Pacific (Mumbai)
-                                </option>
-
-                                <option value="ap-southeast-1">
-                                    Asia Pacific (Singapore)
-                                </option>
-
-                                <option value="ap-northeast-1">
-                                    Asia Pacific (Tokyo)
-                                </option>
-
-                                <option value="eu-west-1">
-                                    Europe (Ireland)
-                                </option>
-
-                                <option value="eu-central-1">
-                                    Europe (Frankfurt)
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-
-                        <!-- STATUS -->
-
-                        <div class="form-group">
-
-                            <label for="status">
-                                Status
-                            </label>
-
-                            <select id="status"
-                                    name="status">
-
-                                <option value="Running">
-                                    Running
-                                </option>
-
-                                <option value="Stopped">
-                                    Stopped
-                                </option>
-
-                                <option value="Active">
-                                    Active
-                                </option>
-
-                                <option value="Inactive">
-                                    Inactive
-                                </option>
-
-                                <option value="Pending">
-                                    Pending
-                                </option>
-
-                                <option value="Terminated">
-                                    Terminated
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-
-                        <!-- OWNER -->
-
-                        <div class="form-group">
-
-                            <label for="owner">
-                                Owner
-                            </label>
-
-                            <select id="owner"
-                                    name="owner">
-
-                                <option value="Anbarasan">
-                                    Anbarasan
-                                </option>
-
-                                <option value="DevOps Team">
-                                    DevOps Team
-                                </option>
-
-                                <option value="Infrastructure Team">
-                                    Infrastructure Team
-                                </option>
-
-                                <option value="Development Team">
-                                    Development Team
-                                </option>
-
-                                <option value="QA Team">
-                                    QA Team
-                                </option>
-
-                                <option value="Production Team">
-                                    Production Team
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-
-                        <!-- COST -->
-
-                        <div class="form-group cost-form-group">
-
-                            <label for="cost">
-                                Monthly Cost (USD)
-                            </label>
-
-
-                            <div class="cost-input-group">
-
-                                <input type="number"
-                                       id="cost"
-                                       name="cost"
-                                       min="0"
-                                       step="0.01"
-                                       placeholder="150.00">
-
-
-                                <button type="button"
-                                        class="btn btn-estimate"
-                                        onclick="estimateCost()">
-
-                                    Auto Estimate
-
-                                </button>
-
+                        <div class="summary-list">
+                            <div class="summary-item">
+                                <div class="summary-label">
+                                    <span class="summary-dot running-dot"></span>
+                                    <span>Running</span>
+                                </div>
+                                <strong id="runningCount">0</strong>
                             </div>
 
+                            <div class="summary-item">
+                                <div class="summary-label">
+                                    <span class="summary-dot stopped-dot"></span>
+                                    <span>Stopped</span>
+                                </div>
+                                <strong id="stoppedCount">0</strong>
+                            </div>
+
+                            <div class="summary-item">
+                                <div class="summary-label">
+                                    <span class="summary-dot inactive-dot"></span>
+                                    <span>Inactive</span>
+                                </div>
+                                <strong id="inactiveCount">0</strong>
+                            </div>
+
+                            <div class="summary-item overdue-item">
+                                <div class="summary-label">
+                                    <span class="summary-dot overdue-dot"></span>
+                                    <span>Overdue (Exceeded Due Date)</span>
+                                </div>
+                                <strong id="overdueCount">0</strong>
+                            </div>
+
+                            <div class="summary-item">
+                                <div class="summary-label">
+                                    <span class="summary-dot terminated-dot"></span>
+                                    <span>Terminated</span>
+                                </div>
+                                <strong id="terminatedCount">0</strong>
+                            </div>
                         </div>
-
-
                     </div>
-
-
-                    <div class="form-group">
-    <label for="dueDate">Due Date</label>
-    <input
-        type="date"
-        id="dueDate"
-        name="due_date"
-    >
-</div>
-
-
-                    <button type="submit"
-                            class="btn btn-primary">
-
-                        Add Asset
-
-                    </button>
-
-
-                </form>
-
+                </div>
             </section>
 
-            <!-- ================= ALL ASSETS ================= -->
-
-            <section class="assets-section">
-
-
-                <div class="section-header">
-
-
-                    <div>
-
-                        <h2>
-                            All Assets
-                        </h2>
-
-                        <p>
-                            View and manage all your
-                            cloud infrastructure resources.
-                        </p>
-
-                    </div>
-
-
-                    <button id="refreshBtn"
-                            class="btn btn-secondary"
-                            type="button">
-
-                        Refresh
-
-                    </button>
-
-
+            <!-- ================= ASSETS PAGE ================= -->
+            <section class="page" id="assets">
+                <div class="page-intro">
+                    <p class="eyebrow">CLOUD RESOURCE MANAGEMENT</p>
+                    <h2>Asset Management Hub</h2>
+                    <p>Register, monitor, filter and control your multi-cloud infrastructure assets.</p>
                 </div>
 
-
-
-                <!-- SEARCH AND FILTER -->
-
-                <div class="search-filter-container">
-
-
-                    <div class="search-box">
-
-                        <input type="text"
-                               id="searchInput"
-                               placeholder="Search assets by name...">
-
+                <!-- ADD ASSET SECTION -->
+                <section class="add-asset-section" data-admin-only="true">
+                    <div class="section-title">
+                        <h2>Add New Cloud Asset</h2>
+                        <p>Register a cloud resource into your infrastructure inventory.</p>
                     </div>
 
+                    <form id="addAssetForm">
+                        <div class="form-grid">
+                            <!-- ASSET NAME -->
+                            <div class="form-group">
+                                <label for="assetName">Asset Name *</label>
+                                <input
+                                    type="text"
+                                    id="assetName"
+                                    name="assetName"
+                                    placeholder="e.g. Production EC2 Cluster"
+                                    required
+                                >
+                            </div>
 
-                    <div class="filter-controls">
+                            <!-- PROVIDER -->
+                            <div class="form-group">
+                                <label for="provider">Cloud Provider</label>
+                                <select id="provider" name="provider">
+                                    <option value="AWS">AWS (Amazon Web Services)</option>
+                                    <option value="Azure">Microsoft Azure</option>
+                                    <option value="GCP">Google Cloud Platform</option>
+                                    <option value="Oracle Cloud">Oracle Cloud</option>
+                                    <option value="IBM Cloud">IBM Cloud</option>
+                                    <option value="Alibaba Cloud">Alibaba Cloud</option>
+                                </select>
+                            </div>
 
+                            <!-- SERVICE -->
+                            <div class="form-group">
+                                <label for="service">Cloud Service</label>
+                                <select id="service" name="service">
+                                    <option value="EC2">EC2 / Virtual Machine</option>
+                                    <option value="S3">S3 / Object Storage</option>
+                                    <option value="RDS">RDS / Managed Database</option>
+                                    <option value="Lambda">Lambda / Serverless Function</option>
+                                    <option value="ECS">ECS / Container Service</option>
+                                    <option value="EKS">EKS / Managed Kubernetes</option>
+                                    <option value="CloudFront">CloudFront / Global CDN</option>
+                                    <option value="Route53">Route53 / DNS Routing</option>
+                                    <option value="VPC">VPC / Isolated Network</option>
+                                    <option value="Load Balancer">Application Load Balancer</option>
+                                    <option value="CloudWatch">CloudWatch / Telemetry Engine</option>
+                                </select>
+                            </div>
 
-                        <select id="filterProvider">
+                            <!-- REGION -->
+                            <div class="form-group">
+                                <label for="region">Deployment Region</label>
+                                <select id="region" name="region">
+                                    <option value="us-east-1">US East (N. Virginia)</option>
+                                    <option value="us-east-2">US East (Ohio)</option>
+                                    <option value="us-west-1">US West (N. California)</option>
+                                    <option value="us-west-2">US West (Oregon)</option>
+                                    <option value="ap-south-1">Asia Pacific (Mumbai)</option>
+                                    <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
+                                    <option value="ap-northeast-1">Asia Pacific (Tokyo)</option>
+                                    <option value="eu-west-1">Europe (Ireland)</option>
+                                    <option value="eu-central-1">Europe (Frankfurt)</option>
+                                </select>
+                            </div>
 
-                            <option value="">
-                                All Providers
-                            </option>
+                            <!-- STATUS -->
+                            <div class="form-group">
+                                <label for="status">Operational Status</label>
+                                <select id="status" name="status">
+                                    <option value="Running">Running</option>
+                                    <option value="Stopped">Stopped</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Terminated">Terminated</option>
+                                </select>
+                            </div>
 
-                            <option value="AWS">
-                                AWS
-                            </option>
+                            <!-- OWNER -->
+                            <div class="form-group">
+                                <label for="owner">Resource Owner</label>
+                                <select id="owner" name="owner">
+                                    <option value="Anbarasan">Anbarasan</option>
+                                    <option value="DevOps Team">DevOps Team</option>
+                                    <option value="Infrastructure Team">Infrastructure Team</option>
+                                    <option value="Development Team">Development Team</option>
+                                    <option value="QA Team">QA Team</option>
+                                    <option value="Production Team">Production Team</option>
+                                </select>
+                            </div>
 
-                            <option value="Azure">
-                                Azure
-                            </option>
+                            <!-- COST -->
+                            <div class="form-group cost-form-group">
+                                <label for="cost">Monthly Cost (USD)</label>
+                                <div class="cost-input-group">
+                                    <input
+                                        type="number"
+                                        id="cost"
+                                        name="cost"
+                                        min="0"
+                                        step="0.01"
+                                        placeholder="150.00"
+                                    >
+                                    <button
+                                        type="button"
+                                        class="btn btn-estimate"
+                                        onclick="estimateCost()"
+                                    >
+                                        ⚡ Auto Estimate
+                                    </button>
+                                </div>
+                            </div>
 
-                            <option value="GCP">
-                                GCP
-                            </option>
+                            <!-- DUE DATE -->
+                            <div class="form-group">
+                                <label for="dueDate">Lifecycle Due Date</label>
+                                <input
+                                    type="date"
+                                    id="dueDate"
+                                    name="due_date"
+                                >
+                            </div>
+                        </div>
 
-                            <option value="Oracle Cloud">
-                                Oracle Cloud
-                            </option>
-
-                            <option value="IBM Cloud">
-                                IBM Cloud
-                            </option>
-
-                            <option value="Alibaba Cloud">
-                                Alibaba Cloud
-                            </option>
-
-                        </select>
-
-
-
-                        <select id="filterStatus">
-
-                            <option value="">
-                                All Status
-                            </option>
-
-                            <option value="Running">
-                                Running
-                            </option>
-
-                            <option value="Stopped">
-                                Stopped
-                            </option>
-
-                            <option value="Active">
-                                Active
-                            </option>
-
-                            <option value="Inactive">
-                                Inactive
-                            </option>
-
-                            <option value="Pending">
-                                Pending
-                            </option>
-
-                            <option value="Terminated">
-                                Terminated
-                            </option>
-
-                        </select>
-
-
-
-                        <select id="filterOwner">
-
-                            <option value="">
-                                All Owners
-                            </option>
-
-                            <option value="Anbarasan">
-                                Anbarasan
-                            </option>
-
-                            <option value="DevOps Team">
-                                DevOps Team
-                            </option>
-
-                            <option value="Infrastructure Team">
-                                Infrastructure Team
-                            </option>
-
-                            <option value="Development Team">
-                                Development Team
-                            </option>
-
-                            <option value="QA Team">
-                                QA Team
-                            </option>
-
-                            <option value="Production Team">
-                                Production Team
-                            </option>
-
-                        </select>
-
-
-                        <button class="btn btn-secondary"
-                                type="button"
-                                id="clearFiltersBtn">
-
-                            Clear Filters
-
+                        <button type="submit" class="btn btn-primary">
+                            <span>+ Register Asset</span>
                         </button>
+                    </form>
+                </section>
 
-
+                <!-- ALL ASSETS SECTION -->
+                <section class="assets-section">
+                    <div class="section-header">
+                        <div>
+                            <h2>All Cloud Assets</h2>
+                            <p>Live inventory of your provisioned cloud infrastructure.</p>
+                        </div>
+                        <button id="refreshBtn" class="btn btn-secondary" type="button">
+                            <span>↻ Refresh Data</span>
+                        </button>
                     </div>
 
-                </div>
+                    <!-- SEARCH AND FILTERS -->
+                    <div class="search-filter-container">
+                        <div class="search-box">
+                            <input
+                                type="text"
+                                id="searchInput"
+                                placeholder="Search assets by name or ID..."
+                            >
+                        </div>
 
+                        <div class="filter-controls">
+                            <select id="filterProvider">
+                                <option value="">All Providers</option>
+                                <option value="AWS">AWS</option>
+                                <option value="Azure">Azure</option>
+                                <option value="GCP">GCP</option>
+                                <option value="Oracle Cloud">Oracle Cloud</option>
+                                <option value="IBM Cloud">IBM Cloud</option>
+                                <option value="Alibaba Cloud">Alibaba Cloud</option>
+                            </select>
 
+                            <select id="filterStatus">
+                                <option value="">All Statuses</option>
+                                <option value="Running">Running</option>
+                                <option value="Stopped">Stopped</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Terminated">Terminated</option>
+                            </select>
 
-                <!-- MESSAGES -->
+                            <select id="filterOwner">
+                                <option value="">All Owners</option>
+                                <option value="Anbarasan">Anbarasan</option>
+                                <option value="DevOps Team">DevOps Team</option>
+                                <option value="Infrastructure Team">Infrastructure Team</option>
+                                <option value="Development Team">Development Team</option>
+                                <option value="QA Team">QA Team</option>
+                                <option value="Production Team">Production Team</option>
+                            </select>
 
-                <div id="loadingMessage"
-                     class="loading">
-
-                    Loading assets...
-
-                </div>
-
-
-                <div id="errorMessage"
-                     class="error"
-                     style="display:none;">
-                </div>
-
-
-                <div id="successMessage"
-                     class="success"
-                     style="display:none;">
-                </div>
-
-
-
-                <!-- ASSET CARDS -->
-
-                <div id="assetsContainer"></div>
-
-
-
-                <!-- PAGINATION -->
-
-                <div class="pagination-container"
-                     id="paginationContainer">
-
-
-                    <button class="pagination-btn"
-                            id="prevPage"
-                            type="button">
-
-                        ← Previous
-
-                    </button>
-
-
-                    <div id="pageNumbers"
-                         class="page-numbers">
+                            <button class="btn btn-secondary" type="button" id="clearFiltersBtn">
+                                Clear Filters
+                            </button>
+                        </div>
                     </div>
 
+                    <!-- MESSAGES -->
+                    <div id="loadingMessage" class="loading">
+                        Connecting to telemetry stream...
+                    </div>
+                    <div id="errorMessage" class="error" style="display:none;"></div>
+                    <div id="successMessage" class="success" style="display:none;"></div>
 
-                    <button class="pagination-btn"
-                            id="nextPage"
-                            type="button">
+                    <!-- ASSET CARDS CONTAINER -->
+                    <div id="assetsContainer"></div>
 
-                        Next →
-
-                    </button>
-
-
-                </div>
-
-
+                    <!-- PAGINATION -->
+                    <div class="pagination-container" id="paginationContainer">
+                        <button class="pagination-btn" id="prevPage" type="button">
+                            ← Previous
+                        </button>
+                        <div id="pageNumbers" class="page-numbers"></div>
+                        <button class="pagination-btn" id="nextPage" type="button">
+                            Next →
+                        </button>
+                    </div>
+                </section>
             </section>
 
-
-        </section>
-
-
-
-        <!-- ================= COST OVERVIEW ================= -->
-
-        <section class="page"
-                 id="costs">
-
-
-            <div class="page-intro">
-
-                <p class="eyebrow">
-                    FINANCIAL OVERVIEW
-                </p>
-
-                <h2>
-                    Cost Overview
-                </h2>
-
-                <p>
-                    Understand where your cloud budget
-                    is being spent.
-                </p>
-
-            </div>
-
-
-
-            <!-- COST SUMMARY -->
-
-            <div class="cost-summary-grid">
-
-
-                <div class="cost-card featured">
-
-                    <p>Total Monthly Cost</p>
-
-                    <h2 id="costOverviewTotal">
-                        $0.00
-                    </h2>
-
-                    <span>
-                        Across all cloud assets
-                    </span>
-
+            <!-- ================= COST OVERVIEW ================= -->
+            <section class="page" id="costs">
+                <div class="page-intro">
+                    <p class="eyebrow">FINANCIAL TELEMETRY</p>
+                    <h2>Cost & Expenditure Governance</h2>
+                    <p>Real-time analytics and visibility into cloud infrastructure expenditures.</p>
                 </div>
 
+                <!-- COST SUMMARY CARDS -->
+                <div class="cost-summary-grid">
+                    <div class="cost-card featured">
+                        <p>Total Monthly Cost</p>
+                        <h2 id="costOverviewTotal">$0.00</h2>
+                        <span>Across all provisioned cloud assets</span>
+                    </div>
 
+                    <div class="cost-card">
+                        <p>Average Asset Cost</p>
+                        <h2 id="averageCost">$0.00</h2>
+                        <span>Mean expenditure per provisioned asset</span>
+                    </div>
 
-                <div class="cost-card">
-
-                    <p>Average Asset Cost</p>
-
-                    <h2 id="averageCost">
-                        $0.00
-                    </h2>
-
-                    <span>
-                        Average monthly spending
-                    </span>
-
+                    <div class="cost-card">
+                        <p>Highest Cost Asset</p>
+                        <h2 id="highestCost">$0.00</h2>
+                        <span id="highestCostName">No assets</span>
+                    </div>
                 </div>
 
-
-
-                <div class="cost-card">
-
-                    <p>Highest Cost Asset</p>
-
-                    <h2 id="highestCost">
-                        $0.00
-                    </h2>
-
-                    <span id="highestCostName">
-                        No assets
-                    </span>
-
-                </div>
-
-
-            </div>
-
-
-
-            <div class="cost-content-grid">
-
-
-                <div class="panel">
-
-                    <div class="panel-header">
-
-                        <div>
-
-                            <h3>
-                                Cost by Provider
-                            </h3>
-
-                            <p>
-                                Spending across providers
-                            </p>
-
+                <!-- COST BREAKDOWN GRID -->
+                <div class="cost-content-grid">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h3>Cost by Provider</h3>
+                                <p>Expenditure distribution across cloud platforms</p>
+                            </div>
                         </div>
-
-                    </div>
-
-
-                    <div id="costByProvider"
-                         class="cost-list">
-
-                        No cost data available.
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="panel">
-
-                    <div class="panel-header">
-
-                        <div>
-
-                            <h3>
-                                Cost by Service
-                            </h3>
-
-                            <p>
-                                Services consuming your budget
-                            </p>
-
+                        <div id="costByProvider" class="cost-list">
+                            No cost data available.
                         </div>
-
                     </div>
 
-
-                    <div id="costByService"
-                         class="cost-list">
-
-                        No cost data available.
-
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h3>Cost by Service</h3>
+                                <p>Services consuming the largest budget share</p>
+                            </div>
+                        </div>
+                        <div id="costByService" class="cost-list">
+                            No cost data available.
+                        </div>
                     </div>
-
                 </div>
 
-
-            </div>
-
-
-
-            <div class="panel">
-
-                <div class="panel-header">
-
-                    <div>
-
-                        <h3>
-                            Most Expensive Assets
-                        </h3>
-
-                        <p>
-                            Assets with the highest
-                            estimated monthly cost.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div id="expensiveAssets"></div>
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- ================= ANALYTICS ================= -->
-
-        <section class="page"
-                 id="analytics">
-
-
-            <div class="page-intro">
-
-                <p class="eyebrow">
-                    INFRASTRUCTURE INSIGHTS
-                </p>
-
-                <h2>
-                    Analytics
-                </h2>
-
-                <p>
-                    Analyze your cloud infrastructure
-                    and asset distribution.
-                </p>
-
-            </div>
-
-
-
-            <div class="analytics-grid">
-
-
+                <!-- MOST EXPENSIVE ASSETS -->
                 <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>Top Expensive Cloud Assets</h3>
+                            <p>Ranked assets with the highest estimated monthly spending</p>
+                        </div>
+                    </div>
+                    <div id="expensiveAssets" class="analytics-list"></div>
+                </div>
+            </section>
 
-                    <h3>
-                        Assets by Provider
-                    </h3>
+            <!-- ================= ANALYTICS ================= -->
+            <section class="page" id="analytics">
+                <div class="page-intro">
+                    <p class="eyebrow">INFRASTRUCTURE INSIGHTS</p>
+                    <h2>Telemetry & Distribution Analytics</h2>
+                    <p>Statistical distribution of your multi-cloud footprint across providers and health states.</p>
+                </div>
 
-                    <div id="providerAnalytics">
-                        No analytics data available.
+                <div class="analytics-grid">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h3>Assets by Provider</h3>
+                                <p>Resource allocation by cloud vendor</p>
+                            </div>
+                        </div>
+                        <div id="providerAnalytics" class="analytics-list">
+                            No analytics data available.
+                        </div>
                     </div>
 
-                </div>
-
-
-
-                <div class="panel">
-
-                    <h3>
-                        Assets by Status
-                    </h3>
-
-                    <div id="statusAnalytics">
-                        No analytics data available.
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h3>Assets by Status</h3>
+                                <p>Operational health state distribution</p>
+                            </div>
+                        </div>
+                        <div id="statusAnalytics" class="analytics-list">
+                            No analytics data available.
+                        </div>
                     </div>
 
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h3>Assets by Service</h3>
+                                <p>Service type distribution</p>
+                            </div>
+                        </div>
+                        <div id="serviceAnalytics" class="analytics-list">
+                            No analytics data available.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= SETTINGS ================= -->
+            <section class="page" id="settings">
+                <div class="page-intro">
+                    <p class="eyebrow">APPLICATION PREFERENCES</p>
+                    <h2>System Settings</h2>
+                    <p>Manage your CloudAsset operations preferences and display options.</p>
                 </div>
 
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- ================= SETTINGS ================= -->
-
-        <section class="page"
-                 id="settings">
-
-
-            <div class="page-intro">
-
-                <p class="eyebrow">
-                    APPLICATION SETTINGS
-                </p>
-
-                <h2>
-                    Settings
-                </h2>
-
-                <p>
-                    Manage your CloudAsset preferences.
-                </p>
-
-            </div>
-
-
-
-            <div class="panel settings-panel">
-
-
-                <div class="setting-item">
-
-
-                    <div>
-
-                        <h3>
-                            Appearance
-                        </h3>
-
-                        <p>
-                            Switch between light
-                            and dark mode.
-                        </p>
-
+                <div class="panel settings-panel">
+                    <div class="setting-item">
+                        <div>
+                            <h3>Theme Appearance</h3>
+                            <p>Toggle between Dark Cyber Mode and High-Contrast Light Mode.</p>
+                        </div>
+                        <button class="btn btn-secondary" id="settingsThemeToggle" type="button">
+                            Toggle Theme
+                        </button>
                     </div>
 
-
-                    <button class="btn btn-secondary"
-                            id="settingsThemeToggle"
-                            type="button">
-
-                        Toggle Theme
-
-                    </button>
-
-
+                    <div class="setting-item">
+                        <div>
+                            <h3>Telemetry Engine</h3>
+                            <p>CloudAsset Autonomous Operations Core v2.4 • Connected to Active Backend</p>
+                        </div>
+                        <span class="badge-online">● Online & Syncing</span>
+                    </div>
                 </div>
-
-
-            </div>
-
-
-        </section>
-
-
-    </main>
-
-
-</div>
-
-
-
-<!-- ================= EDIT ASSET MODAL ================= -->
-
-<div id="editModal"
-     class="modal">
-
-
-    <div class="modal-content">
-
-
-        <button class="close"
-                type="button">
-
-            ×
-
-        </button>
-
-
-        <h2>
-            Edit Asset
-        </h2>
-
-
-        <form id="editAssetForm">
-
-
-            <input type="hidden"
-                   id="editAssetId">
-
-
-
-            <div class="form-group">
-
-                <label for="editAssetName">
-                    Asset Name
-                </label>
-
-                <input type="text"
-                       id="editAssetName"
-                       name="assetName"
-                       required>
-
-            </div>
-
-
-
-            <div class="form-group">
-
-                <label for="editProvider">
-                    Provider
-                </label>
-
-                <select id="editProvider"
-                        name="provider">
-
-                    <option value="AWS">AWS</option>
-                    <option value="Azure">Azure</option>
-                    <option value="GCP">GCP</option>
-                    <option value="Oracle Cloud">Oracle Cloud</option>
-                    <option value="IBM Cloud">IBM Cloud</option>
-                    <option value="Alibaba Cloud">Alibaba Cloud</option>
-
-                </select>
-
-            </div>
-
-
-
-            <div class="form-group">
-
-                <label for="editService">
-                    Service
-                </label>
-
-                <select id="editService"
-                        name="service">
-
-                    <option value="EC2">EC2</option>
-                    <option value="S3">S3</option>
-                    <option value="RDS">RDS</option>
-                    <option value="Lambda">Lambda</option>
-                    <option value="ECS">ECS</option>
-                    <option value="EKS">EKS</option>
-                    <option value="CloudFront">CloudFront</option>
-                    <option value="Route53">Route53</option>
-                    <option value="VPC">VPC</option>
-                    <option value="Load Balancer">Load Balancer</option>
-                    <option value="CloudWatch">CloudWatch</option>
-
-                </select>
-
-            </div>
-
-
-
-            <div class="form-group">
-
-                <label for="editRegion">
-                    Region
-                </label>
-
-                <select id="editRegion"
-                        name="region">
-
-                    <option value="us-east-1">US East</option>
-                    <option value="us-east-2">US East 2</option>
-                    <option value="us-west-1">US West</option>
-                    <option value="us-west-2">US West 2</option>
-                    <option value="ap-south-1">Mumbai</option>
-                    <option value="ap-southeast-1">Singapore</option>
-                    <option value="ap-northeast-1">Tokyo</option>
-                    <option value="eu-west-1">Ireland</option>
-                    <option value="eu-central-1">Frankfurt</option>
-
-                </select>
-
-            </div>
-
-
-
-            <div class="form-group">
-
-                <label for="editStatus">
-                    Status
-                </label>
-
-                <select id="editStatus"
-                        name="status">
-
-                    <option value="Running">Running</option>
-                    <option value="Stopped">Stopped</option>
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Terminated">Terminated</option>
-
-                </select>
-
-            </div>
-
-
-
-            <div class="form-group">
-
-                <label for="editOwner">
-                    Owner
-                </label>
-
-                <select id="editOwner"
-                        name="owner">
-
-                    <option value="Anbarasan">Anbarasan</option>
-                    <option value="DevOps Team">DevOps Team</option>
-                    <option value="Infrastructure Team">Infrastructure Team</option>
-                    <option value="Development Team">Development Team</option>
-                    <option value="QA Team">QA Team</option>
-                    <option value="Production Team">Production Team</option>
-
-                </select>
-
-            </div>
-
-
-
-            <div class="form-group">
-
-                <label for="editCost">
-                    Monthly Cost (USD)
-                </label>
-
-
-                <div class="cost-input-group">
-
-                    <input type="number"
-                           id="editCost"
-                           name="cost"
-                           min="0"
-                           step="0.01">
-
-
-                    <button type="button"
-                            class="btn btn-estimate"
-                            onclick="estimateEditCost()">
-
-                        Auto Estimate
-
-                    </button>
-
-                </div>
-
-            </div>
-
-            <!-- DUE DATE -->
-<div class="form-group">
-
-    <label for="editDueDate">
-        Due Date
-    </label>
-
-    <input
-        type="date"
-        id="editDueDate"
-        name="due_date"
-    >
-
-</div>
-
-
-
-            <div class="modal-actions">
-
-                <button type="submit"
-                        class="btn btn-primary">
-
-                    Update Asset
-
-                </button>
-
-
-                <button type="button"
-                        class="btn btn-secondary"
-                        id="cancelEdit">
-
-                    Cancel
-
-                </button>
-
-            </div>
-
-
-        </form>
-
-
+            </section>
+        </main>
     </div>
 
+    <!-- ================= EDIT ASSET MODAL ================= -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <button class="close" type="button" aria-label="Close modal">×</button>
+            <h2>Edit Cloud Asset</h2>
 
-</div>
+            <form id="editAssetForm">
+                <input type="hidden" id="editAssetId">
 
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label for="editAssetName">Asset Name *</label>
+                    <input
+                        type="text"
+                        id="editAssetName"
+                        name="assetName"
+                        required
+                    >
+                </div>
 
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="editProvider">Provider</label>
+                        <select id="editProvider" name="provider">
+                            <option value="AWS">AWS</option>
+                            <option value="Azure">Azure</option>
+                            <option value="GCP">GCP</option>
+                            <option value="Oracle Cloud">Oracle Cloud</option>
+                            <option value="IBM Cloud">IBM Cloud</option>
+                            <option value="Alibaba Cloud">Alibaba Cloud</option>
+                        </select>
+                    </div>
 
-<!-- JAVASCRIPT -->
+                    <div class="form-group">
+                        <label for="editService">Service</label>
+                        <select id="editService" name="service">
+                            <option value="EC2">EC2</option>
+                            <option value="S3">S3</option>
+                            <option value="RDS">RDS</option>
+                            <option value="Lambda">Lambda</option>
+                            <option value="ECS">ECS</option>
+                            <option value="EKS">EKS</option>
+                            <option value="CloudFront">CloudFront</option>
+                            <option value="Route53">Route53</option>
+                            <option value="VPC">VPC</option>
+                            <option value="Load Balancer">Load Balancer</option>
+                            <option value="CloudWatch">CloudWatch</option>
+                        </select>
+                    </div>
 
-<script src="js/app.js"></script>
+                    <div class="form-group">
+                        <label for="editRegion">Region</label>
+                        <select id="editRegion" name="region">
+                            <option value="us-east-1">US East (N. Virginia)</option>
+                            <option value="us-east-2">US East (Ohio)</option>
+                            <option value="us-west-1">US West (N. California)</option>
+                            <option value="us-west-2">US West (Oregon)</option>
+                            <option value="ap-south-1">Asia Pacific (Mumbai)</option>
+                            <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
+                            <option value="ap-northeast-1">Asia Pacific (Tokyo)</option>
+                            <option value="eu-west-1">Europe (Ireland)</option>
+                            <option value="eu-central-1">Europe (Frankfurt)</option>
+                        </select>
+                    </div>
 
+                    <div class="form-group">
+                        <label for="editStatus">Status</label>
+                        <select id="editStatus" name="status">
+                            <option value="Running">Running</option>
+                            <option value="Stopped">Stopped</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Terminated">Terminated</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editOwner">Owner</label>
+                        <select id="editOwner" name="owner">
+                            <option value="Anbarasan">Anbarasan</option>
+                            <option value="DevOps Team">DevOps Team</option>
+                            <option value="Infrastructure Team">Infrastructure Team</option>
+                            <option value="Development Team">Development Team</option>
+                            <option value="QA Team">QA Team</option>
+                            <option value="Production Team">Production Team</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group cost-form-group">
+                        <label for="editCost">Monthly Cost (USD)</label>
+                        <div class="cost-input-group">
+                            <input
+                                type="number"
+                                id="editCost"
+                                name="cost"
+                                min="0"
+                                step="0.01"
+                            >
+                            <button
+                                type="button"
+                                class="btn btn-estimate"
+                                onclick="estimateEditCost()"
+                            >
+                                ⚡ Estimate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DUE DATE -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="editDueDate">Due Date</label>
+                    <input
+                        type="date"
+                        id="editDueDate"
+                        name="due_date"
+                    >
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">
+                        Update Asset
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="cancelEdit">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script src="js/app.js"></script>
 </body>
 </html>
