@@ -762,13 +762,11 @@ async function loadAssets() {
 
         }
 
+        displayAssets(filteredAssets);
 
-         updateAllPages();
+updateAllPages();
 
-         await loadDashboardStats();
-
-          displayAssets(filteredAssets);
-
+await loadDashboardStats();
 
     } catch (error) {
 
@@ -943,15 +941,6 @@ function updateDashboard() {
         providers
     );
 
-
-    setText(
-    "runningCount",
-    allAssets.filter(
-        a =>
-            a.status &&
-            a.status.toLowerCase() === "running"
-    ).length
-);
 
     setText(
         "stoppedCount",
@@ -1147,7 +1136,7 @@ function displayAssets(assets) {
                     </div>
 
 
-                    <div class="asset-info-item">
+                <div class="asset-info-item">
 
                         <span>
                             Service
@@ -1173,7 +1162,7 @@ function displayAssets(assets) {
                     </div>
 
 
-                    <div class="asset-info-item">
+                                       <div class="asset-info-item">
 
                         <span>
                             Owner
@@ -1181,6 +1170,23 @@ function displayAssets(assets) {
 
                         <strong>
                             ${escapeHTML(asset.owner || "N/A")}
+                        </strong>
+
+                    </div>
+
+
+                    <!-- DUE DATE -->
+
+                    <div class="asset-info-item">
+
+                        <span>
+                            Due Date
+                        </span>
+
+                        <strong>
+                            ${asset.due_date
+                                ? escapeHTML(asset.due_date)
+                                : "No Due Date"}
                         </strong>
 
                     </div>
@@ -1199,21 +1205,6 @@ function displayAssets(assets) {
                     </strong>
 
                 </div>
-
-                <div class="asset-info-item">
-
-    <span>
-        Due Date
-    </span>
-
-    <strong>
-        ${asset.due_date
-            ? escapeHTML(asset.due_date)
-            : "No Due Date"}
-    </strong>
-
-</div>
-
 
                 <div class="asset-actions">
 
@@ -1736,6 +1727,11 @@ async function openEditModal(assetId) {
             asset.cost
         );
 
+        setValue(
+    "editDueDate",
+    asset.due_date || ""
+);
+
 
         editModal.style.display =
             "block";
@@ -1797,26 +1793,44 @@ async function handleEditAsset(event) {
     }
 
 
-    const assetId =
+const formData =
+    new FormData(
+        editAssetForm
+    );
+
+     const assetId =
         document.getElementById(
             "editAssetId"
         ).value;
-        const assetData = {
-    asset_name: formData.get("assetName").trim(),
 
-    provider: formData.get("provider"),
+const assetData = {
 
-    service: formData.get("service"),
+    asset_name:
+        formData.get("assetName").trim(),
 
-    region: formData.get("region"),
+    provider:
+        formData.get("provider"),
 
-    status: formData.get("status"),
+    service:
+        formData.get("service"),
 
-    owner: formData.get("owner"),
+    region:
+        formData.get("region"),
 
-    cost: parseFloat(formData.get("cost")) || 0,
+    status:
+        formData.get("status"),
 
-    due_date: formData.get("due_date") || null
+    owner:
+        formData.get("owner"),
+
+    cost:
+        parseFloat(
+            formData.get("cost")
+        ) || 0,
+
+    due_date:
+        formData.get("due_date") || null
+
 };
 
 
@@ -1872,8 +1886,9 @@ async function handleEditAsset(event) {
 
         closeEditModal();
 
-
         await loadAssets();
+
+await loadDashboardStats();
 
 
     } catch (error) {
