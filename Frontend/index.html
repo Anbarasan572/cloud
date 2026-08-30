@@ -288,7 +288,7 @@
                             Unified multi-cloud infrastructure monitoring, resource lifecycle tracking, and real-time cost governance.
                         </p>
                     </div>
-                    <button class="btn btn-primary" id="dashboardAddAssetBtn" type="button">
+                    <button class="btn btn-primary" id="dashboardAddAssetBtn" type="button" data-admin-only="true">
                         <span>+ Add New Asset</span>
                     </button>
                 </div>
@@ -426,6 +426,95 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- ================= ADMIN AUTOMATION MONITORING ================= -->
+                <div class="panel automation-panel" id="adminAutomationPanel" data-admin-only="true" style="margin-top: 24px;">
+                    <div class="panel-header">
+                        <div>
+                            <h3>Automation Monitoring</h3>
+                            <p>Background Overdue Telemetry Engine & Lifecycle Scanner</p>
+                        </div>
+                        <button class="btn btn-secondary" id="triggerAutomationBtn" type="button" style="padding: 6px 14px; font-size: 13px;">
+                            <span>⚡ Run Check Now</span>
+                        </button>
+                    </div>
+
+                    <div class="dashboard-grid" style="margin-bottom: 20px;">
+                        <div class="dashboard-card" style="padding: 16px;">
+                            <div class="dashboard-icon" style="color: var(--status-running); background: var(--status-running-bg); border-color: var(--status-running-border);">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 14 14"></polyline>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Automation Engine</p>
+                                <h3 id="autoStatus">Running</h3>
+                                <small id="autoStatusDesc">Background worker active</small>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card" style="padding: 16px;">
+                            <div class="dashboard-icon" style="color: var(--cyan); background: var(--cyan-subtle); border-color: var(--cyan-glow);">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Last Check</p>
+                                <h3 id="autoLastCheck" style="font-size: 1.05rem;">Just now</h3>
+                                <small>Last execution timestamp</small>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card" style="padding: 16px;">
+                            <div class="dashboard-icon" style="color: var(--primary); background: var(--primary-light); border-color: var(--border-glow);">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Assets Checked</p>
+                                <h3 id="autoAssetsChecked">0</h3>
+                                <small>Total inventory evaluated</small>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card" style="padding: 16px;">
+                            <div class="dashboard-icon" style="color: var(--status-overdue); background: var(--status-overdue-bg); border-color: var(--status-overdue-border);">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                            </div>
+                            <div>
+                                <p>Overdue Assets</p>
+                                <h3 id="autoOverdueDetected">0</h3>
+                                <small>Past lifecycle due date</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AUTOMATION HISTORY LOGS -->
+                    <div class="automation-history-section" id="adminAutomationHistoryPanel" data-admin-only="true">
+                        <div class="panel-header" style="padding: 12px 0; margin-bottom: 12px; border-bottom: 1px solid var(--border-subtle);">
+                            <div>
+                                <h4 style="font-size: 15px; font-weight: 600;">Automation Execution History</h4>
+                                <p style="font-size: 13px; color: var(--text-muted);">Recent persistent audit log cycles</p>
+                            </div>
+                            <button class="text-button" id="refreshHistoryBtn" type="button">↻ Refresh Logs</button>
+                        </div>
+                        <div id="automationHistoryList" class="analytics-list">
+                            <p class="empty-state">No execution history recorded yet.</p>
+                        </div>
+                    </div>
+                </div>
+
             </section>
 
             <!-- ================= ASSETS PAGE ================= -->

@@ -56,3 +56,9 @@ class Asset(db.Model):
         onupdate=lambda: datetime.now(timezone.utc),
         nullable=False
     )
+
+    @property
+    def is_overdue(self):
+        if not self.due_date:
+            return False
+        return self.due_date < datetime.now().date()

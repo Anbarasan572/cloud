@@ -4,9 +4,11 @@
 // ==========================================================================
 
 // ==========================================================================
-// API CONFIGURATION (PRESERVED EXACTLY)
+// API CONFIGURATION
 // ==========================================================================
-const API_BASE_URL = "http://34.201.59.22/api";
+const API_BASE_URL = (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:"))
+    ? "http://127.0.0.1:5000"
+    : "http://34.201.59.22/api";
 
 // ==========================================================================
 // AUTHENTICATION & SESSION MANAGEMENT
@@ -29,7 +31,7 @@ function getAuthHeaders() {
 
 // Check whether current user is Admin
 function isAdmin() {
-    return currentUser && currentUser.role === "admin";
+    return Boolean(currentUser && currentUser.role === "admin");
 }
 
 // Logout
@@ -58,6 +60,11 @@ function applyRolePermissions() {
     adminOnlyElements.forEach((element) => {
         element.style.display = isAdmin() ? "" : "none";
     });
+
+    if (isAdmin()) {
+        loadAutomationStatus();
+        loadAutomationHistory();
+    }
 }
 
 // ==========================================================================
@@ -324,7 +331,23 @@ function setupEventListeners() {
         refreshBtn.addEventListener("click", () => {
             loadAssets();
             loadDashboardStats();
+            if (isAdmin()) {
+                loadAutomationStatus();
+                loadAutomationHistory();
+            }
         });
+    }
+
+    // Trigger Automation Button
+    const triggerAutomationBtn = document.getElementById("triggerAutomationBtn");
+    if (triggerAutomationBtn) {
+        triggerAutomationBtn.addEventListener("click", triggerAutomationRun);
+    }
+
+    // Refresh Automation History Logs Button
+    const refreshHistoryBtn = document.getElementById("refreshHistoryBtn");
+    if (refreshHistoryBtn) {
+        refreshHistoryBtn.addEventListener("click", loadAutomationHistory);
     }
 
     // Close Modal Button
@@ -1502,6 +1525,135 @@ function setupSidebarToggle() {
 }
 
 // ==========================================================================
+// AUTOMATION MONITORING & HISTORY HANDLERS (ADMIN ONLY)
+// ==========================================================================
+async function loadAutomationStatus() {
+    if (!isAdmin()) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/automation/status`, {
+            headers: getAuthHeaders()
+        });
+
+        if (response.status === 401) {
+            handleUnauthorized();
+            return;
+        }
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        setText("autoStatus", data.status || "Running");
+        setText("autoStatusDesc", data.status === "Running" ? "Background worker active" : "Check error logs");
+
+        let formattedTime = "Just now";
+        if (data.last_check) {
+            const dateObj = new Date(data.last_check);
+            formattedTime = isNaN(dateObj.getTime())
+                ? data.last_check
+                : dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " (" + dateObj.toLocaleDateString() + ")";
+        }
+        setText("autoLastCheck", formattedTime);
+        setText("autoAssetsChecked", data.assets_checked ?? 0);
+        setText("autoOverdueDetected", data.overdue_detected ?? 0);
+
+    } catch (error) {
+        console.error("Automation status fetch error:", error);
+    }
+}
+
+async function loadAutomationHistory() {
+    if (!isAdmin()) return;
+
+    const container = document.getElementById("automationHistoryList");
+    if (!container) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/automation/history?limit=10`, {
+            headers: getAuthHeaders()
+        });
+
+        if (response.status === 401) {
+            handleUnauthorized();
+            return;
+        }
+
+        if (!response.ok) return;
+
+        const records = await response.json();
+
+        if (!Array.isArray(records) || records.length === 0) {
+            container.innerHTML = `<p class="empty-state">No execution history recorded yet.</p>`;
+            return;
+        }
+
+        container.innerHTML = records.map((record) => {
+            const dateStr = record.timestamp ? new Date(record.timestamp).toLocaleString() : "Unknown Time";
+            const isSuccess = record.status === "SUCCESS";
+            const statusClass = isSuccess ? "status-running" : "status-overdue";
+
+            return `
+                <div class="analytics-row" style="padding: 10px 12px; margin-bottom: 8px; background: var(--bg-surface-elevated); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                            <span class="status-badge ${statusClass}" style="font-size: 11px; padding: 2px 8px;">
+                                ${escapeHTML(record.status)}
+                            </span>
+                            <span style="font-size: 13px; font-weight: 600; color: var(--text-primary);">
+                                ${escapeHTML(dateStr)}
+                            </span>
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">
+                            Assets Evaluated: <strong>${record.assets_checked}</strong> • Overdue Detected: <strong style="color: ${record.overdue_detected > 0 ? 'var(--status-overdue)' : 'inherit'}">${record.overdue_detected}</strong>
+                            ${record.error_message ? `<div style="color: var(--status-overdue); margin-top: 4px;">Error: ${escapeHTML(record.error_message)}</div>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join("");
+
+    } catch (error) {
+        console.error("Automation history fetch error:", error);
+    }
+}
+
+async function triggerAutomationRun() {
+    if (!isAdmin()) return;
+
+    const btn = document.getElementById("triggerAutomationBtn");
+
+    try {
+        if (btn) btn.disabled = true;
+
+        const response = await fetch(`${API_BASE_URL}/automation/run-now`, {
+            method: "POST",
+            headers: getAuthHeaders()
+        });
+
+        if (response.status === 401) {
+            handleUnauthorized();
+            return;
+        }
+
+        if (response.ok) {
+            showMessage("success", "Overdue automation check executed successfully!");
+            await loadAutomationStatus();
+            await loadAutomationHistory();
+            await loadDashboardStats();
+        } else {
+            const err = await response.json();
+            showMessage("error", err.error || "Failed to trigger automation");
+        }
+    } catch (error) {
+        console.error("Trigger automation error:", error);
+        showMessage("error", error.message || "Failed to trigger automation");
+    } finally {
+        if (btn) btn.disabled = false;
+    }
+}
+
+// ==========================================================================
 // GLOBAL WINDOW EXPORTS (FOR INLINE HANDLERS)
 // ==========================================================================
 window.openEditModal = openEditModal;
@@ -1514,3 +1666,6 @@ window.nextPage = nextPage;
 window.estimateCost = estimateCost;
 window.estimateEditCost = estimateEditCost;
 window.refreshAssets = loadAssets;
+window.loadAutomationStatus = loadAutomationStatus;
+window.loadAutomationHistory = loadAutomationHistory;
+window.triggerAutomationRun = triggerAutomationRun;

@@ -7,7 +7,10 @@ from flask_jwt_extended import JWTManager
 from database.db import db
 from routes.asset_routes import asset_bp
 from routes.auth_routes import auth_bp
+from routes.automation_routes import automation_bp
 from models.user_model import User
+from models.automation_history_model import AutomationHistory
+from services.automation_service import start_automation_scheduler
 
 
 # Create Flask application
@@ -65,6 +68,7 @@ jwt = JWTManager(app)
 
 app.register_blueprint(asset_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(automation_bp)
 
 # ==========================================
 # HOME ROUTE
@@ -83,8 +87,20 @@ def home():
 
 with app.app_context():
 
-    # Create Asset and User tables
+    # Create Asset, User, and AutomationHistory tables
     db.create_all()
+
+    # Ensure due_date column exists in asset table if SQLite table was created prior
+    try:
+        from sqlalchemy import text
+        with db.engine.connect() as conn:
+            result = conn.execute(text("PRAGMA table_info(asset)")).fetchall()
+            col_names = [row[1] for row in result]
+            if "due_date" not in col_names:
+                conn.execute(text("ALTER TABLE asset ADD COLUMN due_date DATE"))
+                conn.commit()
+    except Exception:
+        pass
 
     # --------------------------------------
     # DEFAULT ADMIN
@@ -140,6 +156,15 @@ with app.app_context():
 
 
 # ==========================================
+# START BACKGROUND SCHEDULER
+# ==========================================
+
+# Prevent duplicate worker thread when Flask debug reloader is active
+if os.environ.get("WERKZEUG_RUN_MAIN") == "true" or not app.debug:
+    start_automation_scheduler(app)
+
+
+# ==========================================
 # RUN APPLICATION
 # ==========================================
 
@@ -148,4 +173,4 @@ if __name__ == "__main__":
         host="0.0.0.0",
         port=5000,
         debug=True
-    )
+    )
