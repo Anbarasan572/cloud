@@ -1,57 +1,49 @@
-name: CloudAsset SSH CI/CD Pipeline
+name: Deploy CloudAsset to GCP
 
 on:
   push:
-    branches: [backend]
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
   deploy:
-    name: Deploy CloudAsset to Ubuntu EC2
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Step 1 - Deploy to EC2 via SSH
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Deploy to GCP VM
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
+          username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
+
           script: |
-            set -e
+            cd ~/cloud
 
-            echo "========================================="
-            echo "Starting CloudAsset deployment"
-            echo "========================================="
+            echo "Pulling latest code..."
+            git pull origin main
 
-            cd ~/CloudAsset
+            echo "Stopping old backend..."
+            sudo docker stop cloudasset-backend || true
+            sudo docker rm cloudasset-backend || true
 
-            echo "Current directory:"
-            pwd
+            echo "Building backend..."
+            cd ~/cloud/Backend
+            sudo docker build -t cloudasset-backend .
 
-            echo "Fetching latest backend code..."
+            echo "Starting backend..."
+            sudo docker run -d \
+              --name cloudasset-backend \
+              --restart unless-stopped \
+              -p 5000:5000 \
+              -v ~/cloudasset-data:/app/instance \
+              cloudasset-backend
 
-            git fetch origin backend
-            git reset --hard origin/backend
+            echo "Deploying frontend..."
+            sudo rm -rf /var/www/cloudasset/*
+            sudo cp -r ~/cloud/Frontend/* /var/www/cloudasset/
 
-            echo "Latest commit:"
-            git log -1 --oneline
+            echo "Restarting Nginx..."
+            sudo systemctl restart nginx
 
-            echo "Updating Python dependencies..."
-
-            if [ -f requirements.txt ]; then
-              pip3 install -r requirements.txt
-            fi
-
-            echo "Restarting CloudAsset service..."
-
-            sudo systemctl restart cloudasset
-
-            echo "Checking CloudAsset service..."
-
-            sudo systemctl status cloudasset --no-pager
-
-            echo "========================================="
-            echo "CloudAsset deployment completed"
-            echo "========================================="
+            echo "Deployment completed successfully!"
