@@ -1,21 +1,22 @@
 // ==========================================================================
-// CLOUDASSET — ENTERPRISE CLOUD ASSET OPERATIONS PLATFORM
-// Frontend Application Logic & Operations Controller
+// CLOUDASSET — FRONTEND APPLICATION LOGIC
+// AI-Powered Cloud Operations Center
 // ==========================================================================
 
 // ==========================================================================
-// 1. API CONFIGURATION
+// API CONFIGURATION
 // ==========================================================================
 const API_BASE_URL = (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:"))
     ? "http://127.0.0.1:5000"
     : "http://34.201.59.22/api";
 
 // ==========================================================================
-// 2. AUTHENTICATION & SESSION MANAGEMENT
+// AUTHENTICATION & SESSION MANAGEMENT
 // ==========================================================================
 let authToken = localStorage.getItem("cloudasset_token");
 let currentUser = JSON.parse(localStorage.getItem("cloudasset_user") || "null");
 
+// Get headers for protected API requests
 function getAuthHeaders() {
     const headers = {
         "Content-Type": "application/json"
@@ -28,12 +29,13 @@ function getAuthHeaders() {
     return headers;
 }
 
+// Check whether current user is Admin
 function isAdmin() {
     return Boolean(currentUser && currentUser.role === "admin");
 }
 
+// Logout
 function logout() {
-    recordActivity("LOGOUT", "User Session", `Signed out ${currentUser ? currentUser.username : "user"}`);
     localStorage.removeItem("cloudasset_token");
     localStorage.removeItem("cloudasset_user");
 
@@ -43,11 +45,15 @@ function logout() {
     window.location.reload();
 }
 
+// Handle expired or invalid login token
 function handleUnauthorized() {
-    alert("Your session has expired. Please sign in again.");
+    alert("Your session has expired. Please login again.");
     logout();
 }
 
+// ==========================================================================
+// ROLE-BASED PERMISSIONS
+// ==========================================================================
 function applyRolePermissions() {
     const adminOnlyElements = document.querySelectorAll('[data-admin-only="true"]');
 
@@ -62,74 +68,7 @@ function applyRolePermissions() {
 }
 
 // ==========================================================================
-// 3. ACTIVITY LOGGING ENGINE (LOCAL AUDIT TRAIL)
-// ==========================================================================
-const ACTIVITY_STORAGE_KEY = "cloudasset_activity_logs";
-
-function getStoredActivityLogs() {
-    try {
-        const raw = localStorage.getItem(ACTIVITY_STORAGE_KEY);
-        return raw ? JSON.parse(raw) : [];
-    } catch (e) {
-        return [];
-    }
-}
-
-function recordActivity(action, assetName, details) {
-    const logs = getStoredActivityLogs();
-    const newEntry = {
-        id: Date.now(),
-        timestamp: new Date().toISOString(),
-        user: currentUser ? currentUser.username : "System",
-        role: currentUser ? currentUser.role : "System",
-        action: action, // LOGIN, CREATE, UPDATE, DELETE, AUTOMATION, VIEW
-        asset: assetName || "—",
-        details: details || "Action executed successfully"
-    };
-
-    logs.unshift(newEntry);
-    // Keep up to 100 entries
-    if (logs.length > 100) logs.pop();
-
-    try {
-        localStorage.setItem(ACTIVITY_STORAGE_KEY, JSON.stringify(logs));
-    } catch (e) {
-        console.warn("Storage quota exceeded for activity logs", e);
-    }
-
-    updateRecentActivityFeed();
-    renderActivityLogsTable();
-}
-
-function seedActivityLogsFromAssets(assets) {
-    let logs = getStoredActivityLogs();
-    if (logs.length > 0) return;
-
-    // If empty, generate initial baseline activity from existing assets
-    const initialLogs = [];
-    if (Array.isArray(assets) && assets.length > 0) {
-        assets.slice(0, 5).forEach((asset) => {
-            initialLogs.push({
-                id: Date.now() - Math.floor(Math.random() * 1000000),
-                timestamp: asset.created_at || new Date().toISOString(),
-                user: asset.owner || "Admin",
-                role: "admin",
-                action: "CREATE",
-                asset: asset.asset_name,
-                details: `Registered ${asset.provider} ${asset.service} in ${asset.region || "us-east-1"}`
-            });
-        });
-    }
-
-    if (initialLogs.length > 0) {
-        localStorage.setItem(ACTIVITY_STORAGE_KEY, JSON.stringify(initialLogs));
-        updateRecentActivityFeed();
-        renderActivityLogsTable();
-    }
-}
-
-// ==========================================================================
-// 4. COST ESTIMATION MATRIX & REGION MULTIPLIERS
+// COST ESTIMATION MATRIX & REGION MULTIPLIERS
 // ==========================================================================
 const COST_ESTIMATES = {
     AWS: {
@@ -210,14 +149,16 @@ const REGION_MULTIPLIERS = {
 };
 
 // ==========================================================================
-// 5. APPLICATION STATE
+// APPLICATION STATE
 // ==========================================================================
 let allAssets = [];
 let filteredAssets = [];
 let currentPage = 1;
-const assetsPerPage = 8;
+const assetsPerPage = 6;
 
-// DOM Elements
+// ==========================================================================
+// DOM ELEMENTS
+// ==========================================================================
 const addAssetForm = document.getElementById("addAssetForm");
 const editAssetForm = document.getElementById("editAssetForm");
 const assetsContainer = document.getElementById("assetsContainer");
@@ -226,7 +167,7 @@ const errorMessage = document.getElementById("errorMessage");
 const successMessage = document.getElementById("successMessage");
 const refreshBtn = document.getElementById("refreshBtn");
 const editModal = document.getElementById("editModal");
-const closeModalBtn = document.querySelector(".close");
+const closeModal = document.querySelector(".close");
 const cancelEditBtn = document.getElementById("cancelEdit");
 
 // LOGIN ELEMENTS
@@ -236,10 +177,10 @@ const loginError = document.getElementById("loginError");
 const appLayout = document.getElementById("appLayout") || document.querySelector(".app-layout");
 
 // ==========================================================================
-// 6. APPLICATION INITIALIZATION
+// INITIALIZE APPLICATION
 // ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
-    // Check initial authentication
+    // Check initial authentication state
     if (authToken && currentUser) {
         if (loginScreen) loginScreen.style.display = "none";
         if (appLayout) appLayout.style.display = "flex";
@@ -252,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (appLayout) appLayout.style.display = "none";
     }
 
-    // Set up listeners
+    // Main event listeners
     setupEventListeners();
     setupPasswordToggle();
     setupNavigation();
@@ -261,12 +202,11 @@ document.addEventListener("DOMContentLoaded", () => {
     setupProfileDropdown();
     setupThemeToggle();
     setupSidebarToggle();
-    setupActivityLogControls();
     loadTheme();
 });
 
 // ==========================================================================
-// 7. LOGIN HANDLER
+// LOGIN HANDLER
 // ==========================================================================
 async function handleLogin(event) {
     event.preventDefault();
@@ -297,11 +237,11 @@ async function handleLogin(event) {
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.error || data.message || "Invalid credentials. Please verify your username and password.");
+            throw new Error(data.error || data.message || "Login failed. Please verify credentials.");
         }
 
         if (!data.access_token || !data.user) {
-            throw new Error("Invalid response received from server.");
+            throw new Error("Invalid login response from server");
         }
 
         // Save token & user profile
@@ -310,8 +250,6 @@ async function handleLogin(event) {
 
         currentUser = data.user;
         localStorage.setItem("cloudasset_user", JSON.stringify(currentUser));
-
-        recordActivity("LOGIN", "User Session", `Signed in as ${currentUser.username} (${currentUser.role})`);
 
         // Reveal Operations Center
         if (loginScreen) loginScreen.style.display = "none";
@@ -333,7 +271,7 @@ async function handleLogin(event) {
 }
 
 // ==========================================================================
-// 8. USER PROFILE UI
+// USER PROFILE UI
 // ==========================================================================
 function updateUserProfile() {
     if (!currentUser) return;
@@ -344,43 +282,32 @@ function updateUserProfile() {
 
     // Top-right profile
     setText("profileUsername", username);
-    setText("profileRole", role === "admin" ? "Administrator" : "Employee (View Only)");
+    setText("profileRole", role === "admin" ? "Administrator" : "Employee");
     setText("userAvatar", avatarLetter);
 
     // Dropdown profile
     setText("dropdownUsername", username);
-    setText("dropdownRole", role === "admin" ? "Administrator" : "Employee (View Only)");
+    setText("dropdownRole", role === "admin" ? "Administrator" : "Employee");
     setText("dropdownAvatar", avatarLetter);
-
-    // Settings page
-    setText("settingsSessionInfo", `Signed in as ${username} • Role: ${role === "admin" ? "Administrator" : "Employee"}`);
 }
 
 // ==========================================================================
-// 9. EVENT LISTENERS SETUP
+// EVENT LISTENERS SETUP
 // ==========================================================================
 function setupEventListeners() {
-    // Dashboard quick actions
+    // Dashboard - Add New Asset Quick Action
     const dashboardAddAssetBtn = document.getElementById("dashboardAddAssetBtn");
     if (dashboardAddAssetBtn) {
         dashboardAddAssetBtn.addEventListener("click", () => {
             navigateToAssets();
-            const nameInput = document.getElementById("assetName");
-            if (nameInput) nameInput.focus();
         });
     }
 
+    // Dashboard - View All Assets Quick Action
     const viewAllAssetsBtn = document.getElementById("viewAllAssetsBtn");
     if (viewAllAssetsBtn) {
         viewAllAssetsBtn.addEventListener("click", () => {
             navigateToAssets();
-        });
-    }
-
-    const dashViewAllActivityBtn = document.getElementById("dashViewAllActivityBtn");
-    if (dashViewAllActivityBtn) {
-        dashViewAllActivityBtn.addEventListener("click", () => {
-            showPage("activity");
         });
     }
 
@@ -417,18 +344,15 @@ function setupEventListeners() {
         triggerAutomationBtn.addEventListener("click", triggerAutomationRun);
     }
 
-    // Refresh Automation History Button
+    // Refresh Automation History Logs Button
     const refreshHistoryBtn = document.getElementById("refreshHistoryBtn");
     if (refreshHistoryBtn) {
-        refreshHistoryBtn.addEventListener("click", () => {
-            loadAutomationStatus();
-            loadAutomationHistory();
-        });
+        refreshHistoryBtn.addEventListener("click", loadAutomationHistory);
     }
 
     // Close Modal Button
-    if (closeModalBtn) {
-        closeModalBtn.addEventListener("click", closeEditModal);
+    if (closeModal) {
+        closeModal.addEventListener("click", closeEditModal);
     }
 
     // Cancel Edit Button
@@ -481,7 +405,7 @@ function setupEventListeners() {
 }
 
 // ==========================================================================
-// 10. LOAD ASSETS FROM BACKEND
+// LOAD ASSETS FROM BACKEND
 // ==========================================================================
 async function loadAssets() {
     try {
@@ -508,7 +432,6 @@ async function loadAssets() {
 
         if (loadingMessage) loadingMessage.style.display = "none";
 
-        seedActivityLogsFromAssets(allAssets);
         displayAssets(filteredAssets);
         updateAllPages();
         await loadDashboardStats();
@@ -521,7 +444,7 @@ async function loadAssets() {
 }
 
 // ==========================================================================
-// 11. LOAD DASHBOARD STATISTICS FROM API
+// LOAD DASHBOARD STATISTICS FROM API
 // ==========================================================================
 async function loadDashboardStats() {
     try {
@@ -535,8 +458,12 @@ async function loadDashboardStats() {
 
         const data = await response.json();
 
-        // Synchronize counters
-        updateDashboard();
+        setText("runningCount", data.running || 0);
+        setText("stoppedCount", data.stopped || 0);
+        setText("inactiveCount", data.inactive || 0);
+        setText("overdueCount", data.overdue || 0);
+        setText("terminatedCount", data.terminated || 0);
+        setText("totalCount", data.total || 0);
 
     } catch (error) {
         console.error("Dashboard stats error:", error);
@@ -544,334 +471,88 @@ async function loadDashboardStats() {
 }
 
 // ==========================================================================
-// 12. UPDATE ALL PAGES
+// UPDATE ALL PAGE TELEMETRY
 // ==========================================================================
 function updateAllPages() {
     updateDashboard();
     updateCostOverview();
     updateAnalytics();
-    renderActivityLogsTable();
 }
 
 // ==========================================================================
-// 13. DASHBOARD VIEW & WIDGETS
+// DASHBOARD VIEW UPDATES
 // ==========================================================================
 function updateDashboard() {
     const totalAssets = allAssets.length;
-    const today = new Date().toISOString().split("T")[0];
 
-    // Active Assets (Running or Active)
     const activeAssets = allAssets.filter(
-        asset => {
-            const st = (asset.status || "").toLowerCase();
-            return st === "running" || st === "active";
-        }
+        asset => asset.status === "Running" || asset.status === "Active"
     ).length;
 
-    // Total Cost
     const totalCost = allAssets.reduce(
         (total, asset) => total + (parseFloat(asset.cost) || 0),
         0
     );
 
-    // Need Attention calculation: Overdue + Pending + Stopped
-    const overdueAssetsList = allAssets.filter(asset => Boolean(asset.due_date && asset.due_date < today));
-    const pendingAssetsList = allAssets.filter(asset => (asset.status || "").toLowerCase() === "pending");
-    const stoppedAssetsList = allAssets.filter(asset => (asset.status || "").toLowerCase() === "stopped");
+    const providers = new Set(
+        allAssets.map(asset => asset.provider).filter(Boolean)
+    ).size;
 
-    const needAttentionCount = overdueAssetsList.length + pendingAssetsList.length + stoppedAssetsList.length;
-
-    // 4 KPI Cards
     setText("dashTotalAssets", totalAssets);
     setText("dashActiveAssets", activeAssets);
-    setText("dashNeedAttention", needAttentionCount);
     setText("dashTotalCost", `$${totalCost.toFixed(2)}`);
+    setText("dashProviders", providers);
 
-    // Render Status Donut Chart & Legend
-    renderStatusDonutChart();
+    // Synchronize stopped & inactive counters from active asset array if needed
+    const stoppedCount = allAssets.filter(a => a.status === "Stopped").length;
+    const inactiveCount = allAssets.filter(a => a.status === "Inactive" || a.status === "Terminated").length;
 
-    // Render Recent Activity list
-    updateRecentActivityFeed();
+    if (stoppedCount > 0) setText("stoppedCount", stoppedCount);
+    if (inactiveCount > 0) setText("inactiveCount", inactiveCount);
 
-    // Render Attention Required Grid
-    renderAttentionRequiredSection(overdueAssetsList, pendingAssetsList, stoppedAssetsList);
-
-    // Render Recent Resources Table
-    renderRecentResourcesTable();
+    updateRecentAssets();
 }
 
 // ==========================================================================
-// 14. STATUS DONUT CHART GENERATOR (CLEAN SVG)
+// RECENT ASSETS FEED
 // ==========================================================================
-function renderStatusDonutChart() {
-    const svg = document.getElementById("donutChartSvg");
-    const legend = document.getElementById("donutLegend");
-    const centerCount = document.getElementById("donutTotalCount");
-
-    if (!svg || !legend) return;
-
-    const total = allAssets.length;
-    if (centerCount) centerCount.textContent = total;
-
-    if (total === 0) {
-        svg.innerHTML = `
-            <circle cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="var(--border-subtle)" stroke-width="3.2"></circle>
-        `;
-        legend.innerHTML = `<p class="empty-state" style="padding: 12px 0;">No assets registered yet.</p>`;
-        return;
-    }
-
-    // Categories calculation
-    const statusCounts = {
-        Active: 0,
-        Stopped: 0,
-        Pending: 0,
-        Overdue: 0,
-        Inactive: 0,
-        Terminated: 0
-    };
-
-    const today = new Date().toISOString().split("T")[0];
-
-    allAssets.forEach(asset => {
-        const isOverdue = asset.due_date && asset.due_date < today;
-        const rawStatus = (asset.status || "Active").toLowerCase();
-
-        if (isOverdue) {
-            statusCounts.Overdue++;
-        } else if (rawStatus === "running" || rawStatus === "active") {
-            statusCounts.Active++;
-        } else if (rawStatus === "stopped") {
-            statusCounts.Stopped++;
-        } else if (rawStatus === "pending") {
-            statusCounts.Pending++;
-        } else if (rawStatus === "terminated") {
-            statusCounts.Terminated++;
-        } else {
-            statusCounts.Inactive++;
-        }
-    });
-
-    const categoryColors = {
-        Active: "var(--status-running)",
-        Stopped: "var(--status-stopped)",
-        Pending: "var(--status-pending)",
-        Overdue: "var(--status-overdue)",
-        Inactive: "var(--status-inactive)",
-        Terminated: "var(--status-terminated)"
-    };
-
-    // Filter categories that have > 0 assets
-    const activeCategories = Object.entries(statusCounts).filter(([_, count]) => count > 0);
-
-    let accumulatedPercentage = 0;
-    let svgArcs = `
-        <circle cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="var(--border-subtle)" stroke-width="3.2"></circle>
-    `;
-
-    legend.innerHTML = "";
-
-    activeCategories.forEach(([category, count]) => {
-        const percentage = (count / total) * 100;
-        const strokeDasharray = `${percentage} ${100 - percentage}`;
-        const strokeDashoffset = 100 - accumulatedPercentage;
-        const color = categoryColors[category] || "var(--primary)";
-
-        svgArcs += `
-            <circle cx="18" cy="18" r="15.91549430918954"
-                fill="transparent"
-                stroke="${color}"
-                stroke-width="3.2"
-                stroke-dasharray="${strokeDasharray}"
-                stroke-dashoffset="${strokeDashoffset}"
-                stroke-linecap="round"
-                style="transition: all 0.5s ease;">
-            </circle>
-        `;
-
-        accumulatedPercentage += percentage;
-
-        // Add legend row
-        const legendRow = document.createElement("div");
-        legendRow.className = "legend-item";
-        legendRow.innerHTML = `
-            <div class="legend-left">
-                <span class="legend-color-dot" style="background-color: ${color};"></span>
-                <span>${escapeHTML(category)}</span>
-            </div>
-            <div class="legend-right">${count} (${percentage.toFixed(0)}%)</div>
-        `;
-        legend.appendChild(legendRow);
-    });
-
-    svg.innerHTML = svgArcs;
-}
-
-// ==========================================================================
-// 15. RECENT ACTIVITY FEED
-// ==========================================================================
-function updateRecentActivityFeed() {
-    const container = document.getElementById("dashRecentActivityList");
+function updateRecentAssets() {
+    const container = document.getElementById("recentAssets");
     if (!container) return;
 
-    const logs = getStoredActivityLogs().slice(0, 5);
-
-    if (logs.length === 0) {
-        container.innerHTML = `<p class="empty-state">No recent activity recorded.</p>`;
+    if (allAssets.length === 0) {
+        container.innerHTML = `<p class="empty-state">No cloud assets provisioned yet.</p>`;
         return;
     }
 
-    container.innerHTML = logs.map(log => {
-        const timeAgo = formatTimeAgo(log.timestamp);
-        let icon = "⚡";
-        if (log.action === "CREATE") icon = "➕";
-        else if (log.action === "UPDATE") icon = "✏️";
-        else if (log.action === "DELETE") icon = "🗑️";
-        else if (log.action === "LOGIN") icon = "🔑";
-        else if (log.action === "AUTOMATION") icon = "🔄";
+    const recentAssets = [...allAssets]
+        .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
+        .slice(0, 5);
 
-        return `
-            <div class="activity-feed-item">
-                <div class="activity-feed-icon">${icon}</div>
-                <div class="activity-feed-content">
-                    <div class="activity-feed-title">${escapeHTML(log.details || log.action)}</div>
-                    <div class="activity-feed-meta">${escapeHTML(log.user)} • ${timeAgo}</div>
-                </div>
+    container.innerHTML = recentAssets.map(asset => `
+        <div class="recent-asset">
+            <div>
+                <strong>${escapeHTML(asset.asset_name || "Unnamed Resource")}</strong>
+                <span>${escapeHTML(asset.provider || "Multi-Cloud")} • ${escapeHTML(asset.service || "Compute")} • ${escapeHTML(asset.region || "Global")}</span>
             </div>
-        `;
-    }).join("");
-}
-
-// ==========================================================================
-// 16. ATTENTION REQUIRED SECTION
-// ==========================================================================
-function renderAttentionRequiredSection(overdue, pending, stopped) {
-    const container = document.getElementById("attentionRequiredGrid");
-    if (!container) return;
-
-    const attentionItems = [];
-
-    overdue.forEach(asset => {
-        attentionItems.push({
-            asset: asset,
-            type: "overdue",
-            typeLabel: "Overdue Expiration",
-            reason: `Due: ${asset.due_date}`
-        });
-    });
-
-    pending.forEach(asset => {
-        attentionItems.push({
-            asset: asset,
-            type: "pending",
-            typeLabel: "Pending Provision",
-            reason: "Needs approval / activation"
-        });
-    });
-
-    stopped.forEach(asset => {
-        attentionItems.push({
-            asset: asset,
-            type: "stopped",
-            typeLabel: "Resource Stopped",
-            reason: "Offline in " + (asset.region || "us-east-1")
-        });
-    });
-
-    if (attentionItems.length === 0) {
-        container.innerHTML = `<p class="empty-state">All assets are operational. No pending actions required.</p>`;
-        return;
-    }
-
-    container.innerHTML = attentionItems.slice(0, 6).map(item => `
-        <div class="attention-card ${item.type}">
-            <div class="attention-info">
-                <strong>${escapeHTML(item.asset.asset_name)}</strong>
-                <span>${item.typeLabel} • ${escapeHTML(item.reason)} • Owner: ${escapeHTML(item.asset.owner || "N/A")}</span>
+            <div class="recent-asset-cost">
+                $${formatCost(asset.cost)}/mo
             </div>
-            ${isAdmin() ? `
-                <button class="btn btn-secondary btn-sm" onclick="openEditModal(${item.asset.id})">
-                    Review →
-                </button>
-            ` : `
-                <button class="btn btn-secondary btn-sm" onclick="navigateToAssets()">
-                    View →
-                </button>
-            `}
         </div>
     `).join("");
 }
 
 // ==========================================================================
-// 17. RECENT RESOURCES TABLE
-// ==========================================================================
-function renderRecentResourcesTable() {
-    const tbody = document.getElementById("dashRecentAssetsTableBody");
-    if (!tbody) return;
-
-    if (allAssets.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No cloud assets provisioned yet.</td></tr>`;
-        return;
-    }
-
-    const recent = [...allAssets]
-        .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
-        .slice(0, 5);
-
-    const today = new Date().toISOString().split("T")[0];
-
-    tbody.innerHTML = recent.map(asset => {
-        const isOverdue = asset.due_date && asset.due_date < today;
-        const statusClass = isOverdue ? "status-overdue" : `status-${String(asset.status || "active").toLowerCase()}`;
-        const displayStatus = isOverdue ? "Overdue" : (asset.status || "Active");
-        const providerLower = (asset.provider || "aws").toLowerCase().split(" ")[0];
-
-        return `
-            <tr>
-                <td>
-                    <div class="table-asset-name">${escapeHTML(asset.asset_name || "Unnamed Resource")}</div>
-                    <div class="table-asset-meta font-mono">ID #${asset.id} • ${escapeHTML(asset.region || "Global")}</div>
-                </td>
-                <td>
-                    <span class="provider-pill">
-                        <span class="provider-dot ${providerLower}"></span>
-                        ${escapeHTML(asset.provider || "Cloud")}
-                    </span>
-                </td>
-                <td>${escapeHTML(asset.service || "Compute")}</td>
-                <td>
-                    <span class="status-badge ${statusClass}">
-                        ${escapeHTML(displayStatus)}
-                    </span>
-                </td>
-                <td>${escapeHTML(asset.owner || "N/A")}</td>
-                <td class="${isOverdue ? 'font-mono' : ''}" style="${isOverdue ? 'color: var(--status-overdue-text); font-weight: 600;' : ''}">
-                    ${asset.due_date ? escapeHTML(asset.due_date) : "—"}
-                </td>
-                <td class="font-mono" style="font-weight: 600;">$${formatCost(asset.cost)}</td>
-                <td>
-                    ${isAdmin() ? `
-                        <button class="btn btn-secondary btn-sm" onclick="openEditModal(${asset.id})">Edit</button>
-                    ` : `
-                        <span class="table-asset-meta">View Only</span>
-                    `}
-                </td>
-            </tr>
-        `;
-    }).join("");
-}
-
-// ==========================================================================
-// 18. DISPLAY ASSETS (ENTERPRISE DATA TABLE)
+// DISPLAY ASSETS (CARDS GRID)
 // ==========================================================================
 function displayAssets(assets) {
     if (!assetsContainer) return;
 
     if (!assets || assets.length === 0) {
         assetsContainer.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon">☁️</div>
-                <h3>No Cloud Assets Found</h3>
+            <div class="empty-state" style="grid-column: 1 / -1; padding: 48px; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px dashed var(--border-medium);">
+                <div style="font-size: 36px; margin-bottom: 12px;">☁️</div>
+                <h3 style="margin-bottom: 6px;">No Assets Found</h3>
                 <p>No resources match your active search filters, or none have been registered yet.</p>
             </div>
         `;
@@ -882,84 +563,76 @@ function displayAssets(assets) {
     const startIndex = (currentPage - 1) * assetsPerPage;
     const endIndex = startIndex + assetsPerPage;
     const pageAssets = assets.slice(startIndex, endIndex);
-    const today = new Date().toISOString().split("T")[0];
 
-    const rowsHTML = pageAssets.map(asset => {
-        const isOverdue = asset.due_date && asset.due_date < today;
-        const statusClass = isOverdue ? "status-overdue" : `status-${String(asset.status || "active").toLowerCase()}`;
-        const displayStatus = isOverdue ? "Overdue" : (asset.status || "Active");
-        const providerLower = (asset.provider || "aws").toLowerCase().split(" ")[0];
-
+    assetsContainer.innerHTML = pageAssets.map(asset => {
+        const statusKey = String(asset.status || "Unknown").toLowerCase();
+        const isRunning = statusKey === "running" || statusKey === "active";
+        
         return `
-            <tr>
-                <td>
-                    <div class="table-asset-name">${escapeHTML(asset.asset_name || "Unnamed Resource")}</div>
-                    <div class="table-asset-meta font-mono">ID #${asset.id}</div>
-                </td>
-                <td>
-                    <span class="provider-pill">
-                        <span class="provider-dot ${providerLower}"></span>
-                        ${escapeHTML(asset.provider || "N/A")}
-                    </span>
-                </td>
-                <td>${escapeHTML(asset.service || "N/A")}</td>
-                <td>${escapeHTML(asset.region || "Global")}</td>
-                <td>
-                    <span class="status-badge ${statusClass}">
-                        ${escapeHTML(displayStatus)}
-                    </span>
-                </td>
-                <td>${escapeHTML(asset.owner || "N/A")}</td>
-                <td class="${isOverdue ? 'font-mono' : ''}" style="${isOverdue ? 'color: var(--status-overdue-text); font-weight: 600;' : ''}">
-                    ${asset.due_date ? escapeHTML(asset.due_date) : "No expiration set"}
-                </td>
-                <td class="font-mono" style="font-weight: 600;">$${formatCost(asset.cost)}</td>
-                <td>
-                    <div class="table-actions">
-                        ${isAdmin() ? `
-                            <button class="btn btn-secondary btn-sm" onclick="openEditModal(${asset.id})">
-                                Edit
-                            </button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteAsset(${asset.id})">
-                                Delete
-                            </button>
-                        ` : `
-                            <span class="role-badge employee">View Only</span>
-                        `}
+            <div class="asset-card">
+                <div class="asset-card-header">
+                    <div>
+                        <h3>${escapeHTML(asset.asset_name || "Unnamed Resource")}</h3>
+                        <span class="asset-id">ID #${asset.id}</span>
                     </div>
-                </td>
-            </tr>
+                    <span class="status-badge status-${statusKey}">
+                        ${escapeHTML(asset.status || "Unknown")}
+                    </span>
+                </div>
+
+                <div class="asset-info">
+                    <div class="asset-info-item">
+                        <span>Provider</span>
+                        <strong>${escapeHTML(asset.provider || "N/A")}</strong>
+                    </div>
+
+                    <div class="asset-info-item">
+                        <span>Service</span>
+                        <strong>${escapeHTML(asset.service || "N/A")}</strong>
+                    </div>
+
+                    <div class="asset-info-item">
+                        <span>Region</span>
+                        <strong>${escapeHTML(asset.region || "N/A")}</strong>
+                    </div>
+
+                    <div class="asset-info-item">
+                        <span>Owner</span>
+                        <strong>${escapeHTML(asset.owner || "N/A")}</strong>
+                    </div>
+
+                    <div class="asset-info-item" style="grid-column: 1 / -1;">
+                        <span>Lifecycle Due Date</span>
+                        <strong>${asset.due_date ? escapeHTML(asset.due_date) : "No expiration set"}</strong>
+                    </div>
+                </div>
+
+                <div class="asset-cost">
+                    <span>Monthly Telemetry Cost</span>
+                    <strong>$${formatCost(asset.cost)}</strong>
+                </div>
+
+                <div class="asset-actions">
+                    ${isAdmin() ? `
+                        <button class="btn btn-edit edit-btn" onclick="openEditModal(${asset.id})">
+                            Edit
+                        </button>
+                        <button class="btn btn-danger delete-btn" onclick="deleteAsset(${asset.id})">
+                            Delete
+                        </button>
+                    ` : `
+                        <span class="view-only-label">Role: View Only</span>
+                    `}
+                </div>
+            </div>
         `;
     }).join("");
-
-    assetsContainer.innerHTML = `
-        <div class="table-responsive">
-            <table class="enterprise-table">
-                <thead>
-                    <tr>
-                        <th>Asset Name</th>
-                        <th>Provider</th>
-                        <th>Service</th>
-                        <th>Region</th>
-                        <th>Status</th>
-                        <th>Owner</th>
-                        <th>Due Date</th>
-                        <th>Monthly Cost</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${rowsHTML}
-                </tbody>
-            </table>
-        </div>
-    `;
 
     updatePagination(assets.length);
 }
 
 // ==========================================================================
-// 19. PAGINATION
+// PAGINATION
 // ==========================================================================
 function updatePagination(totalAssets) {
     const paginationContainer = document.getElementById("paginationContainer");
@@ -1024,7 +697,7 @@ function nextPage() {
 }
 
 // ==========================================================================
-// 20. SEARCH & FILTER LOGIC
+// SEARCH & FILTER LOGIC
 // ==========================================================================
 function filterAssets() {
     const searchTerm = (document.getElementById("searchInput")?.value || "").toLowerCase().trim();
@@ -1036,9 +709,7 @@ function filterAssets() {
     filteredAssets = allAssets.filter(asset => {
         const matchesSearch = !searchTerm || (
             (asset.asset_name && asset.asset_name.toLowerCase().includes(searchTerm)) ||
-            (String(asset.id) === searchTerm) ||
-            (asset.service && asset.service.toLowerCase().includes(searchTerm)) ||
-            (asset.region && asset.region.toLowerCase().includes(searchTerm))
+            (String(asset.id) === searchTerm)
         );
 
         const matchesProvider = !provider || asset.provider === provider;
@@ -1073,7 +744,7 @@ function clearFilters() {
 }
 
 // ==========================================================================
-// 21. ADD ASSET HANDLER
+// ADD ASSET HANDLER
 // ==========================================================================
 async function handleAddAsset(event) {
     event.preventDefault();
@@ -1114,8 +785,6 @@ async function handleAddAsset(event) {
             throw new Error(result.error || "Failed to register asset");
         }
 
-        recordActivity("CREATE", assetData.asset_name, `Registered new asset ${assetData.asset_name} (${assetData.provider} ${assetData.service})`);
-
         showMessage("success", "Cloud asset registered successfully!");
         addAssetForm.reset();
 
@@ -1129,7 +798,7 @@ async function handleAddAsset(event) {
 }
 
 // ==========================================================================
-// 22. EDIT ASSET MODAL & UPDATE
+// EDIT ASSET MODAL & UPDATE
 // ==========================================================================
 async function openEditModal(assetId) {
     if (!isAdmin()) {
@@ -1163,7 +832,7 @@ async function openEditModal(assetId) {
         setValue("editCost", asset.cost);
         setValue("editDueDate", asset.due_date || "");
 
-        if (editModal) editModal.style.display = "flex";
+        if (editModal) editModal.style.display = "block";
 
     } catch (error) {
         console.error("Edit modal error:", error);
@@ -1216,8 +885,6 @@ async function handleEditAsset(event) {
             throw new Error(result.error || "Failed to update asset");
         }
 
-        recordActivity("UPDATE", assetData.asset_name, `Updated asset #${assetId} (${assetData.asset_name})`);
-
         showMessage("success", "Asset updated successfully!");
         closeEditModal();
 
@@ -1231,7 +898,7 @@ async function handleEditAsset(event) {
 }
 
 // ==========================================================================
-// 23. DELETE ASSET HANDLER
+// DELETE ASSET HANDLER
 // ==========================================================================
 async function deleteAsset(assetId) {
     if (!isAdmin()) {
@@ -1239,10 +906,7 @@ async function deleteAsset(assetId) {
         return;
     }
 
-    const assetToDelete = allAssets.find(a => a.id === assetId);
-    const name = assetToDelete ? assetToDelete.asset_name : `ID #${assetId}`;
-
-    const confirmed = confirm(`Are you sure you want to permanently delete '${name}' from inventory?`);
+    const confirmed = confirm("Are you sure you want to permanently delete this cloud asset from operations?");
     if (!confirmed) return;
 
     try {
@@ -1262,8 +926,6 @@ async function deleteAsset(assetId) {
             throw new Error(result.error || result.message || "Failed to delete asset");
         }
 
-        recordActivity("DELETE", name, `Deleted asset #${assetId} (${name})`);
-
         showMessage("success", "Asset deleted successfully!");
         await loadAssets();
         loadDashboardStats();
@@ -1275,7 +937,56 @@ async function deleteAsset(assetId) {
 }
 
 // ==========================================================================
-// 24. COST OVERVIEW CALCULATIONS
+// MESSAGE TOAST FEEDBACK
+// ==========================================================================
+function showMessage(type, message) {
+    const target = type === "success" ? successMessage : errorMessage;
+
+    if (!target) {
+        console.log(`${type}: ${message}`);
+        return;
+    }
+
+    target.textContent = message;
+    target.style.display = "block";
+
+    setTimeout(() => {
+        target.style.display = "none";
+    }, 5000);
+}
+
+// Helper: Set text content of element safely
+function setText(elementId, value) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.textContent = value;
+    }
+}
+
+// Helper: Set form value safely
+function setValue(elementId, value) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.value = value ?? "";
+    }
+}
+
+// Helper: Format numerical cost safely
+function formatCost(cost) {
+    const value = parseFloat(cost) || 0;
+    return value.toFixed(2);
+}
+
+// Helper: Escape HTML strings safely
+function escapeHTML(value) {
+    if (value === null || value === undefined) return "";
+    const div = document.createElement("div");
+    div.textContent = String(value);
+    return div.innerHTML;
+}
+
+// ==========================================================================
+// COST OVERVIEW CALCULATIONS & VISUALIZATION
 // ==========================================================================
 function updateCostOverview() {
     const totalElement = document.getElementById("costOverviewTotal");
@@ -1325,10 +1036,10 @@ function updateCostOverview() {
         highestElement.textContent = highestAsset ? `$${(Number(highestAsset.cost) || 0).toFixed(2)}` : "$0.00";
     }
     if (highestNameElement) {
-        highestNameElement.textContent = highestAsset ? (highestAsset.asset_name || "Unnamed Resource") : "No assets";
+        highestNameElement.textContent = highestAsset ? (highestAsset.asset_name || highestAsset.name || "Unnamed Resource") : "No assets";
     }
 
-    // Provider breakdown
+    // Provider cost breakdown with telemetry progress bars
     if (providerContainer) {
         const providerEntries = Object.entries(providerCosts).sort((a, b) => b[1] - a[1]);
         providerContainer.innerHTML = providerEntries.map(([provider, cost]) => {
@@ -1336,7 +1047,7 @@ function updateCostOverview() {
             return `
                 <div class="analytics-row">
                     <div class="analytics-label">
-                        <span>${escapeHTML(provider)}</span>
+                        <span><strong>${escapeHTML(provider)}</strong></span>
                         <strong>$${cost.toFixed(2)} (${percentage}%)</strong>
                     </div>
                     <div class="progress-bar">
@@ -1347,7 +1058,7 @@ function updateCostOverview() {
         }).join("");
     }
 
-    // Service breakdown
+    // Service cost breakdown
     if (serviceContainer) {
         const serviceEntries = Object.entries(serviceCosts).sort((a, b) => b[1] - a[1]);
         serviceContainer.innerHTML = serviceEntries.map(([service, cost]) => {
@@ -1355,7 +1066,7 @@ function updateCostOverview() {
             return `
                 <div class="analytics-row">
                     <div class="analytics-label">
-                        <span>${escapeHTML(service)}</span>
+                        <span><strong>${escapeHTML(service)}</strong></span>
                         <strong>$${cost.toFixed(2)} (${percentage}%)</strong>
                     </div>
                     <div class="progress-bar">
@@ -1372,7 +1083,7 @@ function updateCostOverview() {
         expensiveContainer.innerHTML = sortedAssets.map((asset, index) => {
             const cost = Number(asset.cost) || 0;
             const percentage = totalCost > 0 ? ((cost / totalCost) * 100).toFixed(1) : "0";
-            const name = asset.asset_name || "Unnamed Resource";
+            const name = asset.asset_name || asset.name || "Unnamed Resource";
 
             return `
                 <div class="analytics-row">
@@ -1390,21 +1101,9 @@ function updateCostOverview() {
 }
 
 // ==========================================================================
-// 25. ANALYTICS CALCULATIONS
+// ANALYTICS CALCULATIONS & VISUALIZATION
 // ==========================================================================
 function updateAnalytics() {
-    const total = allAssets.length;
-    const today = new Date().toISOString().split("T")[0];
-
-    const active = allAssets.filter(a => (a.status || "").toLowerCase() === "running" || (a.status || "").toLowerCase() === "active").length;
-    const pending = allAssets.filter(a => (a.status || "").toLowerCase() === "pending").length;
-    const overdue = allAssets.filter(a => Boolean(a.due_date && a.due_date < today)).length;
-
-    setText("analyticsTotalAssets", total);
-    setText("analyticsActiveAssets", active);
-    setText("analyticsPendingAssets", pending);
-    setText("analyticsOverdueAssets", overdue);
-
     updateProviderAnalytics();
     updateStatusAnalytics();
     updateServiceAnalytics();
@@ -1513,234 +1212,7 @@ function updateServiceAnalytics() {
 }
 
 // ==========================================================================
-// 26. AUTOMATION MONITORING & HISTORY
-// ==========================================================================
-async function loadAutomationStatus() {
-    if (!isAdmin()) return;
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/automation/status`, {
-            headers: getAuthHeaders()
-        });
-
-        if (response.status === 401) {
-            handleUnauthorized();
-            return;
-        }
-
-        if (!response.ok) return;
-
-        const data = await response.json();
-
-        setText("autoStatus", data.status || "Running");
-        setText("autoStatusDesc", data.status === "Running" ? "Background worker active" : "Check logs");
-
-        let formattedTime = "Just now";
-        if (data.last_check) {
-            const dateObj = new Date(data.last_check);
-            formattedTime = isNaN(dateObj.getTime())
-                ? data.last_check
-                : dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " (" + dateObj.toLocaleDateString() + ")";
-        }
-        setText("autoLastCheck", formattedTime);
-        setText("autoAssetsChecked", data.assets_checked ?? 0);
-        setText("autoOverdueDetected", data.overdue_detected ?? 0);
-
-        // Update attention list
-        const attentionContainer = document.getElementById("autoAttentionList");
-        if (attentionContainer) {
-            const today = new Date().toISOString().split("T")[0];
-            const overdue = allAssets.filter(a => a.due_date && a.due_date < today);
-
-            if (overdue.length === 0) {
-                attentionContainer.innerHTML = `<p class="empty-state">No overdue policy violations detected.</p>`;
-            } else {
-                attentionContainer.innerHTML = overdue.map(a => `
-                    <div class="attention-card overdue" style="margin-bottom: 8px;">
-                        <div class="attention-info">
-                            <strong>${escapeHTML(a.asset_name)}</strong>
-                            <span>Due Date: ${escapeHTML(a.due_date)} • Owner: ${escapeHTML(a.owner || "N/A")} • Region: ${escapeHTML(a.region || "Global")}</span>
-                        </div>
-                        <button class="btn btn-secondary btn-sm" onclick="openEditModal(${a.id})">Review →</button>
-                    </div>
-                `).join("");
-            }
-        }
-
-    } catch (error) {
-        console.error("Automation status fetch error:", error);
-    }
-}
-
-async function loadAutomationHistory() {
-    if (!isAdmin()) return;
-
-    const tbody = document.getElementById("automationHistoryTableBody");
-    if (!tbody) return;
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/automation/history?limit=15`, {
-            headers: getAuthHeaders()
-        });
-
-        if (response.status === 401) {
-            handleUnauthorized();
-            return;
-        }
-
-        if (!response.ok) return;
-
-        const records = await response.json();
-
-        if (!Array.isArray(records) || records.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No execution history recorded yet.</td></tr>`;
-            return;
-        }
-
-        tbody.innerHTML = records.map((record) => {
-            const dateStr = record.timestamp ? new Date(record.timestamp).toLocaleString() : "Unknown";
-            const isSuccess = record.status === "SUCCESS";
-            const statusClass = isSuccess ? "status-running" : "status-overdue";
-
-            return `
-                <tr>
-                    <td>
-                        <span class="status-badge ${statusClass}">
-                            ${escapeHTML(record.status)}
-                        </span>
-                    </td>
-                    <td class="font-mono">${escapeHTML(dateStr)}</td>
-                    <td class="font-mono">${record.assets_checked}</td>
-                    <td class="font-mono" style="${record.overdue_detected > 0 ? 'color: var(--status-overdue-text); font-weight: 600;' : ''}">
-                        ${record.overdue_detected}
-                    </td>
-                    <td>
-                        ${record.error_message ? `<span style="color: var(--status-overdue-text);">${escapeHTML(record.error_message)}</span>` : 'Scan cycle completed normally'}
-                    </td>
-                </tr>
-            `;
-        }).join("");
-
-    } catch (error) {
-        console.error("Automation history fetch error:", error);
-    }
-}
-
-async function triggerAutomationRun() {
-    if (!isAdmin()) return;
-
-    const btn = document.getElementById("triggerAutomationBtn");
-
-    try {
-        if (btn) btn.disabled = true;
-
-        const response = await fetch(`${API_BASE_URL}/automation/run-now`, {
-            method: "POST",
-            headers: getAuthHeaders()
-        });
-
-        if (response.status === 401) {
-            handleUnauthorized();
-            return;
-        }
-
-        if (response.ok) {
-            const data = await response.json();
-            recordActivity("AUTOMATION", "Lifecycle Scanner", `Executed manual overdue scan (Checked: ${data.assets_checked || 0}, Overdue: ${data.overdue_detected || 0})`);
-            showMessage("success", "Overdue automation check executed successfully!");
-            await loadAutomationStatus();
-            await loadAutomationHistory();
-            await loadDashboardStats();
-        } else {
-            const err = await response.json();
-            showMessage("error", err.error || "Failed to trigger automation");
-        }
-    } catch (error) {
-        console.error("Trigger automation error:", error);
-        showMessage("error", error.message || "Failed to trigger automation");
-    } finally {
-        if (btn) btn.disabled = false;
-    }
-}
-
-// ==========================================================================
-// 27. ACTIVITY LOGS PAGE
-// ==========================================================================
-function renderActivityLogsTable() {
-    const tbody = document.getElementById("activityLogsTableBody");
-    if (!tbody) return;
-
-    const searchInput = document.getElementById("activitySearchInput");
-    const filterAction = document.getElementById("activityActionFilter");
-
-    const query = searchInput ? searchInput.value.toLowerCase().trim() : "";
-    const actionFilter = filterAction ? filterAction.value : "";
-
-    let logs = getStoredActivityLogs();
-
-    if (query || actionFilter) {
-        logs = logs.filter(log => {
-            const matchesQuery = !query || (
-                (log.user && log.user.toLowerCase().includes(query)) ||
-                (log.asset && log.asset.toLowerCase().includes(query)) ||
-                (log.details && log.details.toLowerCase().includes(query))
-            );
-            const matchesAction = !actionFilter || log.action === actionFilter;
-            return matchesQuery && matchesAction;
-        });
-    }
-
-    if (logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No user activity matches the criteria.</td></tr>`;
-        return;
-    }
-
-    tbody.innerHTML = logs.map(log => {
-        const timeStr = log.timestamp ? new Date(log.timestamp).toLocaleString() : "—";
-        let badgeClass = "role-badge";
-        if (log.action === "CREATE") badgeClass = "status-badge status-running";
-        else if (log.action === "UPDATE") badgeClass = "status-badge status-stopped";
-        else if (log.action === "DELETE") badgeClass = "status-badge status-overdue";
-        else if (log.action === "AUTOMATION") badgeClass = "status-badge status-pending";
-        else badgeClass = "role-badge admin";
-
-        return `
-            <tr>
-                <td class="font-mono">${escapeHTML(timeStr)}</td>
-                <td>
-                    <strong>${escapeHTML(log.user || "System")}</strong>
-                    <div style="font-size: 0.725rem; color: var(--text-muted);">${escapeHTML(log.role || "User")}</div>
-                </td>
-                <td>
-                    <span class="${badgeClass}">${escapeHTML(log.action)}</span>
-                </td>
-                <td><strong>${escapeHTML(log.asset || "—")}</strong></td>
-                <td>${escapeHTML(log.details || "—")}</td>
-            </tr>
-        `;
-    }).join("");
-}
-
-function setupActivityLogControls() {
-    const searchInput = document.getElementById("activitySearchInput");
-    const filterAction = document.getElementById("activityActionFilter");
-    const clearBtn = document.getElementById("clearActivityLogsBtn");
-
-    if (searchInput) searchInput.addEventListener("input", renderActivityLogsTable);
-    if (filterAction) filterAction.addEventListener("change", renderActivityLogsTable);
-    if (clearBtn) {
-        clearBtn.addEventListener("click", () => {
-            if (confirm("Clear local activity logs?")) {
-                localStorage.removeItem(ACTIVITY_STORAGE_KEY);
-                renderActivityLogsTable();
-                updateRecentActivityFeed();
-            }
-        });
-    }
-}
-
-// ==========================================================================
-// 28. NAVIGATION & ROUTING
+// NAVIGATION & PAGE ROUTING
 // ==========================================================================
 function setupNavigation() {
     const navItems = document.querySelectorAll(".nav-item");
@@ -1749,7 +1221,7 @@ function setupNavigation() {
     const pageTitles = {
         dashboard: {
             title: "Dashboard",
-            subtitle: "Cloud asset operations overview"
+            subtitle: "Overview of your multi-cloud infrastructure"
         },
         assets: {
             title: "Cloud Resources",
@@ -1761,23 +1233,15 @@ function setupNavigation() {
         },
         analytics: {
             title: "Analytics",
-            subtitle: "Multi-cloud resource distribution and operational breakdown"
-        },
-        automation: {
-            title: "Automation",
-            subtitle: "Lifecycle & overdue checks"
-        },
-        activity: {
-            title: "Activity Logs",
-            subtitle: "Audit trail of operations and asset lifecycle events"
+            subtitle: "Infrastructure distribution and operational telemetry"
         },
         settings: {
             title: "Settings",
-            subtitle: "Manage system preferences and display options"
+            subtitle: "Manage system preferences and appearance"
         }
     };
 
-    window.showPage = function(pageName) {
+    function showPage(pageName) {
         pages.forEach(page => page.classList.remove("active-page"));
 
         const selectedPage = document.getElementById(pageName);
@@ -1790,11 +1254,6 @@ function setupNavigation() {
 
         if (pageName === "costs") updateCostOverview();
         if (pageName === "analytics") updateAnalytics();
-        if (pageName === "activity") renderActivityLogsTable();
-        if (pageName === "automation" && isAdmin()) {
-            loadAutomationStatus();
-            loadAutomationHistory();
-        }
 
         navItems.forEach(item => item.classList.remove("active"));
         const activeButton = document.querySelector(`.nav-item[data-page="${pageName}"]`);
@@ -1814,7 +1273,7 @@ function setupNavigation() {
         if (sidebar && window.innerWidth <= 992) {
             sidebar.classList.remove("mobile-open");
         }
-    };
+    }
 
     navItems.forEach(item => {
         item.addEventListener("click", () => {
@@ -1827,11 +1286,14 @@ function setupNavigation() {
 }
 
 function navigateToAssets() {
-    showPage("assets");
+    const assetsButton = document.querySelector('[data-page="assets"]');
+    if (assetsButton) {
+        assetsButton.click();
+    }
 }
 
 // ==========================================================================
-// 29. COST ESTIMATION HELPER FUNCTIONS
+// COST ESTIMATION ENGINE
 // ==========================================================================
 function calculateEstimatedCost(provider, service, status, region) {
     if (!provider || !service) return 0;
@@ -1952,7 +1414,7 @@ function estimateEditCost() {
 }
 
 // ==========================================================================
-// 30. PASSWORD TOGGLE & DROPDOWNS
+// PASSWORD TOGGLE
 // ==========================================================================
 function setupPasswordToggle() {
     const passwordInput = document.getElementById("loginPassword");
@@ -1971,6 +1433,9 @@ function setupPasswordToggle() {
     });
 }
 
+// ==========================================================================
+// PROFILE DROPDOWN
+// ==========================================================================
 function setupProfileDropdown() {
     const profileButton = document.getElementById("profileButton");
     const profileDropdown = document.getElementById("profileDropdown");
@@ -2000,10 +1465,10 @@ function setupProfileDropdown() {
 }
 
 // ==========================================================================
-// 31. THEME SWITCHER (LIGHT DEFAULT / DARK ENTERPRISE)
+// THEME SWITCHER
 // ==========================================================================
 function loadTheme() {
-    const savedTheme = localStorage.getItem("cloudasset_theme") || "light";
+    const savedTheme = localStorage.getItem("cloudasset_theme") || "dark";
     const themeToggle = document.getElementById("themeToggle");
 
     if (savedTheme === "dark") {
@@ -2039,7 +1504,7 @@ function setupThemeToggle() {
 }
 
 // ==========================================================================
-// 32. SIDEBAR MOBILE DRAWER TOGGLE
+// SIDEBAR MOBILE DRAWER TOGGLE
 // ==========================================================================
 function setupSidebarToggle() {
     const menuToggle = document.getElementById("menuToggle");
@@ -2060,67 +1525,136 @@ function setupSidebarToggle() {
 }
 
 // ==========================================================================
-// 33. HELPER UTILITIES
+// AUTOMATION MONITORING & HISTORY HANDLERS (ADMIN ONLY)
 // ==========================================================================
-function showMessage(type, message) {
-    const target = type === "success" ? successMessage : errorMessage;
+async function loadAutomationStatus() {
+    if (!isAdmin()) return;
 
-    if (!target) {
-        console.log(`${type}: ${message}`);
-        return;
+    try {
+        const response = await fetch(`${API_BASE_URL}/automation/status`, {
+            headers: getAuthHeaders()
+        });
+
+        if (response.status === 401) {
+            handleUnauthorized();
+            return;
+        }
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        setText("autoStatus", data.status || "Running");
+        setText("autoStatusDesc", data.status === "Running" ? "Background worker active" : "Check error logs");
+
+        let formattedTime = "Just now";
+        if (data.last_check) {
+            const dateObj = new Date(data.last_check);
+            formattedTime = isNaN(dateObj.getTime())
+                ? data.last_check
+                : dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " (" + dateObj.toLocaleDateString() + ")";
+        }
+        setText("autoLastCheck", formattedTime);
+        setText("autoAssetsChecked", data.assets_checked ?? 0);
+        setText("autoOverdueDetected", data.overdue_detected ?? 0);
+
+    } catch (error) {
+        console.error("Automation status fetch error:", error);
     }
-
-    target.textContent = message;
-    target.style.display = "block";
-
-    setTimeout(() => {
-        target.style.display = "none";
-    }, 5000);
 }
 
-function setText(elementId, value) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.textContent = value;
+async function loadAutomationHistory() {
+    if (!isAdmin()) return;
+
+    const container = document.getElementById("automationHistoryList");
+    if (!container) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/automation/history?limit=10`, {
+            headers: getAuthHeaders()
+        });
+
+        if (response.status === 401) {
+            handleUnauthorized();
+            return;
+        }
+
+        if (!response.ok) return;
+
+        const records = await response.json();
+
+        if (!Array.isArray(records) || records.length === 0) {
+            container.innerHTML = `<p class="empty-state">No execution history recorded yet.</p>`;
+            return;
+        }
+
+        container.innerHTML = records.map((record) => {
+            const dateStr = record.timestamp ? new Date(record.timestamp).toLocaleString() : "Unknown Time";
+            const isSuccess = record.status === "SUCCESS";
+            const statusClass = isSuccess ? "status-running" : "status-overdue";
+
+            return `
+                <div class="analytics-row" style="padding: 10px 12px; margin-bottom: 8px; background: var(--bg-surface-elevated); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                            <span class="status-badge ${statusClass}" style="font-size: 11px; padding: 2px 8px;">
+                                ${escapeHTML(record.status)}
+                            </span>
+                            <span style="font-size: 13px; font-weight: 600; color: var(--text-primary);">
+                                ${escapeHTML(dateStr)}
+                            </span>
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">
+                            Assets Evaluated: <strong>${record.assets_checked}</strong> • Overdue Detected: <strong style="color: ${record.overdue_detected > 0 ? 'var(--status-overdue)' : 'inherit'}">${record.overdue_detected}</strong>
+                            ${record.error_message ? `<div style="color: var(--status-overdue); margin-top: 4px;">Error: ${escapeHTML(record.error_message)}</div>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join("");
+
+    } catch (error) {
+        console.error("Automation history fetch error:", error);
     }
 }
 
-function setValue(elementId, value) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.value = value ?? "";
+async function triggerAutomationRun() {
+    if (!isAdmin()) return;
+
+    const btn = document.getElementById("triggerAutomationBtn");
+
+    try {
+        if (btn) btn.disabled = true;
+
+        const response = await fetch(`${API_BASE_URL}/automation/run-now`, {
+            method: "POST",
+            headers: getAuthHeaders()
+        });
+
+        if (response.status === 401) {
+            handleUnauthorized();
+            return;
+        }
+
+        if (response.ok) {
+            showMessage("success", "Overdue automation check executed successfully!");
+            await loadAutomationStatus();
+            await loadAutomationHistory();
+            await loadDashboardStats();
+        } else {
+            const err = await response.json();
+            showMessage("error", err.error || "Failed to trigger automation");
+        }
+    } catch (error) {
+        console.error("Trigger automation error:", error);
+        showMessage("error", error.message || "Failed to trigger automation");
+    } finally {
+        if (btn) btn.disabled = false;
     }
-}
-
-function formatCost(cost) {
-    const value = parseFloat(cost) || 0;
-    return value.toFixed(2);
-}
-
-function escapeHTML(value) {
-    if (value === null || value === undefined) return "";
-    const div = document.createElement("div");
-    div.textContent = String(value);
-    return div.innerHTML;
-}
-
-function formatTimeAgo(timestamp) {
-    if (!timestamp) return "Just now";
-    const date = new Date(timestamp);
-    if (isNaN(date.getTime())) return "Recently";
-
-    const seconds = Math.floor((new Date() - date) / 1000);
-    if (seconds < 60) return "Just now";
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m ago`;
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h ago`;
-    const days = Math.floor(hours / 24);
-    return `${days}d ago`;
 }
 
 // ==========================================================================
-// 34. GLOBAL WINDOW EXPORTS FOR INLINE HANDLERS
+// GLOBAL WINDOW EXPORTS (FOR INLINE HANDLERS)
 // ==========================================================================
 window.openEditModal = openEditModal;
 window.deleteAsset = deleteAsset;
@@ -2135,4 +1669,3 @@ window.refreshAssets = loadAssets;
 window.loadAutomationStatus = loadAutomationStatus;
 window.loadAutomationHistory = loadAutomationHistory;
 window.triggerAutomationRun = triggerAutomationRun;
-window.navigateToAssets = navigateToAssets;
