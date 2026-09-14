@@ -13,9 +13,7 @@ jobs:
       - name: Check VM Connectivity
         run: |
           echo "Testing connection to GCP VM..."
-          timeout 10 bash -c "</dev/tcp/${{ secrets.GCP_HOST }}/22" \
-            && echo "Port 22 is reachable" \
-            || echo "Port 22 is NOT reachable"
+          timeout 10 bash -c "</dev/tcp/${{ secrets.GCP_HOST }}/22"
 
       - name: Deploy to GCP VM
         uses: appleboy/ssh-action@v1.2.0
@@ -26,6 +24,8 @@ jobs:
           port: 22
           timeout: 30s
           script: |
+            set -e
+
             echo "Starting deployment..."
 
             cd ~/cloud
@@ -37,19 +37,19 @@ jobs:
             cd Backend
 
             echo "Building Docker image..."
-            sudo docker build -t cloud-backend .
+            sudo docker build -t cloudasset-backend .
 
             echo "Stopping old container..."
-            sudo docker stop cloud-backend || true
-            sudo docker rm cloud-backend || true
+            sudo docker stop cloudasset-backend || true
+            sudo docker rm cloudasset-backend || true
 
             echo "Starting new container..."
             sudo docker run -d \
-              --name cloud-backend \
+              --name cloudasset-backend \
               --restart unless-stopped \
               -p 5000:5000 \
               -v ~/cloudasset-data:/app/instance \
-              cloud-backend
+              cloudasset-backend
 
             echo "Reloading Nginx..."
             sudo systemctl reload nginx
