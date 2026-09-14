@@ -3,7 +3,7 @@ name: Deploy CloudAsset to GCP
 on:
   push:
     branches:
-      - main
+      - backend
 
 jobs:
   deploy:
