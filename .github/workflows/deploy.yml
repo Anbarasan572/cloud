@@ -1,4 +1,4 @@
-name: Deploy CloudAsset to GCP
+name: Deploy Cloud to GCP
 
 on:
   push:
@@ -26,21 +26,32 @@ jobs:
           port: 22
           timeout: 30s
           script: |
+            echo "Starting deployment..."
+
             cd ~/cloud
-            git pull origin backend
+
+            echo "Updating repository..."
+            git fetch origin backend
+            git reset --hard origin/backend
 
             cd Backend
 
-            sudo docker build -t cloudasset-backend .
+            echo "Building Docker image..."
+            sudo docker build -t cloud-backend .
 
-            sudo docker stop cloudasset-backend || true
-            sudo docker rm cloudasset-backend || true
+            echo "Stopping old container..."
+            sudo docker stop cloud-backend || true
+            sudo docker rm cloud-backend || true
 
+            echo "Starting new container..."
             sudo docker run -d \
-              --name cloudasset-backend \
+              --name cloud-backend \
               --restart unless-stopped \
               -p 5000:5000 \
               -v ~/cloudasset-data:/app/instance \
-              cloudasset-backend
+              cloud-backend
 
+            echo "Reloading Nginx..."
             sudo systemctl reload nginx
+
+            echo "Deployment completed successfully!"
