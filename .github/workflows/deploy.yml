@@ -10,11 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check VM Connectivity
-        run: |
-          echo "Testing connection to GCP VM..."
-          timeout 10 bash -c "</dev/tcp/${{ secrets.GCP_HOST }}/22"
-
       - name: Deploy to GCP VM
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -23,10 +18,13 @@ jobs:
           key: ${{ secrets.GCP_SSH_KEY }}
           port: 22
           timeout: 30s
+
           script: |
             set -e
 
-            echo "Starting deployment..."
+            echo "========================================"
+            echo "Starting Cloud Deployment..."
+            echo "========================================"
 
             cd ~/cloud
 
@@ -34,7 +32,25 @@ jobs:
             git fetch origin backend
             git reset --hard origin/backend
 
-            cd Backend
+            echo "========================================"
+            echo "Deploying Frontend..."
+            echo "========================================"
+
+            sudo mkdir -p /var/www/cloudasset
+
+            sudo rm -rf /var/www/cloudasset/*
+
+            sudo cp -r ~/cloud/Frontend/* /var/www/cloudasset/
+
+            sudo chown -R www-data:www-data /var/www/cloudasset
+
+            echo "Frontend deployed successfully!"
+
+            echo "========================================"
+            echo "Deploying Backend..."
+            echo "========================================"
+
+            cd ~/cloud/Backend
 
             echo "Building Docker image..."
             sudo docker build -t cloudasset-backend .
@@ -54,4 +70,7 @@ jobs:
             echo "Reloading Nginx..."
             sudo systemctl reload nginx
 
+            echo "========================================"
             echo "Deployment completed successfully!"
+            echo "Frontend + Backend deployed!"
+            echo "========================================"
