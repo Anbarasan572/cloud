@@ -8,8 +8,10 @@ from database.db import db
 from routes.asset_routes import asset_bp
 from routes.auth_routes import auth_bp
 from routes.automation_routes import automation_bp
+from routes.activity_log_routes import activity_log_bp
 from models.user_model import User
 from models.automation_history_model import AutomationHistory
+from models.activity_log_model import ActivityLog
 from services.automation_service import start_automation_scheduler
 
 
@@ -69,6 +71,7 @@ jwt = JWTManager(app)
 app.register_blueprint(asset_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(automation_bp)
+app.register_blueprint(activity_log_bp)
 
 # ==========================================
 # HOME ROUTE

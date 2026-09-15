@@ -2261,3 +2261,153 @@ button, input, select, textarea {
         padding: 24px;
     }
 }
+
+/* ==========================================================================
+   ACTIVITY LOG PAGE & TABLE (ADMIN ONLY)
+   ========================================================================== */
+.activity-log-panel {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-subtle);
+    margin-top: 16px;
+    position: relative;
+    overflow: hidden;
+}
+
+.activity-log-table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 16px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--bg-surface-elevated);
+}
+
+.activity-log-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    text-align: left;
+}
+
+.activity-log-table thead {
+    background: var(--bg-surface-hover);
+    border-bottom: 1px solid var(--border-medium);
+}
+
+.activity-log-table th {
+    padding: 14px 18px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.activity-log-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    vertical-align: middle;
+}
+
+.activity-log-row {
+    transition: background-color var(--transition-fast);
+}
+
+.activity-log-row:hover {
+    background-color: var(--bg-surface-hover);
+}
+
+.activity-log-row:last-child td {
+    border-bottom: none;
+}
+
+.activity-log-timestamp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.activity-log-user {
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.activity-log-role {
+    white-space: nowrap;
+}
+
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.role-badge-admin {
+    background: rgba(168, 85, 247, 0.15);
+    color: var(--accent-purple);
+    border: 1px solid rgba(168, 85, 247, 0.35);
+}
+
+.role-badge-employee {
+    background: var(--cyan-subtle);
+    color: var(--cyan);
+    border: 1px solid var(--cyan-glow);
+}
+
+.activity-action-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.badge-login {
+    background: var(--primary-light);
+    color: var(--primary);
+    border: 1px solid var(--border-glow);
+}
+
+.badge-create {
+    background: var(--status-running-bg);
+    color: var(--status-running);
+    border: 1px solid var(--status-running-border);
+}
+
+.badge-update {
+    background: var(--status-stopped-bg);
+    color: var(--status-stopped);
+    border: 1px solid var(--status-stopped-border);
+}
+
+.badge-delete {
+    background: var(--status-overdue-bg);
+    color: var(--status-overdue);
+    border: 1px solid var(--status-overdue-border);
+}
+
+.badge-default {
+    background: var(--status-inactive-bg);
+    color: var(--status-inactive);
+    border: 1px solid var(--status-inactive-border);
+}
+
+.activity-log-details {
+    color: var(--text-primary);
+    word-break: break-word;
+}

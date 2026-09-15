@@ -64,6 +64,13 @@ function applyRolePermissions() {
     if (isAdmin()) {
         loadAutomationStatus();
         loadAutomationHistory();
+    } else {
+        // If non-admin is on an admin-only page, switch back to dashboard
+        const activePage = document.querySelector(".page.active-page");
+        if (activePage && activePage.dataset.adminOnly === "true") {
+            const dashboardNav = document.querySelector('.nav-item[data-page="dashboard"]');
+            if (dashboardNav) dashboardNav.click();
+        }
     }
 }
 
@@ -348,6 +355,12 @@ function setupEventListeners() {
     const refreshHistoryBtn = document.getElementById("refreshHistoryBtn");
     if (refreshHistoryBtn) {
         refreshHistoryBtn.addEventListener("click", loadAutomationHistory);
+    }
+
+    // Refresh Activity Logs Button
+    const refreshActivityLogsBtn = document.getElementById("refreshActivityLogsBtn");
+    if (refreshActivityLogsBtn) {
+        refreshActivityLogsBtn.addEventListener("click", loadActivityLogs);
     }
 
     // Close Modal Button
@@ -1238,10 +1251,19 @@ function setupNavigation() {
         settings: {
             title: "Settings",
             subtitle: "Manage system preferences and appearance"
+        },
+        activity: {
+            title: "Activity Log",
+            subtitle: "Monitor administrative activities and system events"
         }
     };
 
     function showPage(pageName) {
+        // If employee attempts to access admin-only page, redirect to dashboard
+        if (pageName === "activity" && !isAdmin()) {
+            pageName = "dashboard";
+        }
+
         pages.forEach(page => page.classList.remove("active-page"));
 
         const selectedPage = document.getElementById(pageName);
@@ -1254,6 +1276,7 @@ function setupNavigation() {
 
         if (pageName === "costs") updateCostOverview();
         if (pageName === "analytics") updateAnalytics();
+        if (pageName === "activity" && isAdmin()) loadActivityLogs();
 
         navItems.forEach(item => item.classList.remove("active"));
         const activeButton = document.querySelector(`.nav-item[data-page="${pageName}"]`);
@@ -1654,6 +1677,110 @@ async function triggerAutomationRun() {
 }
 
 // ==========================================================================
+// ACTIVITY LOG HANDLERS (ADMIN ONLY)
+// ==========================================================================
+async function loadActivityLogs() {
+    if (!isAdmin()) return;
+
+    const tableBody = document.getElementById("activityLogTableBody");
+    const loadingEl = document.getElementById("activityLogLoading");
+    const errorEl = document.getElementById("activityLogError");
+
+    if (loadingEl) loadingEl.style.display = "flex";
+    if (errorEl) {
+        errorEl.style.display = "none";
+        errorEl.textContent = "";
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/activity-logs?limit=50`, {
+            headers: getAuthHeaders()
+        });
+
+        if (response.status === 401) {
+            handleUnauthorized();
+            return;
+        }
+
+        if (response.status === 403) {
+            if (loadingEl) loadingEl.style.display = "none";
+            if (errorEl) {
+                errorEl.textContent = "Access Forbidden: Admin access required.";
+                errorEl.style.display = "block";
+            }
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error("Failed to load activity logs from server.");
+        }
+
+        const logs = await response.json();
+
+        if (loadingEl) loadingEl.style.display = "none";
+
+        if (!Array.isArray(logs) || logs.length === 0) {
+            if (tableBody) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">No activity recorded yet.</td>
+                    </tr>
+                `;
+            }
+            return;
+        }
+
+        if (tableBody) {
+            tableBody.innerHTML = logs.map(log => {
+                let formattedDate = "—";
+                if (log.timestamp) {
+                    const d = new Date(log.timestamp);
+                    formattedDate = isNaN(d.getTime())
+                        ? log.timestamp
+                        : d.getFullYear() + "-" +
+                          String(d.getMonth() + 1).padStart(2, "0") + "-" +
+                          String(d.getDate()).padStart(2, "0") + " " +
+                          String(d.getHours()).padStart(2, "0") + ":" +
+                          String(d.getMinutes()).padStart(2, "0") + ":" +
+                          String(d.getSeconds()).padStart(2, "0");
+                }
+
+                const action = (log.action || "EVENT").toUpperCase();
+                const role = (log.role || "user").toLowerCase();
+                const username = log.username || "system";
+                const details = log.details || "—";
+
+                let badgeClass = "badge-default";
+                if (action === "LOGIN") badgeClass = "badge-login";
+                else if (action === "CREATE") badgeClass = "badge-create";
+                else if (action === "UPDATE") badgeClass = "badge-update";
+                else if (action === "DELETE") badgeClass = "badge-delete";
+
+                const roleBadgeClass = role === "admin" ? "role-badge-admin" : "role-badge-employee";
+
+                return `
+                    <tr class="activity-log-row">
+                        <td class="activity-log-timestamp"><span class="activity-time-text">${escapeHTML(formattedDate)}</span></td>
+                        <td class="activity-log-user"><strong>${escapeHTML(username)}</strong></td>
+                        <td class="activity-log-role"><span class="role-badge ${roleBadgeClass}">${escapeHTML(role)}</span></td>
+                        <td class="activity-log-action"><span class="activity-action-badge ${badgeClass}">${escapeHTML(action)}</span></td>
+                        <td class="activity-log-details">${escapeHTML(details)}</td>
+                    </tr>
+                `;
+            }).join("");
+        }
+
+    } catch (error) {
+        console.error("Activity logs error:", error);
+        if (loadingEl) loadingEl.style.display = "none";
+        if (errorEl) {
+            errorEl.textContent = error.message || "Failed to load activity logs";
+            errorEl.style.display = "block";
+        }
+    }
+}
+
+// ==========================================================================
 // GLOBAL WINDOW EXPORTS (FOR INLINE HANDLERS)
 // ==========================================================================
 window.openEditModal = openEditModal;
@@ -1669,3 +1796,4 @@ window.refreshAssets = loadAssets;
 window.loadAutomationStatus = loadAutomationStatus;
 window.loadAutomationHistory = loadAutomationHistory;
 window.triggerAutomationRun = triggerAutomationRun;
+window.loadActivityLogs = loadActivityLogs;

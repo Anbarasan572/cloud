@@ -7,6 +7,7 @@ from flask_jwt_extended import (
 
 from database.db import db
 from models.user_model import User
+from models.activity_log_model import ActivityLog
 
 
 auth_bp = Blueprint("auth", __name__)
@@ -45,6 +46,19 @@ def login():
             "role": user.role
         }
     )
+
+    try:
+        log_entry = ActivityLog(
+            user_id=user.id,
+            username=user.username,
+            role=user.role,
+            action="LOGIN",
+            details=f"{user.role.capitalize()} logged in"
+        )
+        db.session.add(log_entry)
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
 
     return jsonify({
         "message": "Login successful",

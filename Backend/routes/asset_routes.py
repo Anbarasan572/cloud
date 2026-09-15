@@ -1,9 +1,10 @@
 from flask import Blueprint, request, jsonify
 from datetime import datetime
-from flask_jwt_extended import jwt_required, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
 
 from database.db import db
 from models.asset_model import Asset
+from models.activity_log_model import ActivityLog
 
 
 asset_bp = Blueprint("asset", __name__)
@@ -261,6 +262,22 @@ def add_asset():
         db.session.add(new_asset)
         db.session.commit()
 
+        # Log Activity
+        try:
+            claims = get_jwt()
+            user_id = get_jwt_identity()
+            log_entry = ActivityLog(
+                user_id=int(user_id) if user_id and str(user_id).isdigit() else None,
+                username=claims.get("username", "admin"),
+                role=claims.get("role", "admin"),
+                action="CREATE",
+                details=f"Created asset: {new_asset.asset_name}"
+            )
+            db.session.add(log_entry)
+            db.session.commit()
+        except Exception:
+            pass
+
         return jsonify({
             "message": "Asset added successfully",
             "id": new_asset.id
@@ -421,6 +438,22 @@ def update_asset(asset_id):
         # Save all changes
         db.session.commit()
 
+        # Log Activity
+        try:
+            claims = get_jwt()
+            user_id = get_jwt_identity()
+            log_entry = ActivityLog(
+                user_id=int(user_id) if user_id and str(user_id).isdigit() else None,
+                username=claims.get("username", "admin"),
+                role=claims.get("role", "admin"),
+                action="UPDATE",
+                details=f"Updated asset: {asset.asset_name}"
+            )
+            db.session.add(log_entry)
+            db.session.commit()
+        except Exception:
+            pass
+
         return jsonify({
             "message": "Asset updated successfully"
         }), 200
@@ -454,10 +487,28 @@ def delete_asset(asset_id):
             "message": "Asset not found"
         }), 404
 
+    asset_name = asset.asset_name
+
     try:
 
         db.session.delete(asset)
         db.session.commit()
+
+        # Log Activity
+        try:
+            claims = get_jwt()
+            user_id = get_jwt_identity()
+            log_entry = ActivityLog(
+                user_id=int(user_id) if user_id and str(user_id).isdigit() else None,
+                username=claims.get("username", "admin"),
+                role=claims.get("role", "admin"),
+                action="DELETE",
+                details=f"Deleted asset: {asset_name}"
+            )
+            db.session.add(log_entry)
+            db.session.commit()
+        except Exception:
+            pass
 
         return jsonify({
             "message": "Asset deleted successfully"
